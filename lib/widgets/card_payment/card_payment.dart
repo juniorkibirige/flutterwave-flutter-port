@@ -25,6 +25,8 @@ class _CardPaymentState extends State<CardPayment>
   final _cardFormKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  BuildContext loadingDialogContext;
+
   final TextEditingController _cardNumberFieldController =
       TextEditingController();
   final TextEditingController _cardMonthFieldController =
@@ -50,19 +52,29 @@ class _CardPaymentState extends State<CardPayment>
         body: Form(
           key: this._cardFormKey,
           child: Container(
-            margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
+            margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
             width: double.infinity,
             child: Column(
               children: [
                 Container(
                   margin: EdgeInsets.all(20),
+                  alignment: Alignment.topCenter,
+                  width: double.infinity,
+                  child: Text(
+                    "Enter your card details",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                   width: double.infinity,
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: "Card Number",
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                      ),
+                      labelText: "Card Number",
                     ),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
@@ -79,13 +91,11 @@ class _CardPaymentState extends State<CardPayment>
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width / 5,
-                      margin: EdgeInsets.all(20),
+                      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
                           hintText: "Month",
-                          labelStyle: TextStyle(
-                            color: Colors.black26,
-                          ),
+                          labelText: "Month",
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
@@ -100,13 +110,11 @@ class _CardPaymentState extends State<CardPayment>
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 5,
-                      margin: EdgeInsets.all(20),
+                      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
                           hintText: "Year",
-                          labelStyle: TextStyle(
-                            color: Colors.black26,
-                          ),
+                          labelText: "Year",
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
@@ -121,16 +129,15 @@ class _CardPaymentState extends State<CardPayment>
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 5,
-                      margin: EdgeInsets.fromLTRB(30, 20, 5, 20),
+                      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: "CVV",
-                          labelStyle: TextStyle(
-                            color: Colors.black26,
-                          ),
+                          hintText: "cvv",
+                          labelText: "cvv",
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
+                        obscureText: true,
                         autocorrect: false,
                         style: TextStyle(
                           color: Colors.black,
@@ -178,7 +185,7 @@ class _CardPaymentState extends State<CardPayment>
 
   void _makeCardPayment() {
     Navigator.of(this.context).pop();
-    //TODO show loading indicator
+    this.showLoading("initiating payment...");
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
         cardNumber: this._cardNumberFieldController.value.text,
         cvv: this._cardCvvFieldController.value.text,
@@ -201,19 +208,26 @@ class _CardPaymentState extends State<CardPayment>
           return AlertDialog(
             content: Text(
               "You will be charged a total of ${this.widget._paymentManager.amount} NGN. Do you wish to continue? ",
-              textAlign: TextAlign.start,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
+                fontSize: 18
               ),
             ),
             actions: [
               FlatButton(
                 onPressed: this._makeCardPayment,
-                child: Text("YES, PAY"),
+                child: Text(
+                  "CONTINUE",
+                  style: TextStyle(fontSize: 16, letterSpacing: 1),
+                ),
               ),
               FlatButton(
                 onPressed: () => {Navigator.of(this.context).pop()},
-                child: Text("CANCEL"),
+                child: Text(
+                  "CANCEL",
+                  style: TextStyle(fontSize: 16, letterSpacing: 1),
+                ),
               )
             ],
           );
@@ -228,78 +242,112 @@ class _CardPaymentState extends State<CardPayment>
     FocusScope.of(this.context).requestFocus(FocusNode());
   }
 
-  Future<String> openAuthModal() async {
-    return showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (BuildContext buildContext) {
-          return AlertDialog(content: RequestPin(this.widget._paymentManager));
-        });
-  }
-
-  Future<String> openOTPModal({String message}) async {
-    return showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (BuildContext buildContext) {
-          return AlertDialog(content: RequestOTP(message));
-        });
-  }
-
   @override
   void onRedirect(ChargeCardResponse response, String url) async {
-    print("Redirect called in Widget. URL => $url");
-    final removeSpace = url.replaceAll(new RegExp(r"\s+"), "");
-    print("Redirect remove space => $removeSpace");
-    final flwRef = await await Navigator.of(context).push(MaterialPageRoute(
+    this.closeDialog();
+    final flwRef = await await Navigator.of(this.context).push(MaterialPageRoute(
         builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
     if (flwRef != null) {
-      final response = await this.widget._paymentManager.verifyPayment(flwRef, http.Client());
-      print("Success?? ${response.message}");
+      this.showLoading("verifying payment...");
+      final response = await this
+          .widget
+          ._paymentManager
+          .verifyPayment(flwRef, http.Client());
+      this.closeDialog();
+      if (response.status == "success") {
+        Navigator.pop(this.context, response);
+      }
     }
   }
 
   @override
   void onRequireAddress(ChargeCardResponse response) async {
-    print("Open Address called in Widget.");
+    this.closeDialog();
     final ChargeRequestAddress addressDetails = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestAddress()));
     if (addressDetails != null) {
-      print("Require address returned ${addressDetails.toJson()}");
+      this.showLoading("verifying address...");
       this.widget._paymentManager.addAddress(addressDetails);
       return;
     }
+    this.closeDialog();
   }
 
   @override
   void onRequirePin(ChargeCardResponse response) async {
-    print("Require pin called in Widget");
-    final pin = await this.openAuthModal();
+  this.closeDialog();
+    final pin = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => RequestPin()));
     if (pin == null) return;
+    this.showLoading("authenticating with pin...");
     this.widget._paymentManager.addPin(pin);
   }
 
   @override
   void onRequireOTP(ChargeCardResponse response, String message) async {
-    print("Require OTP called in Widget");
-    final otp = await this.openOTPModal(message: message);
+    this.closeDialog();
+    final otp = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => RequestOTP(message)));
     if (otp == null) return;
     final client = http.Client();
-    this
+    this.showLoading("verifying payment...");
+    final ChargeCardResponse chargeCardResponse = await this
         .widget
         ._paymentManager
         .validatePayment(otp, response.data.flwRef, client);
+    this.closeDialog();
+    if (response.status == "success") {
+      Navigator.pop(this.context, chargeCardResponse);
+    }
   }
 
   @override
   void onError(String error) {
+    this.closeDialog();
+    this.showSnackBar(error);
+  }
+
+  void showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
-        error,
+        message,
         textAlign: TextAlign.center,
       ),
     );
     this._scaffoldKey.currentState.showSnackBar(snackBar);
-    print("On Error called in Widget => $error");
+  }
+
+  Future<void> showLoading(String message) {
+    return showDialog(
+      context: this.context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        this.loadingDialogContext = context;
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(
+                backgroundColor: Colors.orangeAccent,
+              ),
+              SizedBox(
+                width: 40,
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void closeDialog() {
+    if (this.loadingDialogContext != null) {
+      Navigator.of(this.loadingDialogContext).pop();
+      this.loadingDialogContext = null;
+    }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/flutterwave_payment_manager.dart';
 
 class RequestOTP extends StatefulWidget {
   final String descriptionText;
@@ -16,50 +15,64 @@ class _RequestOTPState extends State<RequestOTP> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: this._formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            this.widget.descriptionText,
-            style: TextStyle(color: Colors.black, fontSize: 18),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            margin: EdgeInsets.all(5),
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: "Pin",
-                labelStyle: TextStyle(
-                  color: Colors.black,
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          width: double.infinity,
+          margin: EdgeInsets.fromLTRB(20, 70, 20, 50),
+          child: Form(
+            key: this._formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  this.widget.descriptionText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
-              ),
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
-              obscureText: true,
-              autocorrect: false,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-              ),
-              controller: this._otpController,
-              validator: this._pinValidator,
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "OTP",
+                      labelText: "OTP",
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        size: 20,
+                      ),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    autocorrect: false,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                    ),
+                    controller: this._otpController,
+                    validator: this._pinValidator,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(20),
+                  width: double.infinity,
+                  height: 50,
+                  child: RaisedButton(
+                    onPressed: this._continuePayment,
+                    color: Colors.orangeAccent,
+                    child: Text(
+                      "CONTINUE PAYMENT",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-          Container(
-            child: RaisedButton(
-              onPressed: this._continuePayment,
-              color: Colors.orangeAccent,
-              child: Text(
-                "CONTINUE PAYMENT",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

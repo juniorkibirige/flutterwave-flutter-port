@@ -58,9 +58,6 @@ class FlutterwavePaymentManager {
     final Map<String, String> encryptedPayload =
         this._prepareRequest(chargeCardRequest);
 
-    print("Json request is ${chargeCardRequest.toJson()}");
-    print("Encrypted request is $encryptedPayload");
-
     final url = FlutterwaveUtils.BASE_URL + FlutterwaveUtils.CHARGE_CARD_URL;
     final http.Response response = await client.post(url,
         headers: {HttpHeaders.authorizationHeader: this.publicKey},
@@ -73,10 +70,8 @@ class FlutterwavePaymentManager {
     try {
       final responseBody =
           ChargeCardResponse.fromJson(jsonDecode(response.body));
-      print("body is ${responseBody.toJson()}");
 
       if (response.statusCode == 200) {
-        print("Status code is 200");
         final bool requiresExtraAuth =
             (responseBody.message == FlutterwaveUtils.REQUIRES_AUTH) &&
                 (responseBody.meta.authorization.mode != null);
@@ -90,35 +85,27 @@ class FlutterwavePaymentManager {
                 (responseBody.meta.authorization.mode == Authorization.OTP);
 
         if (requiresExtraAuth) {
-          print("requires Authhhh");
           return this
               ._handleExtraCardAuth(responseBody, this.cardPaymentListener);
         }
         if (is3DS) {
-          print("requires 3DS ");
           return this.cardPaymentListener.onRedirect(
               responseBody, responseBody.meta.authorization.redirect);
         }
         if (requiresOtp) {
-          print("requires validation");
           return this
               .cardPaymentListener
               .onRequireOTP(responseBody, responseBody.data.processorResponse);
         }
-
-        print("requires validation herrrrrrreeeeee");
         return;
       }
       if (response.statusCode.toString().substring(0, 1) == "4") {
         return this.cardPaymentListener.onError(responseBody.message);
       }
-      print("Response code is ${response.statusCode}");
       return this
           .cardPaymentListener
           .onError(jsonDecode(response.body).toString());
     } catch (e) {
-      print("Error is ${e.toString()}");
-      print("Error instance is $e");
       this.cardPaymentListener.onError(e.toString());
     }
   }
@@ -166,9 +153,6 @@ class FlutterwavePaymentManager {
     if (response.statusCode.toString().substring(0, 1) == "4") {
       this.cardPaymentListener.onError(cardResponse.message);
     }
-
-    print("validate response status ${response.statusCode}");
-    print("validate response body ${jsonEncode(response.body)}");
     return cardResponse;
   }
 
@@ -191,17 +175,15 @@ class FlutterwavePaymentManager {
             cardResponse.data.currency == this.chargeCardRequest.currency &&
             cardResponse.data.txRef == this.chargeCardRequest.txRef
         ) {
-          print("verification successful ${cardResponse.toJson()}");
+          return cardResponse;
         }
       }
       if (response.statusCode.toString().substring(0, 1) == "4") {
         this.cardPaymentListener.onError(cardResponse.message);
       }
-      print("verify response status ${response.statusCode}");
-      print("verify response body ${jsonEncode(response.body)}");
       return cardResponse;
     } catch (error) {
-      throw (error);
+      this.cardPaymentListener.onError(error);
     }
   }
 
