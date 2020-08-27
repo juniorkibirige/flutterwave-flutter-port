@@ -32,8 +32,6 @@ class ChargeCardResponse {
 }
 
 
-
-
 class Meta {
   Authorization authorization;
 

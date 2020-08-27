@@ -2,14 +2,14 @@ import 'package:flutterwave/models/responses/charge_card_response/charge_card_re
 import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_customer.dart';
 
 class ChargeCardResponseData {
-  int id;
+  String id;
   String txRef;
   String flwRef;
   String deviceFingerprint;
-  int amount;
-  int chargedAmount;
-  double appFee;
-  int merchantFee;
+  String amount;
+  String chargedAmount;
+  String appFee;
+  String merchantFee;
   String processorResponse;
   String authModel;
   String currency;
@@ -50,14 +50,14 @@ class ChargeCardResponseData {
         this.card});
 
   ChargeCardResponseData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'].toString();
     txRef = json['tx_ref'];
     flwRef = json['flw_ref'];
     deviceFingerprint = json['device_fingerprint'];
-    amount = json['amount'];
-    chargedAmount = json['charged_amount'];
-    appFee = json['app_fee'];
-    merchantFee = json['merchant_fee'];
+    amount = json['amount'].toString();
+    chargedAmount = json['charged_amount'].toString();
+    appFee = json['app_fee'].toString();
+    merchantFee = json['merchant_fee'].toString();
     processorResponse = json['processor_response'];
     authModel = json['auth_model'];
     currency = json['currency'];
@@ -69,7 +69,7 @@ class ChargeCardResponseData {
     fraudStatus = json['fraud_status'];
     chargeType = json['charge_type'];
     createdAt = json['created_at'];
-    accountId = json['account_id'];
+    accountId = json['account_id'].toString();
     customer = json['customer'] != null ? new ChargeCardResponseCustomer.fromJson(json['customer']) : null;
     card = json['card'] != null ? new ChargeCardResponseCard.fromJson(json['card']) : null;
   }

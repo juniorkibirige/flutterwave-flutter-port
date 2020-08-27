@@ -1,6 +1,8 @@
 # flutterwave
 
-A new Flutter package project.
+Flutterwave's Flutter SDK can be used to integrate the Flutterwave payment gateway into your flutter app. It comes with a ready-made Drop In UI.
+
+The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
 
 ## Getting Started
 

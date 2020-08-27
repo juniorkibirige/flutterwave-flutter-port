@@ -1,6 +1,6 @@
 class ChargeCardResponseCustomer {
-  int id;
-  Null phoneNumber;
+  String id;
+  String phoneNumber;
   String name;
   String email;
   String createdAt;
@@ -8,8 +8,8 @@ class ChargeCardResponseCustomer {
   ChargeCardResponseCustomer({this.id, this.phoneNumber, this.name, this.email, this.createdAt});
 
   ChargeCardResponseCustomer.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    phoneNumber = json['phone_number'];
+    id = json['id'].toString();
+    phoneNumber = json['phone_number'].toString();
     name = json['name'];
     email = json['email'];
     createdAt = json['created_at'];
