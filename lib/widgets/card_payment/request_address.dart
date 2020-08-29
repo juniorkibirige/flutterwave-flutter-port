@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/requests/charge_request_address.dart';
+import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
 
 class RequestAddress extends StatefulWidget {
   @override

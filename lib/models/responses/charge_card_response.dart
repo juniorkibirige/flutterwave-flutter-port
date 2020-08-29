@@ -1,19 +1,19 @@
 import 'package:flutterwave/models/requests/authorization.dart';
 
-import 'charge_card_response_data.dart';
+import 'charge_card_response/charge_card_response_data.dart';
 
-class ChargeCardResponse {
+class ChargeResponse {
   String status;
   String message;
-  ChargeCardResponseData data;
+  ChargeResponseData data;
   Meta meta;
 
-  ChargeCardResponse({this.status, this.message, this.data, this.meta});
+  ChargeResponse({this.status, this.message, this.data, this.meta});
 
-  ChargeCardResponse.fromJson(Map<String, dynamic> json) {
+  ChargeResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new ChargeCardResponseData.fromJson(json['data']) : null;
+    data = json['data'] != null ? new ChargeResponseData.fromJson(json['data']) : null;
     meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
   }
 

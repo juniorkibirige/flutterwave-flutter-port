@@ -1,13 +1,13 @@
-import 'package:flutterwave/models/responses/charge_card_response/charge_card_response.dart';
+import 'package:flutterwave/models/responses/charge_card_response.dart';
 
 abstract class CardPaymentListener {
-  void onRequirePin(ChargeCardResponse response) {}
+  void onRequirePin(ChargeResponse response) {}
 
-  void onRequireOTP(ChargeCardResponse response, String message) {}
+  void onRequireOTP(ChargeResponse response, String message) {}
 
-  void onRequireAddress(ChargeCardResponse response) {}
+  void onRequireAddress(ChargeResponse response) {}
 
-  void onRedirect(ChargeCardResponse response, String url) {}
+  void onRedirect(ChargeResponse response, String url) {}
 
   void onError(String error) {}
 }

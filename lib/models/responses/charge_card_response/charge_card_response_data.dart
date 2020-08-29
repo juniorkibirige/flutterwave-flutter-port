@@ -1,7 +1,7 @@
 import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_card.dart';
 import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_customer.dart';
 
-class ChargeCardResponseData {
+class ChargeResponseData {
   String id;
   String txRef;
   String flwRef;
@@ -25,7 +25,7 @@ class ChargeCardResponseData {
   ChargeCardResponseCustomer customer;
   ChargeCardResponseCard card;
 
-  ChargeCardResponseData(
+  ChargeResponseData(
       {this.id,
         this.txRef,
         this.flwRef,
@@ -49,7 +49,7 @@ class ChargeCardResponseData {
         this.customer,
         this.card});
 
-  ChargeCardResponseData.fromJson(Map<String, dynamic> json) {
+  ChargeResponseData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     txRef = json['tx_ref'];
     flwRef = json['flw_ref'];

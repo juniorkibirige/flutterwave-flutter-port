@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/widgets/card_payment/flutterwave_payment.dart';
+import 'package:flutterwave/widgets/home/flutterwave_payment.dart';
 
 import 'flutterwave_payment_manager.dart';
 
@@ -24,6 +24,11 @@ class Flutterwave {
   bool acceptZambiaPayment;
   bool acceptGhanaPayment;
   bool acceptUgandaPayment;
+  String phoneNumber;
+  int frequency;
+  int duration;
+  bool isPermanent;
+  String narration;
 
   Flutterwave.UiPayment({
     @required this.context,
@@ -35,6 +40,11 @@ class Flutterwave {
     @required this.fullName,
     @required this.txRef,
     @required this.isDebugMode,
+    this.phoneNumber,
+    this.frequency,
+    this.duration = 0,
+    this.isPermanent = false,
+    this.narration = "",
     this.acceptAccountPayment = false,
     this.acceptBankTransferPayment = false,
     this.acceptCardPayment = false,
@@ -45,9 +55,15 @@ class Flutterwave {
     this.acceptZambiaPayment = false,
     this.acceptGhanaPayment = false,
     this.acceptUgandaPayment = false,
-  });
+  }) {
+    if (this.acceptBankTransferPayment) {
+      if (this.phoneNumber == null || this.frequency == null || this.narration == null || this.duration == null) {
+        throw (FlutterError("To accept Bank transfer Payments, phone number, frequency, narration and duration must be supplied."));
+      }
+    }
+  }
 
-  void initialize() {
+  void initializeForUiPayments() {
     FlutterwavePaymentManager paymentManager = FlutterwavePaymentManager(
       publicKey: this.publicKey,
       encryptionKey: this.encryptionKey,
@@ -57,8 +73,12 @@ class Flutterwave {
       amount: this.amount,
       txRef: this.txRef,
       isDebugMode: this.isDebugMode,
+      narration: this.narration,
+      isPermanent: this.isPermanent,
+      phoneNumber: this.phoneNumber,
+      frequency: this.frequency,
+      duration: this.duration
     );
-    if (this.context == null) {}
     return this._launchPaymentScreen(paymentManager);
   }
 
