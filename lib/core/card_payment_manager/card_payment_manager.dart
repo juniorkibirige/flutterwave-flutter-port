@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutterwave/core/interfaces/card_payment_listener.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
+import 'package:flutterwave/core/flutterwave_error.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:flutterwave/interfaces/card_payment_listener.dart';
+import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
 import 'package:flutterwave/models/requests/verify_charge_request.dart';
@@ -71,7 +72,8 @@ class CardPaymentManager {
     final Map<String, String> encryptedPayload =
     this._prepareRequest(chargeCardRequest);
 
-    final url = FlutterwaveUtils.BASE_URL + FlutterwaveUtils.CHARGE_CARD_URL;
+    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) + FlutterwaveUtils.CHARGE_CARD_URL;
+    print("url iss ==> $url");
     final http.Response response = await client.post(url,
         headers: {HttpHeaders.authorizationHeader: this.publicKey},
         body: encryptedPayload);
@@ -146,32 +148,41 @@ class CardPaymentManager {
 
   Future<ChargeResponse> validatePayment(
       String otp, String flwRef, http.Client client) async {
-    final url = FlutterwaveUtils.BASE_URL + FlutterwaveUtils.VALIDATE_CHARGE;
+    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) + FlutterwaveUtils.VALIDATE_CHARGE;
+    print("url iss ==> $url");
     final ValidateChargeRequest chargeRequest =
     ValidateChargeRequest(otp, flwRef);
     final payload = chargeRequest.toJson();
-    final http.Response response = await client.post(url,
-        headers: {HttpHeaders.authorizationHeader: this.publicKey},
-        body: payload);
+    try {
+      final http.Response response = await client.post(url,
+          headers: {HttpHeaders.authorizationHeader: this.publicKey},
+          body: payload);
 
-    final ChargeResponse cardResponse =
-    ChargeResponse.fromJson(jsonDecode(response.body));
+      final ChargeResponse cardResponse =
+      ChargeResponse.fromJson(jsonDecode(response.body));
 
-    if (response.statusCode == 200) {
-      if (cardResponse.status == FlutterwaveUtils.SUCCESS) {
-        return this.verifyPayment(cardResponse.data.flwRef, client);
+      if (response.statusCode == 200) {
+        if (cardResponse.status == FlutterwaveUtils.SUCCESS) {
+          return this.verifyPayment(cardResponse.data.flwRef, client);
+        }
       }
-    }
 
-    if (response.statusCode.toString().substring(0, 1) == "4") {
-      this.cardPaymentListener.onError(cardResponse.message);
+      if (response.statusCode.toString().substring(0, 1) == "4") {
+        this.cardPaymentListener.onError(cardResponse.message);
+      }
+      return cardResponse;
+    } catch (error) {
+      throw (FlutterWaveError(error.toString()));
+    } finally {
+      client.close();
     }
-    return cardResponse;
+   
   }
 
   Future<ChargeResponse> verifyPayment(
       String flwRef, http.Client client) async {
-    final url = FlutterwaveUtils.BASE_URL + FlutterwaveUtils.VERIFY_TRANSACTION;
+    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) + FlutterwaveUtils.VERIFY_TRANSACTION;
+    print("url iss ==> $url");
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
     try {
@@ -196,6 +207,8 @@ class CardPaymentManager {
       return cardResponse;
     } catch (error) {
       this.cardPaymentListener.onError(error);
+    } finally {
+      client.close();
     }
   }
 

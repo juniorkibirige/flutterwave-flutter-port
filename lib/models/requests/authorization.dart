@@ -15,6 +15,7 @@ class Authorization {
   String zipcode;
   String country;
   List<dynamic> fields;
+  String validateInstructions;
 
   Authorization({this.mode, this.endpoint});
   
@@ -30,6 +31,7 @@ class Authorization {
     this.state = json["state"];
     this.zipcode = json["zipcode"];
     this.country = json["country"];
+    this.validateInstructions = json["validate_instructions"];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +47,7 @@ class Authorization {
     data["state"] = this.state;
     data["zipcode"] = this.zipcode;
     data["country"] = this.country;
+    data["validate_instructions"] = this.validateInstructions;
     return data;
   }
 
