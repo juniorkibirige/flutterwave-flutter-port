@@ -15,7 +15,7 @@ class PayWithTransferButton extends StatelessWidget {
         onPressed: this._payWithTransfer,
         color: Colors.orange,
         child: Text(
-          "PAY WITH TRANSFER",
+          "PAY",
           style: TextStyle(color: Colors.white, fontSize: 15),
         ),
       ),

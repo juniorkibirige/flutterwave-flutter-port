@@ -14,6 +14,7 @@ class Authorization {
   String state;
   String zipcode;
   String country;
+  String note;
   List<dynamic> fields;
   String validateInstructions;
 
@@ -31,6 +32,7 @@ class Authorization {
     this.state = json["state"];
     this.zipcode = json["zipcode"];
     this.country = json["country"];
+    this.note = json["note"];
     this.validateInstructions = json["validate_instructions"];
   }
 
@@ -47,6 +49,7 @@ class Authorization {
     data["state"] = this.state;
     data["zipcode"] = this.zipcode;
     data["country"] = this.country;
+    data["note"] = this.note;
     data["validate_instructions"] = this.validateInstructions;
     return data;
   }

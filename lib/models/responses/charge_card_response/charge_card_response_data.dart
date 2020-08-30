@@ -22,56 +22,62 @@ class ChargeResponseData {
   String chargeType;
   String createdAt;
   String accountId;
+  String paymentCode;
   ChargeCardResponseCustomer customer;
   ChargeCardResponseCard card;
 
   ChargeResponseData(
       {this.id,
-        this.txRef,
-        this.flwRef,
-        this.deviceFingerprint,
-        this.amount,
-        this.chargedAmount,
-        this.appFee,
-        this.merchantFee,
-        this.processorResponse,
-        this.authModel,
-        this.currency,
-        this.ip,
-        this.narration,
-        this.status,
-        this.authUrl,
-        this.paymentType,
-        this.fraudStatus,
-        this.chargeType,
-        this.createdAt,
-        this.accountId,
-        this.customer,
-        this.card});
+      this.txRef,
+      this.flwRef,
+      this.deviceFingerprint,
+      this.amount,
+      this.chargedAmount,
+      this.appFee,
+      this.merchantFee,
+      this.processorResponse,
+      this.authModel,
+      this.currency,
+      this.ip,
+      this.narration,
+      this.status,
+      this.authUrl,
+      this.paymentType,
+      this.fraudStatus,
+      this.chargeType,
+      this.createdAt,
+      this.accountId,
+      this.customer,
+      this.card});
 
   ChargeResponseData.fromJson(Map<String, dynamic> json) {
-    id = json['id'].toString();
-    txRef = json['tx_ref'];
-    flwRef = json['flw_ref'];
-    deviceFingerprint = json['device_fingerprint'];
-    amount = json['amount'].toString();
-    chargedAmount = json['charged_amount'].toString();
-    appFee = json['app_fee'].toString();
-    merchantFee = json['merchant_fee'].toString();
-    processorResponse = json['processor_response'];
-    authModel = json['auth_model'];
-    currency = json['currency'];
-    ip = json['ip'];
-    narration = json['narration'];
-    status = json['status'];
-    authUrl = json['auth_url'];
-    paymentType = json['payment_type'];
-    fraudStatus = json['fraud_status'];
-    chargeType = json['charge_type'];
-    createdAt = json['created_at'];
-    accountId = json['account_id'].toString();
-    customer = json['customer'] != null ? new ChargeCardResponseCustomer.fromJson(json['customer']) : null;
-    card = json['card'] != null ? new ChargeCardResponseCard.fromJson(json['card']) : null;
+    this.id = json['id'].toString();
+    this.txRef = json['tx_ref'];
+    this.flwRef = json['flw_ref'];
+    this.deviceFingerprint = json['device_fingerprint'];
+    this.amount = json['amount'].toString();
+    this.chargedAmount = json['charged_amount'].toString();
+    this.appFee = json['app_fee'].toString();
+    this.merchantFee = json['merchant_fee'].toString();
+    this.processorResponse = json['processor_response'];
+    this.authModel = json['auth_model'];
+    this.currency = json['currency'];
+    this.ip = json['ip'];
+    this.narration = json['narration'];
+    this.status = json['status'];
+    this.authUrl = json['auth_url'];
+    this.paymentType = json['payment_type'];
+    this.fraudStatus = json['fraud_status'];
+    this.paymentCode = json['payment_code'];
+    this.chargeType = json['charge_type'];
+    this.createdAt = json['created_at'];
+    this.accountId = json['account_id'].toString();
+    this.customer = json['customer'] != null
+        ? new ChargeCardResponseCustomer.fromJson(json['customer'])
+        : null;
+    this.card = json['card'] != null
+        ? new ChargeCardResponseCard.fromJson(json['card'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +99,7 @@ class ChargeResponseData {
     data['auth_url'] = this.authUrl;
     data['payment_type'] = this.paymentType;
     data['fraud_status'] = this.fraudStatus;
+    data['payment_code'] = this.paymentCode;
     data['charge_type'] = this.chargeType;
     data['created_at'] = this.createdAt;
     data['account_id'] = this.accountId;

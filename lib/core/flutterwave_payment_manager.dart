@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
+import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
 
 class FlutterwavePaymentManager {
   String publicKey;
@@ -75,6 +76,19 @@ class FlutterwavePaymentManager {
         txRef: this.txRef,
         isDebugMode: this.isDebugMode,
         phoneNumber: this.phoneNumber,
+      fullName: this.fullName
+    );
+  }
+  
+  USSDPaymentManager getUSSDPaymentManager() {
+    return USSDPaymentManager(
+      publicKey: this.publicKey,
+      currency: this.currency,
+      email: this.email,
+      amount: this.amount,
+      txRef: this.txRef,
+      isDebugMode: this.isDebugMode,
+      phoneNumber: this.phoneNumber,
       fullName: this.fullName
     );
   }

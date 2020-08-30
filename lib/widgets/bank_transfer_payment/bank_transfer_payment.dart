@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/models/requests/bank_transfer/bank_transfer_request.dart';
 import 'package:flutterwave/models/responses/bank_transfer_response/bank_transfer_response.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
-import 'package:flutterwave/widgets/bank_transfer/pay_with_account_button.dart';
-import 'package:flutterwave/widgets/bank_transfer/show_transfer_details.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:http/http.dart' as http;
+
+import 'pay_with_account_button.dart';
+import 'show_transfer_details.dart';
 
 class BankTransfer extends StatefulWidget {
   final BankTransferPaymentManager _paymentManager;

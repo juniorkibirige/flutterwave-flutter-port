@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
-import 'package:flutterwave/widgets/bank_account/bank_account_payment.dart';
+import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
+import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
+import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
+import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:flutterwave/core/flutterwave_payment_manager.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/widgets/bank_transfer/bank_transfer_payment.dart';
 import 'package:flutterwave/widgets/card_payment/card_payment.dart';
 
 import 'flutterwave_payment_option.dart';
@@ -118,7 +121,7 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                     SizedBox(
                       height: 50.0,
                       child: FlutterwavePaymentOption(
-                        handleClick: () => {},
+                        handleClick: this._launchUSSDPaymentWidget,
                         buttonText: "USSD",
                       ),
                     ),
@@ -162,13 +165,22 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
   }
 
   void _launchAccountWidget() {
-    FlutterwaveAPIUtils.getBanks(http.Client());
     final BankAccountPaymentManager bankAccountPaymentManager =
-    this.widget._flutterwavePaymentManager.getBankAccountPaymentManager();
+        this.widget._flutterwavePaymentManager.getBankAccountPaymentManager();
     Navigator.push(
       this.context,
       MaterialPageRoute(
           builder: (context) => RequestBankAccount(bankAccountPaymentManager)),
+    );
+  }
+
+  void _launchUSSDPaymentWidget() async {
+    final USSDPaymentManager paymentManager =
+        this.widget._flutterwavePaymentManager.getUSSDPaymentManager();
+    Navigator.push(
+      this.context,
+      MaterialPageRoute(
+          builder: (context) => PayWithUssd(paymentManager)),
     );
   }
 }
