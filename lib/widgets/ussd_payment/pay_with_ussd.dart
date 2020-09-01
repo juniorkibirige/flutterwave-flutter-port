@@ -154,7 +154,6 @@ class _PayWithUssdState extends State<PayWithUssd> {
             .payWithUSSD(request, http.Client());
         if (FlutterwaveUtils.SUCCESS == response.status) {
           this._afterChargeInitiated(response);
-          print("USSD payment from widget ${response.toJson()}");
         } else {
           this.showSnackBar(response.message);
         }
@@ -164,14 +163,14 @@ class _PayWithUssdState extends State<PayWithUssd> {
         this.closeDialog();
       }
     } else {
-      print("selected bank is null");
+      this.showSnackBar("Please select a bank");
     }
   }
 
   void _verifyTransfer() async {
     final timeoutInMinutes = 5;
     final timeOutInSeconds = timeoutInMinutes * 60;
-    final requestIntervalInSeconds = 30;
+    final requestIntervalInSeconds = 15;
     final numberOfTries = timeOutInSeconds/requestIntervalInSeconds;
     int intialCount = 0;
 

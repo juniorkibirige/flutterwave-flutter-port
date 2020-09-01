@@ -63,8 +63,7 @@ class MpesaPaymentManager {
       ChargeResponse chargeResponse =
       ChargeResponse.fromJson(json.decode(response.body));
 
-      print("Pay with Mpesa response => ${chargeResponse.toJson()}");
-
+    return chargeResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));
     } finally {
