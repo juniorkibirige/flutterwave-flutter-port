@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutterwave/core/flutterwave_error.dart';
+import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
 import 'package:flutterwave/models/requests/verify_charge_request.dart';
-import 'package:flutterwave/models/responses/charge_card_response.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/models/responses/get_bank/get_bank_response.dart';
 import 'package:flutterwave/models/responses/resolve_account/resolve_account_response.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
@@ -48,6 +49,28 @@ class FlutterwaveAPIUtils {
     }
   }
 
+  static Future<ChargeResponse> validatePayment(
+      String otp, String flwRef, http.Client client, final bool isDebugMode, final String publicKey) async {
+    final url = FlutterwaveUtils.getBaseUrl(isDebugMode) + FlutterwaveUtils.VALIDATE_CHARGE;
+    print("url iss ==> $url");
+    final ValidateChargeRequest chargeRequest =
+    ValidateChargeRequest(otp, flwRef);
+    final payload = chargeRequest.toJson();
+    try {
+      final http.Response response = await client.post(url,
+          headers: {HttpHeaders.authorizationHeader: publicKey},
+          body: payload);
+
+      final ChargeResponse cardResponse =
+      ChargeResponse.fromJson(jsonDecode(response.body));
+      return cardResponse;
+    } catch (error) {
+      throw (FlutterWaveError(error.toString()));
+    } finally {
+      client.close();
+    }
+  }
+
   static Future<ChargeResponse> verifyPayment(
       final String flwRef,
       final http.Client client,
@@ -69,8 +92,9 @@ class FlutterwaveAPIUtils {
       return cardResponse;
     } catch (error) {
       throw (FlutterWaveError(error.toString()));
-    } finally {
-      client.close();
-    }
+    } 
+//    finally {
+//      client.close();
+//    }
   }
 }

@@ -2,58 +2,48 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
+import 'package:flutterwave/models/requests/mobile_money/mobile_money_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:http/http.dart' as http;
 
-class USSDPaymentManager {
+class MobileMoneyPaymentManager {
   String publicKey;
   String currency;
   String amount;
-  String email;
+  String network;
   String txRef;
   bool isDebugMode;
   String phoneNumber;
   String fullName;
+  String email;
 
-  USSDPaymentManager({
+  MobileMoneyPaymentManager({
     @required this.publicKey,
     @required this.currency,
     @required this.amount,
-    @required this.email,
     @required this.txRef,
     @required this.isDebugMode,
     @required this.phoneNumber,
     @required this.fullName,
+    @required this.email,
+    this.network,
   });
 
-  Future<ChargeResponse> payWithUSSD(
-      USSDRequest ussdRequest, http.Client client) async {
-    final requestBody = ussdRequest.toJson();
-
+  Future<ChargeResponse> payWithMobileMoney(
+      MobileMoneyRequest mobileMoneyRequest, http.Client client) async {
+    final requestBody = mobileMoneyRequest.toJson();
+    print("MM Request is $requestBody");
     final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.PAY_WITH_USSD;
-    print("url iss ==> $url");
-
+        FlutterwaveUtils.getMobileMoneyUrl(this.currency);
     try {
-      print(
-          "Pay With USSD Request Payload => ${ussdRequest.toJson()}");
-
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
           body: requestBody);
-
-      ChargeResponse chargeResponse =
-      ChargeResponse.fromJson(json.decode(response.body));
-
-      print("Pay with USSD response => ${chargeResponse.toJson()}");
-
+      ChargeResponse chargeResponse = ChargeResponse.fromJson(json.decode(response.body));
       return chargeResponse;
-    } catch (error) {
+    } catch (error, stackTrace) {
       throw (FlutterError(error.toString()));
-    } finally {
-      client.close();
     }
   }
 }

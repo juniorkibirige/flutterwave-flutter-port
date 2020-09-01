@@ -18,7 +18,7 @@ class FlutterwavePaymentOption extends StatelessWidget {
           textAlign: TextAlign.left,
           text: TextSpan(
             text: "Pay with ",
-            style: TextStyle(fontSize: 17, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: Colors.black),
             children: [
               TextSpan(
                 text: buttonText,

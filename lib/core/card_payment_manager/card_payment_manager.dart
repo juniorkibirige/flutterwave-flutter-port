@@ -8,7 +8,7 @@ import 'package:flutterwave/models/requests/charge_card/charge_request_address.d
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
 import 'package:flutterwave/models/requests/verify_charge_request.dart';
-import 'package:flutterwave/models/responses/charge_card_response.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
 
@@ -176,7 +176,6 @@ class CardPaymentManager {
     } finally {
       client.close();
     }
-   
   }
 
   Future<ChargeResponse> verifyPayment(

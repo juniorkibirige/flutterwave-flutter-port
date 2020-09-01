@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:flutterwave/widgets/home/flutterwave_payment.dart';
 
 import 'flutterwave_payment_manager.dart';
@@ -24,61 +25,132 @@ class Flutterwave {
   bool acceptZambiaPayment;
   bool acceptGhanaPayment;
   bool acceptUgandaPayment;
+  bool acceptBarterPayment;
+  bool acceptSouthAfricaBankPayment;
+  bool acceptFrancophoneMobileMoney;
   String phoneNumber;
   int frequency;
   int duration;
   bool isPermanent;
   String narration;
 
-  Flutterwave.UiPayment({
-    @required this.context,
-    @required this.publicKey,
-    @required this.encryptionKey,
-    @required this.currency,
-    @required this.amount,
-    @required this.email,
-    @required this.fullName,
-    @required this.txRef,
-    @required this.isDebugMode,
-    this.phoneNumber,
-    this.frequency,
-    this.duration = 0,
-    this.isPermanent = false,
-    this.narration = "",
-    this.acceptAccountPayment = false,
-    this.acceptBankTransferPayment = false,
-    this.acceptCardPayment = false,
-    this.acceptUSSDPayment = false,
-    this.acceptUKAccountPayment = false,
-    this.acceptRwandaMoneyPayment = false,
-    this.acceptMpesaPayment = false,
-    this.acceptZambiaPayment = false,
-    this.acceptGhanaPayment = false,
-    this.acceptUgandaPayment = false,
-  }) {
+  Flutterwave.UiPayment(
+      {@required this.context,
+      @required this.publicKey,
+      @required this.encryptionKey,
+      @required this.currency,
+      @required this.amount,
+      @required this.email,
+      @required this.fullName,
+      @required this.txRef,
+      @required this.isDebugMode,
+      @required this.phoneNumber,
+      this.frequency,
+      this.duration = 0,
+      this.isPermanent = false,
+      this.narration = "",
+      this.acceptAccountPayment = false,
+      this.acceptBankTransferPayment = false,
+      this.acceptCardPayment = false,
+      this.acceptUSSDPayment = false,
+      this.acceptUKAccountPayment = false,
+      this.acceptSouthAfricaBankPayment = false,
+      this.acceptRwandaMoneyPayment = false,
+      this.acceptMpesaPayment = false,
+      this.acceptZambiaPayment = false,
+      this.acceptGhanaPayment = false,
+      this.acceptUgandaPayment = false,
+      this.acceptFrancophoneMobileMoney = false,
+      this.acceptBarterPayment = false}) {
+    this.currency = this.currency.toUpperCase();
+
+    if (this.currency == FlutterwaveUtils.NGN) {
+      this.acceptAccountPayment = true;
+      this.acceptUSSDPayment = true;
+      this.acceptBankTransferPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.KES) {
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+      this.acceptMpesaPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.RWF) {
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+      this.acceptRwandaMoneyPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.UGX) {
+      this.acceptUgandaPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.ZMW) {
+      this.acceptZambiaPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.GHS) {
+      this.acceptGhanaPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.GBP) {
+      this.acceptUKAccountPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.ZAR) {
+      this.acceptSouthAfricaBankPayment = true;
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+    }
+    if (this.currency == FlutterwaveUtils.XAF ||
+        this.currency == FlutterwaveUtils.XOF) {
+      this.acceptCardPayment = true;
+      this.acceptBarterPayment = true;
+      this.acceptFrancophoneMobileMoney = true;
+    }
     if (this.acceptBankTransferPayment) {
-      if (this.phoneNumber == null || this.frequency == null || this.narration == null || this.duration == null) {
-        throw (FlutterError("To accept Bank transfer Payments, phone number, frequency, narration and duration must be supplied."));
+      if (this.phoneNumber == null ||
+          this.frequency == null ||
+          this.narration == null ||
+          this.duration == null) {
+        throw (FlutterError(
+            "To accept Bank transfer Payments, phone number, frequency, narration and duration must be supplied."));
       }
     }
   }
 
   void initializeForUiPayments() {
     FlutterwavePaymentManager paymentManager = FlutterwavePaymentManager(
-      publicKey: this.publicKey,
-      encryptionKey: this.encryptionKey,
-      currency: this.currency,
-      email: this.email,
-      fullName: this.fullName,
-      amount: this.amount,
-      txRef: this.txRef,
-      isDebugMode: this.isDebugMode,
-      narration: this.narration,
-      isPermanent: this.isPermanent,
-      phoneNumber: this.phoneNumber,
-      frequency: this.frequency,
-      duration: this.duration
-    );
+        publicKey: this.publicKey,
+        encryptionKey: this.encryptionKey,
+        currency: this.currency,
+        email: this.email,
+        fullName: this.fullName,
+        amount: this.amount,
+        txRef: this.txRef,
+        isDebugMode: this.isDebugMode,
+        narration: this.narration,
+        isPermanent: this.isPermanent,
+        phoneNumber: this.phoneNumber,
+        frequency: this.frequency,
+        duration: this.duration,
+        acceptAccountPayment: this.acceptAccountPayment,
+        acceptBankTransferPayment: this.acceptBankTransferPayment,
+        acceptCardPayment: this.acceptCardPayment,
+        acceptUSSDPayment: this.acceptUSSDPayment,
+        acceptUKAccountPayment: this.acceptUKAccountPayment,
+        acceptSouthAfricaBankPayment: this.acceptSouthAfricaBankPayment,
+        acceptRwandaMoneyPayment: this.acceptRwandaMoneyPayment,
+        acceptMpesaPayment: this.acceptMpesaPayment,
+        acceptZambiaPayment: this.acceptZambiaPayment,
+        acceptGhanaPayment: this.acceptGhanaPayment,
+        acceptUgandaPayment: this.acceptUgandaPayment,
+        acceptFancophoneMobileMoney: this.acceptFrancophoneMobileMoney,
+        acceptBarterPayment: this.acceptBarterPayment);
     return this._launchPaymentScreen(paymentManager);
   }
 

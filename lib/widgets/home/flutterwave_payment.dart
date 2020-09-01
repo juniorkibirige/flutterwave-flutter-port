@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
-import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
-import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
-import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
-import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
-import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:flutterwave/core/flutterwave_payment_manager.dart';
-import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
+import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
+import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
+import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
 import 'package:flutterwave/widgets/card_payment/card_payment.dart';
+import 'package:flutterwave/widgets/mobile_money/pay_with_mobile_money.dart';
+import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
 
 import 'flutterwave_payment_option.dart';
 
@@ -125,14 +123,64 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                         buttonText: "USSD",
                       ),
                     ),
+//                    SizedBox(
+//                      height: 0.5,
+//                    ),
+//                    SizedBox(
+//                      height: 50.0,
+//                      child: FlutterwavePaymentOption(
+//                        handleClick: () => {},
+//                        buttonText: "Barter",
+//                      ),
+//                    ),
                     SizedBox(
                       height: 0.5,
                     ),
                     SizedBox(
                       height: 50.0,
                       child: FlutterwavePaymentOption(
-                        handleClick: () => {},
-                        buttonText: "Barter",
+                        handleClick: this._launchMobileMoneyPaymentWidget,
+                        buttonText: "Rwanda Mobile Money",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.5,
+                    ),
+                    SizedBox(
+                      height: 50.0,
+                      child: FlutterwavePaymentOption(
+                        handleClick: this._launchMobileMoneyPaymentWidget,
+                        buttonText: "Ghana Mobile Money",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.5,
+                    ),
+                    SizedBox(
+                      height: 50.0,
+                      child: FlutterwavePaymentOption(
+                        handleClick: this._launchMobileMoneyPaymentWidget,
+                        buttonText: "Uganda Mobile Money",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.5,
+                    ),
+                    SizedBox(
+                      height: 50.0,
+                      child: FlutterwavePaymentOption(
+                        handleClick: this._launchMobileMoneyPaymentWidget,
+                        buttonText: "Zambia Mobile Money",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.5,
+                    ),
+                    SizedBox(
+                      height: 50.0,
+                      child: FlutterwavePaymentOption(
+                        handleClick: this._launchMobileMoneyPaymentWidget,
+                        buttonText: "Francophone Mobile Money",
                       ),
                     ),
                   ],
@@ -179,8 +227,17 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
         this.widget._flutterwavePaymentManager.getUSSDPaymentManager();
     Navigator.push(
       this.context,
+      MaterialPageRoute(builder: (context) => PayWithUssd(paymentManager)),
+    );
+  }
+
+  void _launchMobileMoneyPaymentWidget() async {
+    final MobileMoneyPaymentManager mobileMoneyPaymentManager =
+        this.widget._flutterwavePaymentManager.getMobileMoneyPaymentManager();
+    Navigator.push(
+      this.context,
       MaterialPageRoute(
-          builder: (context) => PayWithUssd(paymentManager)),
+          builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
     );
   }
 }

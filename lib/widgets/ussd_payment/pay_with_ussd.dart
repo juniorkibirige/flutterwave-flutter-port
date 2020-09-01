@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
 import 'package:flutterwave/models/bank_with_ussd.dart';
 import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
-import 'package:flutterwave/models/responses/charge_card_response.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd_button.dart';
 import 'package:flutterwave/widgets/ussd_payment/ussd_details.dart';

@@ -5,7 +5,7 @@ import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart'
 import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
 import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
-import 'package:flutterwave/models/responses/charge_card_response.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/widgets/card_payment/request_address.dart';
 
 import 'request_otp.dart';
@@ -246,19 +246,26 @@ class _CardPaymentState extends State<CardPayment>
   @override
   void onRedirect(ChargeResponse response, String url) async {
     this.closeDialog();
-    final flwRef = await await Navigator.of(this.context).push(
+    final result = await Navigator.of(this.context).push(
         MaterialPageRoute(
             builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
-    if (flwRef != null) {
-      this.showLoading("verifying payment...");
-      final response = await this
-          .widget
-          ._paymentManager
-          .verifyPayment(flwRef, http.Client());
-      this.closeDialog();
-      if (response.data.status == "successful") {
-        Navigator.pop(this.context, response);
+    if (result != null) {
+      if (result.runtimeType == " ".runtimeType) {
+        this.showLoading("verifying payment...");
+        final response = await this
+            .widget
+            ._paymentManager
+            .verifyPayment(result, http.Client());
+        this.closeDialog();
+        if (response.data.status == "successful") {
+          Navigator.pop(this.context, response);
+        }
+      } else {
+        this.closeDialog();
+        this.showSnackBar(result["message"]);
       }
+    } else {
+      this.showSnackBar("Transaction cancelled");
     }
   }
 

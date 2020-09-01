@@ -87,6 +87,9 @@ class _BankTransferState extends State<BankTransfer> {
           .payWithBankTransfer(request, client);
       if (FlutterwaveUtils.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
+      } else {
+        this.closeDialog();
+        this.showSnackBar(response.message);
       }
     } catch (error) {
       this.showSnackBar(error.toString());
