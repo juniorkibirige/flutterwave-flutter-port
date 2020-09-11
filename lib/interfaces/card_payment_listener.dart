@@ -10,4 +10,6 @@ abstract class CardPaymentListener {
   void onRedirect(ChargeResponse response, String url) {}
 
   void onError(String error) {}
+
+  void onComplete (ChargeResponse chargeResponse) {}
 }

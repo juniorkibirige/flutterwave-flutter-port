@@ -168,7 +168,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
   }
 
   void _verifyTransfer() async {
-    final timeoutInMinutes = 5;
+    final timeoutInMinutes = 2;
     final timeOutInSeconds = timeoutInMinutes * 60;
     final requestIntervalInSeconds = 15;
     final numberOfTries = timeOutInSeconds/requestIntervalInSeconds;
@@ -188,12 +188,14 @@ class _PayWithUssdState extends State<PayWithUssd> {
               this.widget._paymentManager.publicKey,
               this.widget._paymentManager.isDebugMode);
 
-          if (response.data.status == FlutterwaveUtils.SUCCESS &&
+          print("verify response in USSD is => ${response.toJson()}");
+
+          if (response.data.status == FlutterwaveUtils.SUCCESSFUL &&
               response.data.amount ==
                   this._chargeResponse.data.amount.toString()) {
             timer.cancel();
             this.closeDialog();
-            this.showSnackBar("Payment Completed");
+            this.onComplete(response);
           } else {
             this.showSnackBar(response.message);
           }
@@ -203,11 +205,14 @@ class _PayWithUssdState extends State<PayWithUssd> {
           this.showSnackBar(error.toString());
         } finally {
           intialCount = intialCount + 1;
-          this.closeDialog();
-          client.close();
         }
       });
     }
+  }
+
+  void onComplete(final ChargeResponse chargeResponse) {
+    this.showSnackBar("Payment Completed");
+    Navigator.pop(this.context, chargeResponse);
   }
 
   void _afterChargeInitiated(ChargeResponse response) {

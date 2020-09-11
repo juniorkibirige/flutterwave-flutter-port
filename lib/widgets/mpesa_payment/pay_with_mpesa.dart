@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/models/requests/mpesa/mpesa_request.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
@@ -31,7 +32,6 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     this._phoneNumberController.text =
         initialPhoneNumber != null ? initialPhoneNumber : "";
 
-    final String currency = this.widget._paymentManager.currency;
     return MaterialApp(
       home: Scaffold(
         key: this._scaffoldKey,
@@ -166,10 +166,12 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     try {
       final response = await mpesaPaymentManager.payWithMpesa(request, client);
       this.closeDialog();
+      print("Mpesa response is ==> ${response.toJson()}");
       if (FlutterwaveUtils.SUCCESS == response.status &&
           FlutterwaveUtils.CHARGE_INITIATED == response.message) {
         this._verifyPayment(response.data.flwRef);
       } else {
+        print("Mpesa initiate failed ${response.toJson()}");
         this.showSnackBar(response.message);
       }
     } catch (error) {
@@ -205,9 +207,9 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
             response.data.flwRef == flwRef &&
             response.data.currency == this.widget._paymentManager.currency) {
           timer.cancel();
-          this.closeDialog();
-          this.showSnackBar("Payment Completed");
+          this._onComplete(response);
         } else {
+          print("Mpesa verify failed ${response.toJson()}");
           this.showSnackBar(response.message);
         }
       } catch (error) {
@@ -216,9 +218,12 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
         this.showSnackBar(error.toString());
       } finally {
         intialCount = intialCount + 1;
-        this.closeDialog();
-        client.close();
       }
     });
+  }
+
+  void _onComplete(final ChargeResponse chargeResponse) {
+    this.closeDialog();
+    Navigator.pop(this.context, chargeResponse);
   }
 }

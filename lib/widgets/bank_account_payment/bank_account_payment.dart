@@ -223,18 +223,16 @@ class RequestBankAccountState extends State<RequestBankAccount> {
 
       this.closeDialog();
       if (response.data == null || response.status == FlutterwaveUtils.ERROR) {
-        print("data is null || status is error");
-        print("data is ${response.toJson()}");
         this.showSnackBar(response.message);
         return;
       }
-      print("Pay with account response in widget => ${response.toJson()}");
-
-      if (response.data.processorResponse == "Pending OTP validation" ||
+      if (response.data.processorResponse ==
+              FlutterwaveUtils.PENDING_OTP_VALIDATION ||
           (response.meta != null &&
               response.meta.authorization != null &&
               response.data.status == FlutterwaveUtils.PENDING)) {
-        if (response.data.processorResponse == "Pending OTP validation" ||
+        if (response.data.processorResponse ==
+                FlutterwaveUtils.PENDING_OTP_VALIDATION ||
             (response.meta.authorization.mode == Authorization.OTP)) {
           this._handleOtp(response);
         } else {
@@ -254,7 +252,6 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   }
 
   void _verifyPayment(ChargeResponse chargeResponse) async {
-    print("verifying Payment");
     this.showLoading("verifying payment...");
     final response = await FlutterwaveAPIUtils.verifyPayment(
         chargeResponse.data.flwRef,
@@ -265,25 +262,21 @@ class RequestBankAccountState extends State<RequestBankAccount> {
     this.closeDialog();
 
     if (response.status == FlutterwaveUtils.ERROR || response.data == null) {
-      print("verufy payment error");
       this.showSnackBar(response.message);
       return;
     }
     if (response.status == FlutterwaveUtils.SUCCESS &&
         response.data.amount == this.widget._paymentManager.amount &&
         response.data.txRef == this.widget._paymentManager.txRef) {
-      print("verufy payment success");
-      this.showSnackBar("Transaction complete!");
+      this._onPaymentComplete(response);
       return;
     }
     this.showSnackBar(response.message);
-    print("verufy payment error");
     return;
   }
 
   void _handleOtp(final ChargeResponse response) async {
     this.closeDialog();
-    print("requires OTP");
     String message;
     if (response.meta != null &&
         response.meta.authorization != null &&
@@ -302,8 +295,6 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   }
 
   void _validatePayment(final String otp, final String flwRef) async {
-    print("validating OTP");
-
     this.showLoading("validating otp...");
     final client = http.Client();
     final response = await FlutterwaveAPIUtils.validatePayment(
@@ -315,22 +306,19 @@ class RequestBankAccountState extends State<RequestBankAccount> {
     this.closeDialog();
     if (response.status == FlutterwaveUtils.SUCCESS &&
         response.message == FlutterwaveUtils.CHARGE_VALIDATED) {
-      print("validated successfully");
-
       this._verifyPayment(response);
     } else {
-      print("validation error ${response.toJson()}");
-
-//      this.showSnackBar(response.toJson().);
+      this.showSnackBar(response.message);
     }
   }
 
   void _showBottomSheet() {
     showModalBottomSheet(
-        context: this.context,
-        builder: (context) {
-          return this._banks();
-        });
+      context: this.context,
+      builder: (context) {
+        return this._banks();
+      },
+    );
   }
 
   void _handleBankTap(final GetBanksResponse selectedBank) {
@@ -385,5 +373,10 @@ class RequestBankAccountState extends State<RequestBankAccount> {
       Navigator.of(this._loadingDialogContext).pop();
       this._loadingDialogContext = null;
     }
+  }
+
+  void _onPaymentComplete(final ChargeResponse chargeResponse) {
+    this.showSnackBar("Transaction complete!");
+    Navigator.pop(this.context, chargeResponse);
   }
 }

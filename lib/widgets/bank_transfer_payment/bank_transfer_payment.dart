@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/models/requests/bank_transfer/bank_transfer_request.dart';
@@ -86,6 +90,7 @@ class _BankTransferState extends State<BankTransfer> {
           ._paymentManager
           .payWithBankTransfer(request, client);
       if (FlutterwaveUtils.SUCCESS == response.status) {
+        print("Trabsfer response is ${response.toJson()}");
         this._afterChargeInitiated(response);
       } else {
         this.closeDialog();
@@ -100,29 +105,63 @@ class _BankTransferState extends State<BankTransfer> {
 
   void _verifyTransfer() async {
     if (this._bankTransferResponse != null) {
-//      this.showLoading("verifying payment...");
-      final client = http.Client();
-      try {
-        final response = await this.widget._paymentManager.verifyPayment(
-            this._bankTransferResponse.meta.authorization.transferReference,
-            client);
-        if (response.data.status == FlutterwaveUtils.SUCCESS &&
-            response.data.amount ==
-                this._bankTransferResponse.meta.authorization.transferAmount
-                    .toString()) {
+      final timeoutInMinutes = 2;
+      final timeOutInSeconds = timeoutInMinutes * 60;
+      final requestIntervalInSeconds = 15;
+      final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
+      int intialCount = 0;
+
+      this.showLoading("verifying payment...");
+      Timer.periodic(Duration(seconds: requestIntervalInSeconds),
+          (timer) async {
+        final client = http.Client();
+        print("Initial count is is => $intialCount");
+        print("number of tries is => $numberOfTries");
+        if (intialCount >= numberOfTries) {
+          timer.cancel();
           this.closeDialog();
-          print("ref from transfer => ${this._bankTransferResponse.meta.authorization.transferReference}");
-          print("ref from Verification => ${response.data.flwRef}");
-          print("verification successfulin verify => ${response.toJson()}");
-          this.showSnackBar("Payment received");
-        } else {
-          this.showSnackBar(response.message);
-          print("response => ${response.toJson()}");
         }
-      } catch (error) {
-        this.closeDialog();
-        this.showSnackBar(error.toString());
-      }
+        try {
+//          final response = await this.widget._paymentManager.verifyPayment(
+//              this._bankTransferResponse.meta.authorization.transferReference,
+//              client);
+          final response = await FlutterwaveAPIUtils.verifyPayment(
+              this._bankTransferResponse.meta.authorization.transferReference,
+              client,
+              this.widget._paymentManager.publicKey,
+              this.widget._paymentManager.isDebugMode);
+          
+          print("tranfer ref is ${ this._bankTransferResponse.meta.authorization.transferReference}");
+          print("flw_ref is => ${response.data.flwRef}");
+
+          print("response status is => ${response.data.status}");
+
+          if (response.data.status == FlutterwaveUtils.SUCCESS &&
+              response.data.flwRef ==
+                  this
+                      ._bankTransferResponse
+                      .meta
+                      .authorization
+                      .transferReference
+                      .toString()) {
+            this.closeDialog();
+            this.showSnackBar("Payment received");
+            timer.cancel();
+            this.onPaymentComplete(response);
+          } else {
+            print("inside else, response is ${response.toJson()}");
+            this.showSnackBar(response.message);
+          }
+        } catch (error) {
+          timer.cancel();
+          this.closeDialog();
+          this.showSnackBar(error.toString());
+        } finally {
+          intialCount = intialCount + 1;
+        }
+      });
+    } else {
+      this.showSnackBar("An unexpected error ocurred.");
     }
   }
 
@@ -143,6 +182,11 @@ class _BankTransferState extends State<BankTransfer> {
     this._scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
+  void onPaymentComplete(final ChargeResponse chargeResponse) {
+    this.showSnackBar("Transaction completed.");
+    Navigator.pop(this.context, chargeResponse);
+  }
+
   Future<void> showLoading(String message) {
     return showDialog(
       context: this.context,
@@ -151,12 +195,10 @@ class _BankTransferState extends State<BankTransfer> {
         this.loadingDialogContext = context;
         return AlertDialog(
           content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CircularProgressIndicator(
                 backgroundColor: Colors.orangeAccent,
-              ),
-              SizedBox(
-                width: 40,
               ),
               Text(
                 message,

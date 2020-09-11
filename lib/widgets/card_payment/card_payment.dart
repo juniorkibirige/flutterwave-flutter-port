@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/interfaces/card_payment_listener.dart';
+import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
@@ -23,16 +25,16 @@ class CardPayment extends StatefulWidget {
 class _CardPaymentState extends State<CardPayment>
     implements CardPaymentListener {
   final _cardFormKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BuildContext loadingDialogContext;
 
   final TextEditingController _cardNumberFieldController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _cardMonthFieldController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _cardYearFieldController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _cardCvvFieldController = TextEditingController();
 
   @override
@@ -90,7 +92,10 @@ class _CardPaymentState extends State<CardPayment>
                 Row(
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width / 5,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 5,
                       margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
@@ -109,7 +114,10 @@ class _CardPaymentState extends State<CardPayment>
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width / 5,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 5,
                       margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
@@ -128,7 +136,10 @@ class _CardPaymentState extends State<CardPayment>
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width / 5,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 5,
                       margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                       child: TextFormField(
                         decoration: InputDecoration(
@@ -144,7 +155,10 @@ class _CardPaymentState extends State<CardPayment>
                           fontSize: 20.0,
                         ),
                         controller: this._cardCvvFieldController,
-                        validator: this._validateCardField,
+                        validator: (value) =>
+                        value.isEmpty
+                            ? "cvv is required"
+                            : null,
                       ),
                     ),
                   ],
@@ -187,15 +201,15 @@ class _CardPaymentState extends State<CardPayment>
     Navigator.of(this.context).pop();
     this.showLoading("initiating payment...");
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
-        cardNumber: this._cardNumberFieldController.value.text,
-        cvv: this._cardCvvFieldController.value.text,
-        expiryMonth: this._cardMonthFieldController.value.text,
-        expiryYear: this._cardYearFieldController.value.text,
-        currency: this.widget._paymentManager.currency,
-        amount: this.widget._paymentManager.amount,
-        email: this.widget._paymentManager.email,
-        fullName: this.widget._paymentManager.fullName,
-        txRef: this.widget._paymentManager.txRef);
+        cardNumber: this._cardNumberFieldController.value.text.trim(),
+        cvv: this._cardCvvFieldController.value.text.trim(),
+        expiryMonth: this._cardMonthFieldController.value.text.trim(),
+        expiryYear: this._cardYearFieldController.value.text.trim(),
+        currency: this.widget._paymentManager.currency.trim(),
+        amount: this.widget._paymentManager.amount.trim(),
+        email: this.widget._paymentManager.email.trim(),
+        fullName: this.widget._paymentManager.fullName.trim(),
+        txRef: this.widget._paymentManager.txRef.trim());
     final client = http.Client();
     this
         .widget
@@ -206,37 +220,50 @@ class _CardPaymentState extends State<CardPayment>
 
   Future<void> showConfirmPaymentModal() async {
     return showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (BuildContext buildContext) {
-          return AlertDialog(
-            content: Text(
-              "You will be charged a total of ${this.widget._paymentManager.amount} NGN. Do you wish to continue? ",
+      context: this.context,
+      barrierDismissible: false,
+      builder: (BuildContext buildContext) {
+        return AlertDialog(
+          content: Container(
+            margin: EdgeInsets.fromLTRB(20, 30, 20, 20),
+            child: Text(
+              "You will be charged a total of ${this.widget._paymentManager
+                  .currency}"
+                  "${this.widget._paymentManager
+                  .amount}. Do you wish to continue? ",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            actions: [
-              FlatButton(
-                onPressed: this._makeCardPayment,
-                child: Text(
-                  "CONTINUE",
-                  style: TextStyle(fontSize: 16, letterSpacing: 1),
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                letterSpacing: 1.2,
               ),
-              FlatButton(
-                onPressed: () => {Navigator.of(this.context).pop()},
-                child: Text(
-                  "CANCEL",
-                  style: TextStyle(fontSize: 16, letterSpacing: 1),
-                ),
-              )
-            ],
-          );
-        });
+            ),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: this._makeCardPayment,
+              child: Text(
+                "CONTINUE",
+                style: TextStyle(fontSize: 16, letterSpacing: 1),
+              ),
+            ),
+            FlatButton(
+              onPressed: () => {Navigator.of(this.context).pop()},
+              child: Text(
+                "CANCEL",
+                style: TextStyle(fontSize: 16, letterSpacing: 1),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   String _validateCardField(String value) {
-    return value.trim().isEmpty ? "Please fill this" : null;
+    return value
+        .trim()
+        .isEmpty ? "Please fill this" : null;
   }
 
   void _hideKeyboard() {
@@ -244,21 +271,23 @@ class _CardPaymentState extends State<CardPayment>
   }
 
   @override
-  void onRedirect(ChargeResponse response, String url) async {
+  void onRedirect(ChargeResponse chargeResponse, String url) async {
     this.closeDialog();
-    final result = await Navigator.of(this.context).push(
-        MaterialPageRoute(
-            builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
+    final result = await Navigator.of(this.context).push(MaterialPageRoute(
+        builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
     if (result != null) {
       if (result.runtimeType == " ".runtimeType) {
+        final flwRef = result;
         this.showLoading("verifying payment...");
-        final response = await this
-            .widget
-            ._paymentManager
-            .verifyPayment(result, http.Client());
+        final response = await FlutterwaveAPIUtils.verifyPayment(
+            flwRef,
+            http.Client(),
+            this.widget._paymentManager.publicKey,
+            this.widget._paymentManager.isDebugMode);
         this.closeDialog();
-        if (response.data.status == "successful") {
-          Navigator.pop(this.context, response);
+        if (response.data.status == FlutterwaveUtils.SUCCESSFUL) {
+//          Navigator.pop(this.context, response);
+          this.onComplete(response);
         }
       } else {
         this.closeDialog();
@@ -298,15 +327,33 @@ class _CardPaymentState extends State<CardPayment>
     final otp = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestOTP(message)));
     if (otp == null) return;
-    final client = http.Client();
     this.showLoading("verifying payment...");
-    final ChargeResponse chargeCardResponse = await this
-        .widget
-        ._paymentManager
-        .validatePayment(otp, response.data.flwRef, client);
+    final ChargeResponse chargeResponse =
+    await this.widget._paymentManager.addOTP(otp, response.data.flwRef);
     this.closeDialog();
-    if (response.data.status == "successful") {
-      Navigator.pop(this.context, chargeCardResponse);
+    if (chargeResponse.message == FlutterwaveUtils.CHARGE_VALIDATED) {
+      this.showLoading("verifying transaction...");
+      this._handleTransactionVerification(chargeResponse);
+    } else {
+      this.closeDialog();
+      this.showSnackBar(chargeResponse.message);
+    }
+  }
+
+  void _handleTransactionVerification(
+      final ChargeResponse chargeResponse) async {
+    final verifyResponse = await FlutterwaveAPIUtils.verifyPayment(
+        chargeResponse.data.flwRef, http.Client(),
+        this.widget._paymentManager.publicKey,
+        this.widget._paymentManager.isDebugMode);
+    this.closeDialog();
+
+    if (verifyResponse.status == FlutterwaveUtils.SUCCESS &&
+        verifyResponse.data.txRef == this.widget._paymentManager.txRef &&
+        verifyResponse.data.amount == this.widget._paymentManager.amount) {
+      this.onComplete(verifyResponse);
+    } else {
+      this.showSnackBar(verifyResponse.message);
     }
   }
 
@@ -314,6 +361,11 @@ class _CardPaymentState extends State<CardPayment>
   void onError(String error) {
     this.closeDialog();
     this.showSnackBar(error);
+  }
+
+  @override
+  void onComplete(ChargeResponse chargeResponse) {
+    Navigator.pop(this.context, chargeResponse);
   }
 
   void showSnackBar(String message) {
@@ -334,12 +386,10 @@ class _CardPaymentState extends State<CardPayment>
         this.loadingDialogContext = context;
         return AlertDialog(
           content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CircularProgressIndicator(
                 backgroundColor: Colors.orangeAccent,
-              ),
-              SizedBox(
-                width: 40,
               ),
               Text(
                 message,

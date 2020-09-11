@@ -108,7 +108,7 @@ class _RequestAddressState extends State<RequestAddress> {
                     ),
                     Container(
                       width: double.infinity,
-                      height: 40,
+                      height: 50,
                       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: RaisedButton(
                         onPressed: this._onAddressFilled,
