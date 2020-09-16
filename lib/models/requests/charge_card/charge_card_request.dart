@@ -13,6 +13,7 @@ class ChargeCardRequest {
   String fullName;
   String txRef;
   String redirectUrl;
+  String country;
   Authorization authorization;
 
   ChargeCardRequest({
@@ -25,6 +26,7 @@ class ChargeCardRequest {
     @required this.email,
     @required this.fullName,
     @required this.txRef,
+    this.country,
     this.redirectUrl = FlutterwaveUtils.DEFAULT_REDIRECT_URL,
     this.authorization
   });
@@ -39,6 +41,7 @@ class ChargeCardRequest {
       "amount": this.amount,
       "email": this.email,
       "fullname": this.fullName,
+      "country": this.country,
       "tx_ref": this.txRef,
       "redirect_url": this.redirectUrl,
       "authorization": this.authorization == null

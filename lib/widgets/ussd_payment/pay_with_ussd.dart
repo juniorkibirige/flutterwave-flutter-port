@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
 import 'package:flutterwave/models/bank_with_ussd.dart';
@@ -136,34 +137,42 @@ class _PayWithUssdState extends State<PayWithUssd> {
 
   void _initiateUSSDPayment() async {
     if (this.selectedBank != null) {
-      this.showLoading("initiating payment...");
-      final USSDPaymentManager ussdPaymentManager = this.widget._paymentManager;
-      final request = USSDRequest(
-          amount: ussdPaymentManager.amount,
-          currency: ussdPaymentManager.currency,
-          email: ussdPaymentManager.email,
-          txRef: ussdPaymentManager.txRef,
-          fullName: ussdPaymentManager.fullName,
-          accountBank: this.selectedBank.bankCode,
-          phoneNumber: ussdPaymentManager.phoneNumber);
-
-      try {
-        final ChargeResponse response = await this
-            .widget
-            ._paymentManager
-            .payWithUSSD(request, http.Client());
-        if (FlutterwaveUtils.SUCCESS == response.status) {
-          this._afterChargeInitiated(response);
-        } else {
-          this.showSnackBar(response.message);
-        }
-      } catch (error) {
-        this.showSnackBar(error.toString());
-      } finally {
-        this.closeDialog();
-      }
+      // Navigator.pop(this.context);
+      final USSDPaymentManager pm = this.widget._paymentManager;
+     FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._payWithUSSD);
     } else {
       this.showSnackBar("Please select a bank");
+    }
+  }
+
+  void _payWithUSSD() async {
+    Navigator.pop(this.context);
+
+    this.showLoading("initiating payment...");
+    final USSDPaymentManager ussdPaymentManager = this.widget._paymentManager;
+    final request = USSDRequest(
+        amount: ussdPaymentManager.amount,
+        currency: ussdPaymentManager.currency,
+        email: ussdPaymentManager.email,
+        txRef: ussdPaymentManager.txRef,
+        fullName: ussdPaymentManager.fullName,
+        accountBank: this.selectedBank.bankCode,
+        phoneNumber: ussdPaymentManager.phoneNumber);
+
+    try {
+      final ChargeResponse response = await this
+          .widget
+          ._paymentManager
+          .payWithUSSD(request, http.Client());
+      if (FlutterwaveUtils.SUCCESS == response.status) {
+        this._afterChargeInitiated(response);
+      } else {
+        this.showSnackBar(response.message);
+      }
+    } catch (error) {
+      this.showSnackBar(error.toString());
+    } finally {
+      this.closeDialog();
     }
   }
 
@@ -177,12 +186,15 @@ class _PayWithUssdState extends State<PayWithUssd> {
     if (this._chargeResponse != null) {
       this.showLoading("verifying payment...");
       final client = http.Client();
+      ChargeResponse response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
         try {
-          if (intialCount == numberOfTries) {
+          if ((intialCount >= numberOfTries) && response != null) {
             timer.cancel();
+            this.closeDialog();
+            this.onComplete(response);
           }
-          final response = await FlutterwaveAPIUtils.verifyPayment(
+          response = await FlutterwaveAPIUtils.verifyPayment(
               this._chargeResponse.data.flwRef,
               client,
               this.widget._paymentManager.publicKey,
@@ -191,6 +203,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
           print("verify response in USSD is => ${response.toJson()}");
 
           if (response.data.status == FlutterwaveUtils.SUCCESSFUL &&
+              this._chargeResponse.data.flwRef == response.data.flwRef &&
               response.data.amount ==
                   this._chargeResponse.data.amount.toString()) {
             timer.cancel();

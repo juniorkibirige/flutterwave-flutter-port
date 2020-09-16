@@ -2,26 +2,27 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/models/requests/mpesa/mpesa_request.dart';
+import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
+import 'package:flutterwave/models/requests/voucher/voucher_payment_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class PayWithMpesa extends StatefulWidget {
-  final MpesaPaymentManager _paymentManager;
+import 'package:http/http.dart' as http;
 
-  PayWithMpesa(this._paymentManager);
+class PayWithVoucher extends StatefulWidget {
+  final VoucherPaymentManager _paymentManager;
+
+  PayWithVoucher(this._paymentManager);
 
   @override
-  _PayWithMpesaState createState() => _PayWithMpesaState();
+  _PayWithVoucherState createState() => _PayWithVoucherState();
 }
 
-class _PayWithMpesaState extends State<PayWithMpesa> {
+class _PayWithVoucherState extends State<PayWithVoucher> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController networkController = TextEditingController();
+  final TextEditingController _voucherPinController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -31,7 +32,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   Widget build(BuildContext context) {
     final String initialPhoneNumber = this.widget._paymentManager.phoneNumber;
     this._phoneNumberController.text =
-        initialPhoneNumber != null ? initialPhoneNumber : "";
+    initialPhoneNumber != null ? initialPhoneNumber : "";
 
     return MaterialApp(
       home: Scaffold(
@@ -45,7 +46,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
               style: TextStyle(fontSize: 20, color: Colors.black),
               children: [
                 TextSpan(
-                  text: "Mpesa",
+                  text: "Voucher",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -71,7 +72,19 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
                     ),
                     controller: this._phoneNumberController,
                     validator: (value) =>
-                        value.isEmpty ? "Phone number is required" : null,
+                    value.isEmpty ? "phone number is required" : null,
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "Voucher Pin",
+                      hintText: "Voucher Pin",
+                    ),
+                    controller: this._voucherPinController,
+                    validator: (value) =>
+                    value.isEmpty ? "voucher pin is required" : null,
                   ),
                   Container(
                     width: double.infinity,
@@ -81,7 +94,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
                       onPressed: this._onPayPressed,
                       color: Colors.orange,
                       child: Text(
-                        "Pay with Mpesa",
+                        "Pay with Voucher",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
@@ -94,14 +107,6 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
         ),
       ),
     );
-  }
-
-  void _onPayPressed() {
-    if (this._formKey.currentState.validate()) {
-      this._removeFocusFromView();
-      final MpesaPaymentManager pm = this.widget._paymentManager;
-      FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._handlePayment);
-    }
   }
 
   Future<void> showLoading(String message) {
@@ -152,70 +157,78 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     this._scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  void _handlePayment() async {
+  void _onPayPressed() {
+    if (this._formKey.currentState.validate()) {
+      final VoucherPaymentManager paymentManager = this.widget._paymentManager;
+      FlutterwaveViewUtils.showConfirmPaymentModal(
+          this.context, paymentManager.currency, paymentManager.amount,
+          this._initiatePayment);
+
+      print("Should have called pay pressed");
+      // this._initiatePayment();
+    }
+  }
+
+  void _initiatePayment() async {
     Navigator.pop(this.context);
-
     this.showLoading("initiating payment...");
-    final MpesaPaymentManager mpesaPaymentManager = this.widget._paymentManager;
 
-    final MpesaRequest request = MpesaRequest(
-        amount: mpesaPaymentManager.amount,
-        currency: mpesaPaymentManager.currency,
-        txRef: mpesaPaymentManager.txRef,
-        fullName: mpesaPaymentManager.fullName,
-        email: mpesaPaymentManager.email,
-        phoneNumber: this._phoneNumberController.text);
-
-    final http.Client client = http.Client();
+    final VoucherPaymentManager paymentManager = this.widget._paymentManager;
+    final VoucherPaymentRequest request = VoucherPaymentRequest(
+        amount: paymentManager.amount,
+        currency: paymentManager.currency,
+        email: paymentManager.email,
+        txRef: paymentManager.txRef,
+        fullName: paymentManager.fullName,
+        phoneNumber: paymentManager.phoneNumber,
+        pin: this._voucherPinController.text.toString());
     try {
-      final response = await mpesaPaymentManager.payWithMpesa(request, client);
+      print("Voucher request is ${request.toJson()}");
+      final http.Client client = http.Client();
+      final response = await paymentManager.payWithVoucher(request, client);
+      print("voucher response is ${response.toJson()}");
       this.closeDialog();
-      print("Mpesa response is ==> ${response.toJson()}");
+      
       if (FlutterwaveUtils.SUCCESS == response.status &&
           FlutterwaveUtils.CHARGE_INITIATED == response.message) {
         this._verifyPayment(response.data.flwRef);
       } else {
-        print("Mpesa initiate failed ${response.toJson()}");
         this.showSnackBar(response.message);
       }
     } catch (error) {
       this.closeDialog();
-      this.showSnackBar(error.toString());
+      print("voucher error is ${error.toString()}");
     }
   }
 
   void _verifyPayment(final String flwRef) async {
-    final timeoutInMinutes = 5;
+    final timeoutInMinutes = 2;
     final timeOutInSeconds = timeoutInMinutes * 60;
     final requestIntervalInSeconds = 15;
     final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 
     this.showLoading("verifying payment...");
-    final client = http.Client();
     Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
+      if (intialCount == numberOfTries) {
+        timer.cancel();
+      }
+      final client = http.Client();
       try {
-        if (intialCount == numberOfTries) {
-          timer.cancel();
-        }
         final response = await FlutterwaveAPIUtils.verifyPayment(
             flwRef,
             client,
             this.widget._paymentManager.publicKey,
             this.widget._paymentManager.isDebugMode);
-
-        if ((response.data.status == FlutterwaveUtils.SUCCESS ||
-                response.data.status == FlutterwaveUtils.SUCCESSFUL) &&
-            response.data.amount ==
-                this.widget._paymentManager.amount.toString() &&
-            response.data.flwRef == flwRef &&
-            response.data.currency == this.widget._paymentManager.currency) {
+        if ((response.data.status == FlutterwaveUtils.SUCCESSFUL ||
+            response.data.status == FlutterwaveUtils.SUCCESS) &&
+            response.data.amount == this.widget._paymentManager.amount &&
+            response.data.flwRef == flwRef) {
           timer.cancel();
-          this._onComplete(response);
         } else {
-          print("Mpesa verify failed ${response.toJson()}");
           this.showSnackBar(response.message);
         }
+        this._onComplete(response);
       } catch (error) {
         timer.cancel();
         this.closeDialog();

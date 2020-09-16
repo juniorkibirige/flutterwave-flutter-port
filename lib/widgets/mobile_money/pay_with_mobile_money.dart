@@ -1,6 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/models/francophone_country.dart';
+import 'package:flutterwave/models/requests/authorization.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
+import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
 import 'package:flutterwave/models/requests/mobile_money/mobile_money_request.dart';
@@ -18,19 +24,23 @@ class PayWithMobileMoney extends StatefulWidget {
 
 class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController networkController = TextEditingController();
+  final TextEditingController _networkController = TextEditingController();
+  final TextEditingController _francophoneCountryCotroller =
+      TextEditingController();
+  final TextEditingController _voucherController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   BuildContext loadingDialogContext;
-
   String selectedNetwork;
+  FrancoPhoneCountry selectedFrancophoneCountry;
 
   @override
   Widget build(BuildContext context) {
     final String initialPhoneNumber = this.widget._paymentManager.phoneNumber;
     this._phoneNumberController.text =
-    initialPhoneNumber != null ? initialPhoneNumber : "";
+        initialPhoneNumber != null ? initialPhoneNumber : "";
 
     final String currency = this.widget._paymentManager.currency;
     return MaterialApp(
@@ -58,7 +68,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
         body: Padding(
           padding: EdgeInsets.all(10),
           child: Container(
-            margin: EdgeInsets.fromLTRB(20, 35, 20, 20),
+            margin: EdgeInsets.fromLTRB(20, 35, 20, 0),
             width: double.infinity,
             child: Form(
               key: this._formKey,
@@ -71,23 +81,53 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
                     ),
                     controller: this._phoneNumberController,
                     validator: (value) =>
-                    value.isEmpty ? "Phone number is required" : null,
+                        value.isEmpty ? "Phone number is required" : null,
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    width: double.infinity,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Voucher",
+                        hintText: "voucher",
+                      ),
+                      controller: this._voucherController,
+                    ),
+                  ),
+                  Visibility(
+                    visible: currency.toUpperCase() == FlutterwaveUtils.XAF ||
+                        currency.toUpperCase() == FlutterwaveUtils.XOF,
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      width: double.infinity,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "Country",
+                          hintText: "Country",
+                        ),
+                        controller: this._francophoneCountryCotroller,
+                        readOnly: true,
+                        onTap: this._showFrancophoneBottomSheet,
+                        validator: (value) =>
+                            value.isEmpty ? "country is required" : null,
+                      ),
+                    ),
                   ),
                   Visibility(
                     visible: currency.toUpperCase() == FlutterwaveUtils.GHS,
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                       width: double.infinity,
                       child: TextFormField(
                         decoration: InputDecoration(
                           labelText: "Network",
                           hintText: "Network",
                         ),
-                        controller: this.networkController,
+                        controller: this._networkController,
                         readOnly: true,
-                        onTap: this._showBottomSheet,
+                        onTap: this._showNetworksBottomSheet,
                         validator: (value) =>
-                        value.isEmpty ? "Network is required" : null,
+                            value.isEmpty ? "Network is required" : null,
                       ),
                     ),
                   ),
@@ -116,7 +156,10 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
 
   void _onPayPressed() {
     if (this._formKey.currentState.validate()) {
-      this._handlePayment();
+      final MobileMoneyPaymentManager pm =
+          this.widget._paymentManager;
+      FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._handlePayment);
+      // this._handlePayment();
     }
   }
 
@@ -154,12 +197,18 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     }
   }
 
-  void _showBottomSheet() {
+  void _showBottomSheet(final Widget widget) {
     showModalBottomSheet(
         context: this.context,
-        builder: (context) {
-          return this._getNetworksThatAllowMobileMoney();
-        });
+        builder: (context) => widget);
+  }
+
+  void _showFrancophoneBottomSheet() {
+    this._showBottomSheet(this._getFrancoPhoneCountries());
+  }
+
+  void _showNetworksBottomSheet() {
+    this._showBottomSheet(this._getNetworksThatAllowMobileMoney());
   }
 
   Widget _getNetworksThatAllowMobileMoney() {
@@ -171,21 +220,49 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
       color: Colors.white,
       child: ListView(
         children: networks
-            .map((network) =>
-            ListTile(
-              onTap: () => {this._handleNetworkTap(network)},
-              title: Column(
-                children: [
-                  Text(
-                    network,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(color: Colors.black),
+            .map((network) => ListTile(
+                  onTap: () => {this._handleNetworkTap(network)},
+                  title: Column(
+                    children: [
+                      Text(
+                        network,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      SizedBox(height: 4),
+                      Divider(height: 1)
+                    ],
                   ),
-                  SizedBox(height: 4),
-                  Divider(height: 1)
-                ],
-              ),
-            ))
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _getFrancoPhoneCountries() {
+    final francoPhoneCountries = FlutterwaveUtils.getFrancoPhoneCountries(
+        this.widget._paymentManager.currency);
+    return Container(
+      height: 220,
+      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      color: Colors.white,
+      child: ListView(
+        children: francoPhoneCountries
+            .map((country) => ListTile(
+                  onTap: () =>
+                      {this._handleFrancophoneCountrySelected(country)},
+                  title: Column(
+                    children: [
+                      Text(
+                        country.name,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      SizedBox(height: 4),
+                      Divider(height: 1)
+                    ],
+                  ),
+                ))
             .toList(),
       ),
     );
@@ -195,7 +272,16 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     this._removeFocusFromView();
     this.setState(() {
       this.selectedNetwork = selectedNetwork;
-      this.networkController.text = selectedNetwork;
+      this._networkController.text = selectedNetwork;
+    });
+    Navigator.pop(this.context);
+  }
+
+  _handleFrancophoneCountrySelected(final FrancoPhoneCountry country) {
+    this._removeFocusFromView();
+    this.setState(() {
+      this.selectedFrancophoneCountry = country;
+      this._francophoneCountryCotroller.text = country.name;
     });
     Navigator.pop(this.context);
   }
@@ -233,28 +319,43 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   }
 
   void _handlePayment() async {
-
+    Navigator.pop(this.context);
+    
     this.showLoading("initiating payment...");
 
     final MobileMoneyPaymentManager mobileMoneyPaymentManager =
         this.widget._paymentManager;
     final MobileMoneyRequest request = MobileMoneyRequest(
-        amount: mobileMoneyPaymentManager.amount,
-        currency: mobileMoneyPaymentManager.currency,
-        network: this.selectedNetwork,
-        txRef: mobileMoneyPaymentManager.txRef,
-        fullName: mobileMoneyPaymentManager.fullName,
-        email: mobileMoneyPaymentManager.email,
-        phoneNumber: this._phoneNumberController.text);
+      amount: mobileMoneyPaymentManager.amount,
+      currency: mobileMoneyPaymentManager.currency,
+      network: this.selectedNetwork == null ? "" : this.selectedNetwork,
+      txRef: mobileMoneyPaymentManager.txRef,
+      fullName: mobileMoneyPaymentManager.fullName,
+      email: mobileMoneyPaymentManager.email,
+      phoneNumber: this._phoneNumberController.text,
+      voucher: this._voucherController.text,
+      country: this.selectedFrancophoneCountry == null
+          ? ""
+          : this.selectedFrancophoneCountry.countryCode,
+    );
 
     final http.Client client = http.Client();
     try {
       final response =
-      await mobileMoneyPaymentManager.payWithMobileMoney(request, client);
+          await mobileMoneyPaymentManager.payWithMobileMoney(request, client);
       this.closeDialog();
       if (FlutterwaveUtils.SUCCESS == response.status &&
           FlutterwaveUtils.CHARGE_INITIATED == response.message) {
-        this.openOtpScreen(response.meta.authorization.redirect);
+        if (response.meta.authorization.mode == Authorization.REDIRECT &&
+            response.meta.authorization.redirect != null) {
+          this.openOtpScreen(response.meta.authorization.redirect);
+          return;
+        }
+        if (response.meta.authorization.mode == Authorization.CALLBACK) {
+          this._verifyPayment(response.data.flwRef);
+          return;
+        }
+        this.showSnackBar(response.message);
       } else {
         this.showSnackBar(response.message);
       }
@@ -265,10 +366,6 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   }
 
   Future<dynamic> openOtpScreen(String url) async {
-    if (url == null) {
-      this.showSnackBar("Unable to complete transaction. Please try again later.");
-      return;
-    }
     final result = await Navigator.push(
       this.context,
       MaterialPageRoute(
@@ -286,24 +383,45 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   }
 
   void _verifyPayment(final String flwRef) async {
+    final timeoutInMinutes = 2;
+    final timeOutInSeconds = timeoutInMinutes * 60;
+    final requestIntervalInSeconds = 15;
+    final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
+    int intialCount = 0;
+
     this.showLoading("verifying payment...");
-    final client = http.Client();
-    try {
-      final response = await FlutterwaveAPIUtils.verifyPayment(
-          flwRef, client, this.widget._paymentManager.publicKey,
-          this.widget._paymentManager.isDebugMode);
-      this.closeDialog();
-      if (response.data.status == FlutterwaveUtils.SUCCESSFUL &&
-          response.data.amount == this.widget._paymentManager.amount &&
-          response.data.flwRef == flwRef) {
-        this.showSnackBar("Payment complete.");
-        Navigator.of(this.context).pop(response);
-      } else {
-        this.closeDialog();
-        this.showSnackBar(response.message);
+    Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
+      if (intialCount == numberOfTries) {
+        timer.cancel();
       }
-    } catch (error) {
-      this.showSnackBar(error.toString());
-    }
+      final client = http.Client();
+      try {
+        final response = await FlutterwaveAPIUtils.verifyPayment(
+            flwRef,
+            client,
+            this.widget._paymentManager.publicKey,
+            this.widget._paymentManager.isDebugMode);
+        if ((response.data.status == FlutterwaveUtils.SUCCESSFUL ||
+                response.data.status == FlutterwaveUtils.SUCCESS) &&
+            response.data.amount == this.widget._paymentManager.amount &&
+            response.data.flwRef == flwRef) {
+          timer.cancel();
+        } else {
+          this.showSnackBar(response.message);
+        }
+        this._onComplete(response);
+      } catch (error) {
+        timer.cancel();
+        this.closeDialog();
+        this.showSnackBar(error.toString());
+      } finally {
+        intialCount = intialCount + 1;
+      }
+    });
+  }
+
+  void _onComplete(final ChargeResponse chargeResponse) {
+    this.closeDialog();
+    Navigator.pop(this.context, chargeResponse);
   }
 }

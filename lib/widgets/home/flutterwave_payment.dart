@@ -6,6 +6,7 @@ import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart'
 import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
 import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
 import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
 import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
@@ -13,6 +14,7 @@ import 'package:flutterwave/widgets/card_payment/card_payment.dart';
 import 'package:flutterwave/widgets/mobile_money/pay_with_mobile_money.dart';
 import 'package:flutterwave/widgets/mpesa_payment/pay_with_mpesa.dart';
 import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
+import 'package:flutterwave/widgets/voucher_payment/pay_with_voucher.dart';
 
 import 'flutterwave_payment_option.dart';
 
@@ -30,8 +32,10 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
 
   @override
   Widget build(BuildContext context) {
+
     final FlutterwavePaymentManager paymentManager =
         this.widget._flutterwavePaymentManager;
+
     return MaterialApp(
       home: Scaffold(
         key: this._scaffoldKey,
@@ -140,24 +144,24 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                         ],
                       ),
                     ),
-                    Visibility(
-                      visible: paymentManager.acceptBankTransferPayment,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 50.0,
-                            child: FlutterwavePaymentOption(
-                              handleClick:
-                                  this._launchBankTransferPaymentWidget,
-                              buttonText: "Bank Transfer",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 0.5,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Visibility(
+                    //   visible: paymentManager.acceptBankTransferPayment,
+                    //   child: Column(
+                    //     children: [
+                    //       SizedBox(
+                    //         height: 50.0,
+                    //         child: FlutterwavePaymentOption(
+                    //           handleClick:
+                    //               this._launchBankTransferPaymentWidget,
+                    //           buttonText: "Bank Transfer",
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 0.5,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Visibility(
                       visible: paymentManager.acceptUSSDPayment,
                       child: Column(
@@ -267,6 +271,23 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                             child: FlutterwavePaymentOption(
                               handleClick: () => {},
                               buttonText: "Barter",
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.5,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: paymentManager.acceptVoucherPayment,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 50.0,
+                            child: FlutterwavePaymentOption(
+                              handleClick: this._launchVoucherPaymentWidget,
+                              buttonText: "Voucher",
                             ),
                           ),
                           SizedBox(
@@ -386,6 +407,17 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
       this.context,
       MaterialPageRoute(
           builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
+    );
+    Navigator.pop(this.context, response);
+  }
+
+  void _launchVoucherPaymentWidget() async {
+    final VoucherPaymentManager voucherPaymentManager =
+    this.widget._flutterwavePaymentManager.getVoucherPaymentManager();
+    final response = await Navigator.push(
+      this.context,
+      MaterialPageRoute(
+          builder: (context) => PayWithVoucher(voucherPaymentManager)),
     );
     Navigator.pop(this.context, response);
   }

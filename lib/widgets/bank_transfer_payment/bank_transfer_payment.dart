@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/models/requests/bank_transfer/bank_transfer_request.dart';
@@ -67,10 +68,17 @@ class _BankTransferState extends State<BankTransfer> {
   Widget _getHomeView() {
     return this.hasInitiatedPay
         ? AccountDetails(this._bankTransferResponse, this._verifyTransfer)
-        : PayWithTransferButton(this._initiateBankTransfer);
+        : PayWithTransferButton(this._onPayClicked);
+  }
+  
+  void _onPayClicked() {
+    final BankTransferPaymentManager pm = this.widget._paymentManager;
+    FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._initiateBankTransfer);
   }
 
   void _initiateBankTransfer() async {
+    Navigator.pop(this.context);
+    
     this.showLoading("initiating payment...");
     final http.Client client = http.Client();
     final BankTransferRequest request = BankTransferRequest(
@@ -90,7 +98,7 @@ class _BankTransferState extends State<BankTransfer> {
           ._paymentManager
           .payWithBankTransfer(request, client);
       if (FlutterwaveUtils.SUCCESS == response.status) {
-        print("Trabsfer response is ${response.toJson()}");
+        print("Transfer response is ${response.toJson()}");
         this._afterChargeInitiated(response);
       } else {
         this.closeDialog();
@@ -112,20 +120,19 @@ class _BankTransferState extends State<BankTransfer> {
       int intialCount = 0;
 
       this.showLoading("verifying payment...");
+      ChargeResponse response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds),
           (timer) async {
         final client = http.Client();
         print("Initial count is is => $intialCount");
         print("number of tries is => $numberOfTries");
-        if (intialCount >= numberOfTries) {
+        if ((intialCount >= numberOfTries) && response != null) {
           timer.cancel();
           this.closeDialog();
+          this.onPaymentComplete(response);
         }
         try {
-//          final response = await this.widget._paymentManager.verifyPayment(
-//              this._bankTransferResponse.meta.authorization.transferReference,
-//              client);
-          final response = await FlutterwaveAPIUtils.verifyPayment(
+          response = await FlutterwaveAPIUtils.verifyPayment(
               this._bankTransferResponse.meta.authorization.transferReference,
               client,
               this.widget._paymentManager.publicKey,

@@ -24,8 +24,7 @@ class FlutterwaveAPIUtils {
 
         return banks;
       } else {
-        throw (FlutterWaveError(
-            "Unable to fetch banks. Please contact support"));
+        throw (FlutterWaveError("Unable to fetch banks. Please contact support"));
       }
     } catch (error) {
       throw (FlutterWaveError(error.toString()));

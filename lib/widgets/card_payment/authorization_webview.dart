@@ -30,14 +30,10 @@ class _AuthorizationWebviewState extends State<AuthorizationWebview> {
   }
 
   void _pageStarted(String url) {
-//    if (url != this.widget._url) {
-//      this._onValidationSuccessful(url);
-//    }
-
   final bool startsWithMyRedirectUrl = url.toString().indexOf(FlutterwaveUtils.DEFAULT_REDIRECT_URL.toString()) == 0;
     print("url in webview isss $url");
     print("url index is ${url.toString().indexOf(FlutterwaveUtils.DEFAULT_REDIRECT_URL.toString())}");
-  print("startsWithMyRedirectUrl $startsWithMyRedirectUrl");
+    print("startsWithMyRedirectUrl $startsWithMyRedirectUrl");
     if (url != this.widget._url && startsWithMyRedirectUrl) {
       this._onValidationSuccessful(url);
     } else {

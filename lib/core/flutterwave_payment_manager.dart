@@ -5,6 +5,7 @@ import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart'
 import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
 import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
 import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
 
 class FlutterwavePaymentManager {
   String publicKey;
@@ -34,6 +35,8 @@ class FlutterwavePaymentManager {
   bool acceptBarterPayment;
   bool acceptSouthAfricaBankPayment;
   bool acceptFancophoneMobileMoney;
+  bool acceptVoucherPayment;
+  String country;
 
   FlutterwavePaymentManager(
       {@required this.publicKey,
@@ -45,6 +48,7 @@ class FlutterwavePaymentManager {
       @required this.txRef,
       @required this.isDebugMode,
       @required this.phoneNumber,
+      this.country,
       this.acceptAccountPayment = false,
       this.acceptBankTransferPayment = false,
       this.acceptCardPayment = false,
@@ -58,6 +62,7 @@ class FlutterwavePaymentManager {
       this.acceptUgandaPayment = false,
       this.acceptFancophoneMobileMoney = false,
       this.acceptBarterPayment = false,
+      this.acceptVoucherPayment = false,
       this.frequency,
       this.duration,
       this.isPermanent,
@@ -65,6 +70,7 @@ class FlutterwavePaymentManager {
       this.network = ""});
 
   CardPaymentManager getCardPaymentManager() {
+    print("In Flutterwave PaymentManager, country is ${this.country}");
     return CardPaymentManager(
         publicKey: this.publicKey,
         encryptionKey: this.encryptionKey,
@@ -78,6 +84,7 @@ class FlutterwavePaymentManager {
         isPermanent: this.isPermanent,
         phoneNumber: this.phoneNumber,
         frequency: this.frequency,
+        country: this.country,
         duration: this.duration);
   }
 
@@ -135,14 +142,25 @@ class FlutterwavePaymentManager {
 
   MpesaPaymentManager getMpesaPaymentManager() {
     return MpesaPaymentManager(
-      publicKey: this.publicKey,
-      currency: this.currency,
-      amount: this.amount,
-      txRef: this.txRef,
-      isDebugMode: this.isDebugMode,
-      phoneNumber: this.phoneNumber,
-      fullName: this.fullName,
-      email: this.email
-    );
+        publicKey: this.publicKey,
+        currency: this.currency,
+        amount: this.amount,
+        txRef: this.txRef,
+        isDebugMode: this.isDebugMode,
+        phoneNumber: this.phoneNumber,
+        fullName: this.fullName,
+        email: this.email);
+  }
+
+  VoucherPaymentManager getVoucherPaymentManager() {
+    return VoucherPaymentManager(
+        publicKey: this.publicKey,
+        currency: this.currency,
+        amount: this.amount,
+        txRef: this.txRef,
+        isDebugMode: this.isDebugMode,
+        phoneNumber: this.phoneNumber,
+        fullName: this.fullName,
+        email: this.email);
   }
 }

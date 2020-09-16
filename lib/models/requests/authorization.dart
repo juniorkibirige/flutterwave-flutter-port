@@ -3,6 +3,7 @@ class Authorization {
   static const String REDIRECT = "redirect";
   static const String OTP = "otp";
   static const String PIN = "pin";
+  static const String CALLBACK = "callback";
 
   String mode;
   String pin;
