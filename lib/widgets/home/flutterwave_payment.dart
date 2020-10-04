@@ -144,24 +144,24 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                         ],
                       ),
                     ),
-                    // Visibility(
-                    //   visible: paymentManager.acceptBankTransferPayment,
-                    //   child: Column(
-                    //     children: [
-                    //       SizedBox(
-                    //         height: 50.0,
-                    //         child: FlutterwavePaymentOption(
-                    //           handleClick:
-                    //               this._launchBankTransferPaymentWidget,
-                    //           buttonText: "Bank Transfer",
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         height: 0.5,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    Visibility(
+                      visible: paymentManager.acceptBankTransferPayment,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 50.0,
+                            child: FlutterwavePaymentOption(
+                              handleClick:
+                                  this._launchBankTransferPaymentWidget,
+                              buttonText: "Bank Transfer",
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.5,
+                          ),
+                        ],
+                      ),
+                    ),
                     Visibility(
                       visible: paymentManager.acceptUSSDPayment,
                       child: Column(
@@ -339,7 +339,7 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
     final response = await Navigator.push(
       this.context,
       MaterialPageRoute(
-          builder: (context) => BankTransfer(bankTransferPaymentManager)),
+          builder: (context) => PayWithBankTransfer(bankTransferPaymentManager)),
     );
     Navigator.pop(this.context, response);
   }
@@ -350,7 +350,7 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
     final response = await Navigator.push(
       this.context,
       MaterialPageRoute(
-          builder: (context) => RequestBankAccount(bankAccountPaymentManager)),
+          builder: (context) => PayWithBankAccount(bankAccountPaymentManager)),
     );
     Navigator.pop(this.context, response);
   }

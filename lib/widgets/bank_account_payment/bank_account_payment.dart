@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/requests/pay_with_bank_account/pay_with_bank_account.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/models/responses/get_bank/get_bank_response.dart';
+import 'package:flutterwave/utils/flutterwave_constants.dart';
 import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
 import 'package:flutterwave/widgets/card_payment/request_otp.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/models/responses/get_bank/get_bank_response.dart';
-import 'package:hexcolor/hexcolor.dart';
-
-class RequestBankAccount extends StatefulWidget {
+class PayWithBankAccount extends StatefulWidget {
   final BankAccountPaymentManager _paymentManager;
 
-  RequestBankAccount(this._paymentManager);
+  PayWithBankAccount(this._paymentManager);
 
   @override
-  RequestBankAccountState createState() => RequestBankAccountState();
+  PayWithBankAccountState createState() => PayWithBankAccountState();
 }
 
-class RequestBankAccountState extends State<RequestBankAccount> {
+class PayWithBankAccountState extends State<PayWithBankAccount> {
   GetBanksResponse selectedBank;
   PersistentBottomSheetController bottomSheet;
   Future<List<GetBanksResponse>> banks;
@@ -35,7 +34,6 @@ class RequestBankAccountState extends State<RequestBankAccount> {
       TextEditingController();
   final TextEditingController _bankController = TextEditingController();
 
-  FocusNode _bankFocusNode = new FocusNode();
 
   BuildContext _loadingDialogContext;
 
@@ -43,11 +41,6 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   void initState() {
     super.initState();
     this.banks = FlutterwaveAPIUtils.getBanks(http.Client());
-    this._bankFocusNode.addListener(() {
-      if (this._bankFocusNode.hasFocus) {
-        this._showBottomSheet();
-      }
-    });
   }
 
   @override
@@ -111,7 +104,7 @@ class RequestBankAccountState extends State<RequestBankAccount> {
                         value.isEmpty ? "Phone Number is required" : null,
                   ),
                   TextFormField(
-                    focusNode: this._bankFocusNode,
+                    onTap: this._showBottomSheet,
                     readOnly: true,
                     decoration: InputDecoration(
                       hintText: "Bank",
@@ -208,6 +201,10 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   void _onPaymentClicked() {
     if (this._formKey.currentState.validate()) {
       final BankAccountPaymentManager pm = this.widget._paymentManager;
+      final String updatedPhoneNumber = this._phoneNumberController.text.trim();
+      if (updatedPhoneNumber != null && updatedPhoneNumber.isNotEmpty) {
+        pm.phoneNumber = this._phoneNumberController.text.trim();
+      }
       FlutterwaveViewUtils.showConfirmPaymentModal(
           this.context, pm.currency, pm.amount, this._payWithBankAccount);
     }
@@ -216,7 +213,7 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   void _payWithBankAccount() async {
     Navigator.pop(this.context);
 
-    this.showLoading("initiating payment...");
+    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
 
     final BankAccountPaymentRequest request = BankAccountPaymentRequest(
         amount: this.widget._paymentManager.amount,
@@ -228,39 +225,65 @@ class RequestBankAccountState extends State<RequestBankAccount> {
         accountBank: this.selectedBank.bankcode,
         accountNumber: this._accountNumberController.text.trim());
 
+    print("Bank Account request is ==> ${request.toJson()}");
+
     final response = await this
         .widget
         ._paymentManager
         .payWithAccount(request, http.Client());
 
-    print("Error paying with account is ${response.toJson()}");
+    print("Response paying with account is ${response.toJson()}");
 
     this.closeDialog();
-    if (response.data == null || response.status == FlutterwaveUtils.ERROR) {
+    this._handleResponse(response);
+  }
+
+  void _handleResponse(final ChargeResponse response) {
+    if (response.data == null || response.status == FlutterwaveConstants.ERROR) {
       this.showSnackBar(response.message);
       return;
     }
-    if (response.data.processorResponse ==
-            FlutterwaveUtils.PENDING_OTP_VALIDATION ||
-        (response.meta != null &&
-            response.meta.authorization != null &&
-            response.data.status == FlutterwaveUtils.PENDING)) {
-      if (response.data.processorResponse == FlutterwaveUtils.PENDING) {
-        this._handleExtraAuthentication(response);
-      } else {
-        this.showSnackBar(
-            "Unable to continue payment with card authentication mode ${response.meta.authorization.mode}");
-      }
-      return;
-    }
-    if (response.data.status == FlutterwaveUtils.SUCCESSFUL &&
+
+    if (response.data.status == FlutterwaveConstants.SUCCESSFUL &&
         response.data.processorResponse ==
-            FlutterwaveUtils.APPROVED_SUCCESSFULLY) {
+            FlutterwaveConstants.APPROVED_SUCCESSFULLY) {
       this._verifyPayment(response);
-    } else {
-      this.closeDialog();
-      this.showSnackBar(response.message);
+      return;
     }
+
+    if (response.data.processorResponse ==
+        FlutterwaveConstants.PENDING_OTP_VALIDATION) {
+      this._handleOtp(response);
+      return;
+    }
+
+    if (response.meta != null &&
+        response.meta.authorization != null &&
+        response.data.status == FlutterwaveConstants.PENDING) {
+      this._handleExtraAuthentication(response);
+      return;
+    }
+    this.closeDialog();
+
+    if ((response.data.status == FlutterwaveConstants.PENDING) &&
+        (response.data.authUrl != null) &&
+        response.data.authUrl.isNotEmpty) {
+      this._handleWebAuthorisation(response);
+    }
+
+    if ((response.data.status == FlutterwaveConstants.PENDING) &&
+        (response.meta == null ||
+            response.meta.authorization == null ||
+            response.meta.authorization.mode == null)) {
+      this.showSnackBar(
+          "Unable to complete payment with this account. Please try later.");
+      return;
+    }
+    final errorMessage = response.message == null
+        ? "Unable to continue payment with account"
+        : response.message;
+    this.closeDialog();
+    this.showSnackBar(errorMessage);
   }
 
   void _handleExtraAuthentication(ChargeResponse response) async {
@@ -282,12 +305,13 @@ class RequestBankAccountState extends State<RequestBankAccount> {
       }
     } else {
       this.closeDialog();
-      this.showSnackBar("Unable to continue payment");
+      this.showSnackBar(
+          "Unable to authenticate payment. Please contact support.");
     }
   }
 
   void _verifyPayment(ChargeResponse chargeResponse) async {
-    this.showLoading("verifying payment...");
+    this.showLoading(FlutterwaveConstants.VERIFYING);
     final response = await FlutterwaveAPIUtils.verifyPayment(
         chargeResponse.data.flwRef,
         http.Client(),
@@ -296,12 +320,12 @@ class RequestBankAccountState extends State<RequestBankAccount> {
 
     this.closeDialog();
 
-    if (response.status == FlutterwaveUtils.ERROR || response.data == null) {
+    if (response.status == FlutterwaveConstants.ERROR || response.data == null) {
       this.showSnackBar(response.message);
       this._onPaymentComplete(response);
       return;
     }
-    if (response.status == FlutterwaveUtils.SUCCESS &&
+    if (response.status == FlutterwaveConstants.SUCCESS &&
         response.data.amount == this.widget._paymentManager.amount &&
         response.data.txRef == this.widget._paymentManager.txRef) {
       this._onPaymentComplete(response);
@@ -348,17 +372,18 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   }
 
   void _validatePayment(final String otp, final String flwRef) async {
-    this.showLoading("validating otp...");
+    this.showLoading(FlutterwaveConstants.VALIDATING_OTP);
     final client = http.Client();
     final response = await FlutterwaveAPIUtils.validatePayment(
         otp,
         flwRef,
         client,
         this.widget._paymentManager.isDebugMode,
-        this.widget._paymentManager.publicKey);
+        this.widget._paymentManager.publicKey,
+        true);
     this.closeDialog();
-    if (response.status == FlutterwaveUtils.SUCCESS &&
-        response.message == FlutterwaveUtils.CHARGE_VALIDATED) {
+    if (response.status == FlutterwaveConstants.SUCCESS &&
+        response.message == FlutterwaveConstants.CHARGE_VALIDATED) {
       this._verifyPayment(response);
     } else {
       print("response in validating is => ${response.toJson()}");
@@ -435,5 +460,18 @@ class RequestBankAccountState extends State<RequestBankAccount> {
   void _onPaymentComplete(final ChargeResponse chargeResponse) {
     this.showSnackBar("Transaction complete!");
     Navigator.pop(this.context, chargeResponse);
+  }
+
+  void _handleWebAuthorisation(ChargeResponse response) async {
+    final String result = await Navigator.push(
+        this.context,
+        MaterialPageRoute(
+            builder: (context) =>
+                AuthorizationWebview(Uri.encodeFull(response.data.authUrl))));
+
+    print("result from auth url");
+    if (result != null) {
+      this._verifyPayment(response);
+    }
   }
 }

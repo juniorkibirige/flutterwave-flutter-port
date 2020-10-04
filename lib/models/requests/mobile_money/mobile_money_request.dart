@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 
 class MobileMoneyRequest {
   String amount;
@@ -23,7 +23,7 @@ class MobileMoneyRequest {
       this.network = "",
       this.voucher = "",
       this.country = "",
-      this.redirectUrl = FlutterwaveUtils.DEFAULT_REDIRECT_URL});
+      this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL});
 
   MobileMoneyRequest.fromJson(Map<String, dynamic> json) {
     this.amount = json['amount'];

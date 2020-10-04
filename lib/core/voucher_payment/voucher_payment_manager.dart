@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutterwave/models/requests/voucher/voucher_payment_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
-
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class VoucherPaymentManager {
@@ -51,8 +50,8 @@ class VoucherPaymentManager {
 
   Future<ChargeResponse> payWithVoucher(VoucherPaymentRequest payload,
       http.Client client) async {
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.VOUCHER_PAYMENT;
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.VOUCHER_PAYMENT;
 
     print("voucher url iss ==> $url");
     try {

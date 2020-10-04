@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
 import 'package:flutterwave/models/requests/mpesa/mpesa_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/utils/flutterwave_constants.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
 
 class PayWithMpesa extends StatefulWidget {
   final MpesaPaymentManager _paymentManager;
@@ -99,8 +99,14 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   void _onPayPressed() {
     if (this._formKey.currentState.validate()) {
       this._removeFocusFromView();
+      if (this._phoneNumberController.text != null &&
+          this._phoneNumberController.text.isNotEmpty) {
+        this.widget._paymentManager.phoneNumber =
+            this._phoneNumberController.text;
+      }
       final MpesaPaymentManager pm = this.widget._paymentManager;
-      FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._handlePayment);
+      FlutterwaveViewUtils.showConfirmPaymentModal(
+          this.context, pm.currency, pm.amount, this._handlePayment);
     }
   }
 
@@ -155,7 +161,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   void _handlePayment() async {
     Navigator.pop(this.context);
 
-    this.showLoading("initiating payment...");
+    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
     final MpesaPaymentManager mpesaPaymentManager = this.widget._paymentManager;
 
     final MpesaRequest request = MpesaRequest(
@@ -170,12 +176,10 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     try {
       final response = await mpesaPaymentManager.payWithMpesa(request, client);
       this.closeDialog();
-      print("Mpesa response is ==> ${response.toJson()}");
-      if (FlutterwaveUtils.SUCCESS == response.status &&
-          FlutterwaveUtils.CHARGE_INITIATED == response.message) {
+      if (FlutterwaveConstants.SUCCESS == response.status &&
+          FlutterwaveConstants.CHARGE_INITIATED == response.message) {
         this._verifyPayment(response.data.flwRef);
       } else {
-        print("Mpesa initiate failed ${response.toJson()}");
         this.showSnackBar(response.message);
       }
     } catch (error) {
@@ -191,21 +195,24 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 
-    this.showLoading("verifying payment...");
+    ChargeResponse response;
+
+    this.showLoading(FlutterwaveConstants.VERIFYING);
     final client = http.Client();
     Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
       try {
         if (intialCount == numberOfTries) {
           timer.cancel();
+          return this._onComplete(response);
         }
-        final response = await FlutterwaveAPIUtils.verifyPayment(
+        response = await FlutterwaveAPIUtils.verifyPayment(
             flwRef,
             client,
             this.widget._paymentManager.publicKey,
             this.widget._paymentManager.isDebugMode);
 
-        if ((response.data.status == FlutterwaveUtils.SUCCESS ||
-                response.data.status == FlutterwaveUtils.SUCCESSFUL) &&
+        if ((response.data.status == FlutterwaveConstants.SUCCESS ||
+                response.data.status == FlutterwaveConstants.SUCCESSFUL) &&
             response.data.amount ==
                 this.widget._paymentManager.amount.toString() &&
             response.data.flwRef == flwRef &&
@@ -213,7 +220,6 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
           timer.cancel();
           this._onComplete(response);
         } else {
-          print("Mpesa verify failed ${response.toJson()}");
           this.showSnackBar(response.message);
         }
       } catch (error) {

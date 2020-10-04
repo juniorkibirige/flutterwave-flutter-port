@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutterwave/models/requests/mpesa/mpesa_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:http/http.dart' as http;
 
 class MpesaPaymentManager {
 
@@ -51,8 +51,8 @@ class MpesaPaymentManager {
 
   Future<ChargeResponse> payWithMpesa(MpesaRequest payload,
       http.Client client) async {
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.PAY_WITH_MPESA;
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.PAY_WITH_MPESA;
 
     print("Mpesa url iss ==> $url");
     try {

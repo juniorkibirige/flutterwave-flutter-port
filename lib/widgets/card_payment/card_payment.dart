@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
+import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/interfaces/card_payment_listener.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
+import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/utils/flutterwave_constants.dart';
+import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
+import 'package:flutterwave/widgets/card_payment/request_address.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
-import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/widgets/card_payment/request_address.dart';
 
 import 'request_otp.dart';
 import 'request_pin.dart';
@@ -183,7 +183,6 @@ class _CardPaymentState extends State<CardPayment>
   void _onCardFormClick() {
     this._hideKeyboard();
     if (this._cardFormKey.currentState.validate()) {
-      // this.showConfirmPaymentModal();
       final CardPaymentManager pm = this.widget._paymentManager;
       FlutterwaveViewUtils.showConfirmPaymentModal(
           this.context, pm.currency, pm.amount, this._makeCardPayment);
@@ -192,7 +191,7 @@ class _CardPaymentState extends State<CardPayment>
 
   void _makeCardPayment() {
     Navigator.of(this.context).pop();
-    this.showLoading("initiating payment...");
+    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
         cardNumber: this._cardNumberFieldController.value.text.trim(),
         cvv: this._cardCvvFieldController.value.text.trim(),
@@ -266,21 +265,22 @@ class _CardPaymentState extends State<CardPayment>
     final result = await Navigator.of(this.context).push(MaterialPageRoute(
         builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
     if (result != null) {
-      final bool hasError = result.runtimeType == " ".runtimeType;
+      print("result in webview issss $result");
+      final bool hasError = result.runtimeType != " ".runtimeType;
       this.closeDialog();
       if (hasError) {
-        this.showSnackBar(result["message"]);
+        this.showSnackBar(result["error"]);
         return;
       }
       final flwRef = result;
-      this.showLoading("verifying payment...");
+      this.showLoading(FlutterwaveConstants.VERIFYING);
       final response = await FlutterwaveAPIUtils.verifyPayment(
           flwRef,
           http.Client(),
           this.widget._paymentManager.publicKey,
           this.widget._paymentManager.isDebugMode);
       this.closeDialog();
-      if (response.data.status == FlutterwaveUtils.SUCCESSFUL) {
+      if (response.data.status == FlutterwaveConstants.SUCCESSFUL) {
         this.onComplete(response);
       }
     } else {
@@ -294,7 +294,7 @@ class _CardPaymentState extends State<CardPayment>
     final ChargeRequestAddress addressDetails = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestAddress()));
     if (addressDetails != null) {
-      this.showLoading("verifying address...");
+      this.showLoading(FlutterwaveConstants.VERIFYING_ADDRESS);
       this.widget._paymentManager.addAddress(addressDetails);
       return;
     }
@@ -307,7 +307,7 @@ class _CardPaymentState extends State<CardPayment>
     final pin = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestPin()));
     if (pin == null) return;
-    this.showLoading("authenticating with pin...");
+    this.showLoading(FlutterwaveConstants.AUTHENTICATING_PIN);
     this.widget._paymentManager.addPin(pin);
   }
 
@@ -317,12 +317,12 @@ class _CardPaymentState extends State<CardPayment>
     final otp = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestOTP(message)));
     if (otp == null) return;
-    this.showLoading("verifying payment...");
+    this.showLoading(FlutterwaveConstants.VERIFYING);
     final ChargeResponse chargeResponse =
         await this.widget._paymentManager.addOTP(otp, response.data.flwRef);
     this.closeDialog();
-    if (chargeResponse.message == FlutterwaveUtils.CHARGE_VALIDATED) {
-      this.showLoading("verifying transaction...");
+    if (chargeResponse.message == FlutterwaveConstants.CHARGE_VALIDATED) {
+      this.showLoading(FlutterwaveConstants.VERIFYING);
       this._handleTransactionVerification(chargeResponse);
     } else {
       this.closeDialog();
@@ -339,7 +339,7 @@ class _CardPaymentState extends State<CardPayment>
         this.widget._paymentManager.isDebugMode);
     this.closeDialog();
 
-    if (verifyResponse.status == FlutterwaveUtils.SUCCESS &&
+    if (verifyResponse.status == FlutterwaveConstants.SUCCESS &&
         verifyResponse.data.txRef == this.widget._paymentManager.txRef &&
         verifyResponse.data.amount == this.widget._paymentManager.amount) {
       this.onComplete(verifyResponse);

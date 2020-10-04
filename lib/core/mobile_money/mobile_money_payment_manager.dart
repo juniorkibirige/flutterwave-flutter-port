@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutterwave/models/requests/mobile_money/mobile_money_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class MobileMoneyPaymentManager {
@@ -34,8 +34,9 @@ class MobileMoneyPaymentManager {
       MobileMoneyRequest mobileMoneyRequest, http.Client client) async {
     final requestBody = mobileMoneyRequest.toJson();
     print("MM Request is $requestBody");
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.getMobileMoneyUrl(this.currency);
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.getMobileMoneyUrl(this.currency);
+    print("MM URL is $url");
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},

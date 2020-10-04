@@ -70,7 +70,6 @@ class FlutterwavePaymentManager {
       this.network = ""});
 
   CardPaymentManager getCardPaymentManager() {
-    print("In Flutterwave PaymentManager, country is ${this.country}");
     return CardPaymentManager(
         publicKey: this.publicKey,
         encryptionKey: this.encryptionKey,

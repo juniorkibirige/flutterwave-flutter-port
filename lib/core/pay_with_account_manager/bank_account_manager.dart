@@ -6,6 +6,7 @@ import 'package:flutterwave/core/flutterwave_error.dart';
 import 'package:flutterwave/models/requests/pay_with_bank_account/pay_with_bank_account.dart';
 import 'package:flutterwave/models/requests/verify_charge_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,7 +40,7 @@ class BankAccountPaymentManager {
       BankAccountPaymentRequest bankAccountRequest, http.Client client) async {
     final requestBody = bankAccountRequest.toJson();
 
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) + FlutterwaveUtils.PAY_WITH_ACCOUNT;
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.PAY_WITH_ACCOUNT;
     print("url iss ==> $url");
 
     try {
@@ -53,14 +54,11 @@ class BankAccountPaymentManager {
       return bankTransferResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));
-    } 
-//    finally {
-//      client.close();
-//    }
+    }
   }
 
   Future<ChargeResponse> verifyPayment(final String flwRef, final http.Client client) async {
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) + FlutterwaveUtils.VERIFY_TRANSACTION;
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.VERIFY_TRANSACTION;
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
     print("Verify Bank Url => $url");
@@ -77,9 +75,6 @@ class BankAccountPaymentManager {
       return cardResponse;
     } catch (error) {
       throw(FlutterWaveError(error.toString()));
-    } 
-//    finally {
-//      client.close();
-//    }
+    }
   }
 }

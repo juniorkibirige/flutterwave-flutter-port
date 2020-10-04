@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
 import 'package:flutterwave/interfaces/card_payment_listener.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave/utils/flutterwave_constants.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -55,7 +57,7 @@ class CardPaymentManager {
 
   Map<String, String> _prepareRequest(
       final ChargeCardRequest chargeCardRequest) {
-    final String encryptedChargeRequest = FlutterwaveUtils.TripleDESEncrypt(
+    final String encryptedChargeRequest = FlutterwaveUtils.tripleDESEncrypt(
         jsonEncode(chargeCardRequest.toJson()), encryptionKey);
     return FlutterwaveUtils.encryptRequest(encryptedChargeRequest);
   }
@@ -64,7 +66,6 @@ class CardPaymentManager {
       final ChargeCardRequest chargeCardRequest) async {
 
     this.chargeCardRequest = chargeCardRequest;
-    print("request is ${chargeCardRequest.toJson()}");
     if (this.cardPaymentListener == null) {
       this.cardPaymentListener.onError("No CardPaymentListener Attached!");
       return;
@@ -73,9 +74,8 @@ class CardPaymentManager {
     final Map<String, String> encryptedPayload =
         this._prepareRequest(chargeCardRequest);
 
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.CHARGE_CARD_URL;
-    print("url iss ==> $url");
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.CHARGE_CARD_URL;
     final http.Response response = await client.post(url,
         headers: {HttpHeaders.authorizationHeader: this.publicKey},
         body: encryptedPayload);
@@ -87,19 +87,17 @@ class CardPaymentManager {
     try {
       final responseBody = ChargeResponse.fromJson(jsonDecode(response.body));
 
-      print("response is ${responseBody.toJson()}");
-
       if (response.statusCode == 200) {
         final bool requiresExtraAuth =
-            (responseBody.message == FlutterwaveUtils.REQUIRES_AUTH) &&
+            (responseBody.message == FlutterwaveConstants.REQUIRES_AUTH) &&
                 (responseBody.meta.authorization.mode != null);
 
         final bool is3DS = (responseBody.message ==
-                FlutterwaveUtils.CHARGE_INITIATED) &&
+            FlutterwaveConstants.CHARGE_INITIATED) &&
             (responseBody.meta.authorization.mode == Authorization.REDIRECT);
 
         final bool requiresOtp =
-            (responseBody.message == FlutterwaveUtils.CHARGE_INITIATED) &&
+            (responseBody.message == FlutterwaveConstants.CHARGE_INITIATED) &&
                 (responseBody.meta.authorization.mode == Authorization.OTP);
 
         if (requiresExtraAuth) {
@@ -172,6 +170,6 @@ class CardPaymentManager {
 
   Future<ChargeResponse> addOTP(String otp, String flwRef) async {
     return FlutterwaveAPIUtils.validatePayment(
-        otp, flwRef, http.Client(), this.isDebugMode, this.publicKey);
+        otp, flwRef, http.Client(), this.isDebugMode, this.publicKey, false);
   }
 }

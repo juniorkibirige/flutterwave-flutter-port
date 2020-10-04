@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 
 class ChargeCardRequest {
   String cardNumber;
@@ -27,7 +27,7 @@ class ChargeCardRequest {
     @required this.fullName,
     @required this.txRef,
     this.country,
-    this.redirectUrl = FlutterwaveUtils.DEFAULT_REDIRECT_URL,
+    this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL,
     this.authorization
   });
 

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class USSDPaymentManager {
@@ -32,8 +32,8 @@ class USSDPaymentManager {
       USSDRequest ussdRequest, http.Client client) async {
     final requestBody = ussdRequest.toJson();
 
-    final url = FlutterwaveUtils.getBaseUrl(this.isDebugMode) +
-        FlutterwaveUtils.PAY_WITH_USSD;
+    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.PAY_WITH_USSD;
     print("url iss ==> $url");
 
     try {
