@@ -44,21 +44,21 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
 	            context: build_context_here,
 	            publicKey: "public_key_here",
 	            encryptionKey: "encryption_key_here",  
-	            isDebugMode: this.isDebug,
+	            isDebugMode: true/false,
 	            currency: FlutterwaveCurrency.NGN,
 	            amount: "10",
 	            email: "test_user@test.com",
 	            fullName: "Flutterwave Test User",
-	            txRef: "your_unique_ref_here",
-	            narration: "your_payment_narration_here", 
-	            phoneNumber: "user_phone_number", 
-	            acceptBankTransferPayment: true,  
-	            acceptAccountPayment = true,
-	            acceptCardPayment = true,  
-	            acceptUSSDPayment = true)
+	            txRef: your_unique_ref_here,
+	            narration: your_payment_narration_here, 
+	            phoneNumber: user_phone_number, 
+	            acceptBankTransferPayment: true/false,  
+	            acceptAccountPayment = true/false,
+	            acceptCardPayment = true/false,  
+	            acceptUSSDPayment = true/false)
 	            .initializeForUiPayments();
 	         } catch(error) {
-		         print(error.toString());
+		         handleError(error);
 	         }
 
 
@@ -72,14 +72,12 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
  - `ChargeResponse` can be null, depending on if the user cancels
    the transaction by pressing back.
  - You need to check the status of the transaction from the instance of `ChargeResponse` returned from calling `.initializeForUiPayments()`, the `amount`, `currency` and `txRef` are correct before providing value to the customer
-
-
+ - To accept payment of different kinds, you need set the currency to the correspending payment type i.e, `KES` for `Mpesa`, `RWF` for `Rwanda Mobile Money`, `NGN` for `USSD`,
+`Bank Accounts Payment` and so on.
 
 >  **PLEASE NOTE**
 
 > We advise you to do a further verification of transaction's details on your server to be sure everything checks out before providing service or goods.
-
- 
 
 ## Help
 
