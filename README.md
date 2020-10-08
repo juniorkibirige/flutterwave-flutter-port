@@ -1,6 +1,8 @@
-# Flutterwave Flutter SDK
+<p align="center">
+   <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" width="50%"/>
+</p>
 
-  
+# Flutterwave Flutter SDK 
 
 Flutterwave's Flutter SDK is Flutterwave's offical flutter sdk to integrate the Flutterwave payment into your flutter app. It comes with a readymade Drop In UI.
 
