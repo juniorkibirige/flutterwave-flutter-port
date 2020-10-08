@@ -2,28 +2,38 @@
    <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" width="50%"/>
 </p>
 
-# Flutterwave Flutter SDK 
+# Flutterwave Flutter SDK
 
+## Table of Contents
+
+- [About](#about)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Deployment](#deployment)
+- [Built Using](#build-tools)
+- [References](#references)
+- [Support](#support)
+
+<a id="about"></a>
+## About
 Flutterwave's Flutter SDK is Flutterwave's offical flutter sdk to integrate the Flutterwave payment into your flutter app. It comes with a readymade Drop In UI.
-
-  
 The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money and Nigeria Bank Account.
 
 
-  
+<a id="getting-started"></a>
 
-## Before you begin
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+See [references](#references) for links to dashboard and API documentation.
+
+### Prerequisite
 
 - Ensure you have your test (and live) [API keys](https://developer.flutterwave.com/docs/api-keys).
 
-  
-
-## Adding it to your project
-  
-
+ ### Installing
+ 
 **Step 1.** Add it in your root build.gradle at the end of repositories:
-
-  
 
 **Step 2.** Add the dependency
 
@@ -32,8 +42,7 @@ In your `pubspec.yaml` file add:
 1. `flutterwave: 1.0.0`
 2. run `pub get`
 
-
-
+<a id="usage"></a>
 ## Usage
 
 ### 1. Create a `Flutterwave` instance
@@ -81,68 +90,23 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
 
 > We advise you to do a further verification of transaction's details on your server to be sure everything checks out before providing service or goods.
 
-## Help
+<a id="deployment"></a>
+## Deployment
 
-* Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtMjU2MjkyNDM5MTcxLWFlOWNlYmE5MTIxNjAwYzc5MDVjZjNhYTJjNTA0ZTQyNDJlMDhhZjJkN2QwZGJmNWMyODhlYjMwNGUyZDQxNTE) for support
+- Switch to Live Mode on the Dashboard settings page
+- Use the Live Public API key from the API tab, see [here](https://developer.flutterwave.com/docs/api-keys) for more details.
 
-* Find a bug? [Open an issue](https://github.com/Flutterwave/flutterwave-flutter/issues)
+<a id="build-tools"></a>
+## Built Using
 
-* Want to contribute? [Check out contributing guidelines]() and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
+<a id="references"></a>
+## Flutterwave API  References
 
-  
+- [Flutterwave API Doc](https://developer.flutterwave.com/docs)
+- [Flutterwave Inline Payment Doc](https://developer.flutterwave.com/docs/flutterwave-inline)
+- [Flutterwave Dashboard](https://dashboard.flutterwave.com/login)  
 
-## Want to contribute?
+<a id="support"></a>
+## Support
+* Have issues integrating? Reach out via [our Developer forum](https://developer.flutterwave.com/discuss) for support
 
-Feel free to create issues and pull requests. The more concise the pull requests the better :)
-
-  
- 
-## License 
-
-```
-
-Flutterwave's Flutter SDK
-
-MIT License
-
-  
-
-Copyright (c) 2020
-
-  
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-
-of this software and associated documentation files (the "Software"), to deal
-
-in the Software without restriction, including without limitation the rights
-
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-
-copies of the Software, and to permit persons to whom the Software is
-
-furnished to do so, subject to the following conditions:
-
-  
-
-The above copyright notice and this permission notice shall be included in all
-
-copies or substantial portions of the Software.
-
-  
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-
-SOFTWARE.
-
-```
