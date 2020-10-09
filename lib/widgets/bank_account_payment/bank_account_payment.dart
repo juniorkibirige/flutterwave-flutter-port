@@ -225,15 +225,10 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
         accountBank: this.selectedBank.bankcode,
         accountNumber: this._accountNumberController.text.trim());
 
-    print("Bank Account request is ==> ${request.toJson()}");
-
     final response = await this
         .widget
         ._paymentManager
         .payWithAccount(request, http.Client());
-
-    print("Response paying with account is ${response.toJson()}");
-
     this.closeDialog();
     this._handleResponse(response);
   }
@@ -386,7 +381,6 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
         response.message == FlutterwaveConstants.CHARGE_VALIDATED) {
       this._verifyPayment(response);
     } else {
-      print("response in validating is => ${response.toJson()}");
       this.showSnackBar(response.message);
     }
   }
@@ -468,8 +462,6 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
         MaterialPageRoute(
             builder: (context) =>
                 AuthorizationWebview(Uri.encodeFull(response.data.authUrl))));
-
-    print("result from auth url");
     if (result != null) {
       this._verifyPayment(response);
     }

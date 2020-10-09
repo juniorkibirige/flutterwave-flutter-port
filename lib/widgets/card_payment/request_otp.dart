@@ -83,7 +83,6 @@ class _RequestOTPState extends State<RequestOTP> {
 
   void _continuePayment() {
     if (this._formKey.currentState.validate()) {
-      print("Pin is ${this._otpController.value.text}");
       Navigator.of(this.context).pop(this._otpController.value.text);
     }
   }

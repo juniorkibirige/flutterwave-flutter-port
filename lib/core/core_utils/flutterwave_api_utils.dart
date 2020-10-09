@@ -53,7 +53,6 @@ class FlutterwaveAPIUtils {
     final ValidateChargeRequest chargeRequest =
     ValidateChargeRequest(otp, flwRef, isBankAccount);
     final payload = chargeRequest.toJson();
-    print("validate payload is ${payload}");
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: publicKey},

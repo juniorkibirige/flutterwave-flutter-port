@@ -52,8 +52,6 @@ class VoucherPaymentManager {
       http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.VOUCHER_PAYMENT;
-
-    print("voucher url iss ==> $url");
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},

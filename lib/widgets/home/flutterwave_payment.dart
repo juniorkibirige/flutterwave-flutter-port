@@ -144,24 +144,25 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                         ],
                       ),
                     ),
-                    Visibility(
-                      visible: paymentManager.acceptBankTransferPayment,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 50.0,
-                            child: FlutterwavePaymentOption(
-                              handleClick:
-                                  this._launchBankTransferPaymentWidget,
-                              buttonText: "Bank Transfer",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 0.5,
-                          ),
-                        ],
-                      ),
-                    ),
+                    //todo enable when v3 is confirmed to work well
+                    // Visibility(
+                    //   visible: paymentManager.acceptBankTransferPayment,
+                    //   child: Column(
+                    //     children: [
+                    //       SizedBox(
+                    //         height: 50.0,
+                    //         child: FlutterwavePaymentOption(
+                    //           handleClick:
+                    //               this._launchBankTransferPaymentWidget,
+                    //           buttonText: "Bank Transfer",
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 0.5,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Visibility(
                       visible: paymentManager.acceptUSSDPayment,
                       child: Column(

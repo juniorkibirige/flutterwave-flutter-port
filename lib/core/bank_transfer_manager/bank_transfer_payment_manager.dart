@@ -40,21 +40,14 @@ class BankTransferPaymentManager {
   Future<BankTransferResponse> payWithBankTransfer(
       BankTransferRequest bankTransferRequest, http.Client client) async {
     final requestBody = bankTransferRequest.toJson();
-
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.BANK_TRANSFER;
-    print("url iss ==> $url");
-
     try {
-      print("Pay With Transfer Request Payload => ${bankTransferRequest.toJson()}");
-
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
           body: requestBody);
 
       BankTransferResponse bankTransferResponse =
           BankTransferResponse.fromJson(json.decode(response.body));
-
-      print("Pay with transfer response => ${bankTransferResponse.toJson()}");
 
       return bankTransferResponse;
     } catch (error) {
@@ -66,8 +59,6 @@ class BankTransferPaymentManager {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.VERIFY_TRANSACTION;
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
-    print("Verify Transfer Url => $url");
-    print("Verify Transfer Request Payload => ${verifyRequest.toJson()}");
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
@@ -75,8 +66,6 @@ class BankTransferPaymentManager {
 
       final ChargeResponse cardResponse =
       ChargeResponse.fromJson(jsonDecode(response.body));
-      print("Verify Transfer Response Payload => ${cardResponse.toJson()}");
-      
       return cardResponse;
     } catch (error) {
       throw(FlutterWaveError(error.toString()));

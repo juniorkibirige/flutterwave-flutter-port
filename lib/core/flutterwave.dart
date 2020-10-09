@@ -17,7 +17,6 @@ class Flutterwave {
   String txRef;
   String redirectUrl;
   bool acceptAccountPayment;
-  bool acceptBankTransferPayment;
   bool acceptCardPayment;
   bool acceptUSSDPayment;
   bool acceptRwandaMoneyPayment;
@@ -37,6 +36,8 @@ class Flutterwave {
   // bool acceptUKAccountPayment;
   // bool acceptBarterPayment;
   // bool acceptSouthAfricaBankPayment;
+  // bool acceptBankTransferPayment;
+
   Flutterwave.UiPayment({
     @required this.context,
     @required this.publicKey,
@@ -53,7 +54,6 @@ class Flutterwave {
     this.isPermanent = false,
     this.narration = "",
     this.acceptAccountPayment = false,
-    this.acceptBankTransferPayment = false,
     this.acceptCardPayment = false,
     this.acceptUSSDPayment = false,
     this.acceptRwandaMoneyPayment = false,
@@ -64,6 +64,7 @@ class Flutterwave {
     this.acceptFrancophoneMobileMoney = false,
 
     //TODO to be added later when ready on v3
+    // this.acceptBankTransferPayment = false,
     // this.acceptUKAccountPayment = false,
     // this.acceptVoucherPayment = false,
     // this.acceptSouthAfricaBankPayment = false,
@@ -94,11 +95,7 @@ class Flutterwave {
       this.acceptGhanaPayment = false;
       this.acceptUgandaPayment = false;
       this.acceptFrancophoneMobileMoney = false;
-      this.acceptBankTransferPayment = false;
       this.acceptAccountPayment = false;
-
-      // this.acceptCardPayment = this.acceptCardPayment;
-      // this.acceptUKAccountPayment = false;
     }
     if (this.currency == FlutterwaveCurrency.RWF) {
       this.acceptRwandaMoneyPayment = true;
@@ -109,11 +106,7 @@ class Flutterwave {
       this.acceptUgandaPayment = false;
       this.acceptFrancophoneMobileMoney = false;
       this.acceptAccountPayment = false;
-      this.acceptBankTransferPayment = false;
       this.acceptUSSDPayment = false;
-
-      // this.acceptCardPayment
-      // this.acceptBarterPayment = this.acceptBarterPayment;
     }
     if (this.currency == FlutterwaveCurrency.UGX) {
       this.acceptUgandaPayment = true;
@@ -122,54 +115,38 @@ class Flutterwave {
       this.acceptGhanaPayment = false;
       this.acceptFrancophoneMobileMoney = false;
       this.acceptAccountPayment = false;
-      this.acceptBankTransferPayment = false;
       this.acceptUSSDPayment = false;
       this.acceptRwandaMoneyPayment = false;
-
-      // this.acceptCardPayment
-      // this.acceptBarterPayment = this.acceptBarterPayment;
     }
     if (this.currency == FlutterwaveCurrency.ZMW) {
       this.acceptZambiaPayment = true;
 
       this.acceptAccountPayment = false;
-      this.acceptBankTransferPayment = false;
       this.acceptRwandaMoneyPayment = false;
       this.acceptMpesaPayment = false;
       this.acceptGhanaPayment = false;
       this.acceptUgandaPayment = false;
       this.acceptFrancophoneMobileMoney = false;
       this.acceptUSSDPayment = false;
-
-      // this.acceptCardPayment
-      // this.acceptBarterPayment = true;
     }
     if (this.currency == FlutterwaveCurrency.GHS) {
       this.acceptGhanaPayment = true;
       this.acceptAccountPayment = false;
-      this.acceptBankTransferPayment = false;
       this.acceptRwandaMoneyPayment = false;
       this.acceptMpesaPayment = false;
       this.acceptUgandaPayment = false;
       this.acceptFrancophoneMobileMoney = false;
       this.acceptUSSDPayment = false;
-
-      // this.acceptCardPayment
-      // this.acceptBarterPayment = true;
     }
     if (this.currency == FlutterwaveCurrency.XAF ||
         this.currency == FlutterwaveCurrency.XOF) {
       this.acceptFrancophoneMobileMoney = true;
       this.acceptAccountPayment = false;
-      this.acceptBankTransferPayment = false;
       this.acceptRwandaMoneyPayment = false;
       this.acceptMpesaPayment = false;
       this.acceptGhanaPayment = false;
       this.acceptUgandaPayment = false;
       this.acceptUSSDPayment = false;
-
-      // this.acceptCardPayment
-      // this.acceptBarterPayment = true;
     }
 
 
@@ -190,15 +167,15 @@ class Flutterwave {
     //   // this.acceptBarterPayment = true;
     // }
 
-    if (this.acceptBankTransferPayment) {
-      if (this.phoneNumber == null ||
-          this.frequency == null ||
-          this.narration == null ||
-          this.duration == null) {
-        throw (FlutterError(
-            "To accept Bank transfer Payments, phone number, frequency, narration and duration must be supplied."));
-      }
-    }
+    // if (this.acceptBankTransferPayment) {
+    //   if (this.phoneNumber == null ||
+    //       this.frequency == null ||
+    //       this.narration == null ||
+    //       this.duration == null) {
+    //     throw (FlutterError(
+    //         "To accept Bank transfer Payments, phone number, frequency, narration and duration must be supplied."));
+    //   }
+    // }
   }
 
   String country;
@@ -239,7 +216,6 @@ class Flutterwave {
         frequency: this.frequency,
         duration: this.duration,
         acceptAccountPayment: this.acceptAccountPayment,
-        acceptBankTransferPayment: this.acceptBankTransferPayment,
         acceptCardPayment: this.acceptCardPayment,
         acceptUSSDPayment: this.acceptUSSDPayment,
         acceptRwandaMoneyPayment: this.acceptRwandaMoneyPayment,

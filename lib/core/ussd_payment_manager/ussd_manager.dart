@@ -34,21 +34,13 @@ class USSDPaymentManager {
 
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.PAY_WITH_USSD;
-    print("url iss ==> $url");
-
     try {
-      print(
-          "Pay With USSD Request Payload => ${ussdRequest.toJson()}");
-
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
           body: requestBody);
 
       ChargeResponse chargeResponse =
       ChargeResponse.fromJson(json.decode(response.body));
-
-      print("Pay with USSD response => ${chargeResponse.toJson()}");
-
       return chargeResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));

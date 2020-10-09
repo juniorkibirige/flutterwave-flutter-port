@@ -44,7 +44,6 @@ class _AuthorizationWebviewState extends State<AuthorizationWebview> {
   void _handleCardRedirectRequest(final String response) {
     final String responseString = Uri.decodeFull(response);
     final Map data = json.decode(responseString);
-    print("response from weview is $responseString");
     if (data["status"] != null && data["status"] == "successful") {
       final String flwRef = data["flwRef"];
       Navigator.pop(this.context, flwRef);
@@ -78,7 +77,6 @@ class _AuthorizationWebviewState extends State<AuthorizationWebview> {
     if (resp != null) {
       return this._handleMobileMoneyRedirectRequest(resp);
     }
-    print("resp and response are null");
     return Navigator.pop(this.context, {"error": "Unable to process transaction"});
   }
 }

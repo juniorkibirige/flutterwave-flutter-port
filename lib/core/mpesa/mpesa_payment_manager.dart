@@ -53,8 +53,6 @@ class MpesaPaymentManager {
       http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.PAY_WITH_MPESA;
-
-    print("Mpesa url iss ==> $url");
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
