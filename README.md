@@ -31,7 +31,7 @@ See [references](#references) for links to dashboard and API documentation.
 
 - Ensure you have your test (and live) [API keys](https://developer.flutterwave.com/docs/api-keys).
 ```
-Flutter version >= 1.22.0
+Flutter version >= 1.17.0
 Flutterwave version 3 API keys
 ```
 
@@ -43,7 +43,7 @@ Flutterwave version 3 API keys
 
 In your `pubspec.yaml` file add:
 
-1. `flutterwave: 0.1.0`
+1. `flutterwave: 0.0.1`
 2. run `flutter pub get`
 
 <a id="usage"></a>
@@ -51,27 +51,33 @@ In your `pubspec.yaml` file add:
 
 ### 1. Create a `Flutterwave` instance
 
-Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPayment()` The `UiPayment` accepts a mandatory instance of the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
+Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPayment()` The constructor accepts a mandatory instance of the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
 
-    void beginPayment async () { 
+     beginPayment async () { 
        try { 
-		     final ChargeResponse response = await Flutterwave.UiPayment(  
-	            context: build_context_here,
-	            publicKey: "public_key_here",
-	            encryptionKey: "encryption_key_here",  
-	            isDebugMode: true/false,
-	            currency: FlutterwaveCurrency.NGN,
-	            amount: "10",
-	            email: "test_user@test.com",
-	            fullName: "Flutterwave Test User",
-	            txRef: your_unique_ref_here,
-	            narration: your_payment_narration_here, 
-	            phoneNumber: user_phone_number, 
-	            acceptBankTransferPayment: true/false,  
-	            acceptAccountPayment = true/false,
-	            acceptCardPayment = true/false,  
-	            acceptUSSDPayment = true/false)
-	            .initializeForUiPayments();
+		     Flutterwave flutterwave = Flutterwave.UiPayment(
+                         context: this.context,
+                         encryptionKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+                         publicKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+                         currency: this.currency,
+                         amount: this.amount,
+                         email: "valid@email.com",
+                         fullName: "Valid Full Name",
+                         txRef: this.txref,
+                         isDebugMode: true,
+                         phoneNumber: "0123456789",
+                         acceptCardPayment: true,
+                         acceptUSSDPayment: false,
+                         acceptAccountPayment: false,
+                         acceptFrancophoneMobileMoney: false,
+                         acceptGhanaPayment: false,
+                         acceptMpesaPayment: false,
+                         acceptRwandaMoneyPayment: true,
+                         acceptUgandaPayment: false,
+                         acceptZambiaPayment: false)
+                         
+             final ChargeResponse response = await flutterwave.initializeForUiPayments();
+                        
 	         } catch(error) {
 		         handleError(error);
 	         }
@@ -80,8 +86,82 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
 
 ### 2. Handle the response
 
-  Calling the `.initialiazeForUiPayments()` method returns a `Future`
+ Calling the `.initialiazeForUiPayments()` method returns a `Future`
  of `ChargeResponse` which we await for the actual response as seen above.
+ 
+ An example of how to make payment in a Widget would look like this:
+ 
+ ```
+    class PaymentWidget extends StatefulWidget {
+      @override
+      _PaymentWidgetState createState() => _PaymentWidgetState();
+    }
+    
+    class _PaymentWidgetState extends State<PaymentWidget> {
+      final String txref = "My_unique_transaction_reference_123";
+      final String amount = "200";
+      final String currency = FlutterwaveCurrency.RWF;
+    
+      @override
+      Widget build(BuildContext context) {
+        return Container();
+      }
+    
+      beginPayment() async {
+        final Flutterwave flutterwave = Flutterwave.UiPayment(
+            context: this.context,
+            encryptionKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+            publicKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+            currency: this.currency,
+            amount: this.amount,
+            email: "valid@email.com",
+            fullName: "Valid Full Name",
+            txRef: this.txref,
+            isDebugMode: true,
+            phoneNumber: "0123456789",
+            acceptCardPayment: true,
+            acceptUSSDPayment: false,
+            acceptAccountPayment: false,
+            acceptFrancophoneMobileMoney: false,
+            acceptGhanaPayment: false,
+            acceptMpesaPayment: false,
+            acceptRwandaMoneyPayment: true,
+            acceptUgandaPayment: false,
+            acceptZambiaPayment: false);
+    
+        try {
+          final ChargeResponse response = await flutterwave.initializeForUiPayments();
+          if (response == null) {
+            // user didn't complete the transaction. Payment wasn't successful.
+          } else {
+            final isSuccessful = checkPaymentIsSuccessful(response);
+            if (isSuccessful) {
+              // provide value to customer
+            } else {
+              // check message
+              print(response.message);
+    
+              // check status
+              print(response.status);
+    
+              // check processor error
+              print(response.data.processorResponse);
+            }
+          }
+        } catch (error, stacktrace) {
+          // handleError(error);
+          // print(stacktrace);
+        }
+      }
+    
+      bool checkPaymentIsSuccessful(final ChargeResponse response) {
+        return response.data.status == FlutterwaveConstants.SUCCESSFUL &&
+            response.data.currency == this.currency &&
+            response.data.amount == this.amount &&
+            response.data.txRef == this.txref;
+      }
+    }
+```
  
 #### Please note that:
  - `ChargeResponse` can be null, depending on if the user cancels
@@ -92,7 +172,7 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
 
 >  **PLEASE NOTE**
 
-> We advise you to do a further verification of transaction's details on your server to be sure everything checks out before providing service or goods.
+> We advise you to do a further verification of transaction's details on your server to be sure everything checks out before providing service or goods as seen in the `checkPaymentIsSuccessful()` method above.
 
 <a id="deployment"></a>
 ## Deployment
