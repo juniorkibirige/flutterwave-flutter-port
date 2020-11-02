@@ -5,6 +5,8 @@ class ResolveAccountRequest {
 
   ResolveAccountRequest({this.accountNumber, this.acountBankCode});
 
+
+  /// Initializes a new ResolveAccountRequest object from json
   ResolveAccountRequest.fromJson(Map<String, dynamic> json) {
     this.accountNumber = json['account_number'];
     this.acountBankCode = json['account_bank'];
@@ -13,6 +15,8 @@ class ResolveAccountRequest {
         : null;
   }
 
+
+  /// Converts instance of ResolveAccountRequest to json
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['account_number'] = this.accountNumber;

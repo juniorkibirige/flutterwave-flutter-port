@@ -37,7 +37,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Hexcolor("#fff1d0"),
+          backgroundColor: HexColor("#fff1d0"),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(
@@ -108,7 +108,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
     );
   }
 
-  Future<void> showLoading(String message) {
+  Future<void> _showLoading(String message) {
     return showDialog(
       context: this.context,
       barrierDismissible: false,
@@ -135,18 +135,14 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
     );
   }
 
-  void closeDialog() {
+  void _closeDialog() {
     if (this.loadingDialogContext != null) {
       Navigator.of(this.loadingDialogContext).pop();
       this.loadingDialogContext = null;
     }
   }
 
-  void _removeFocusFromView() {
-    FocusScope.of(this.context).requestFocus(FocusNode());
-  }
-
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
         message,
@@ -167,7 +163,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
 
   void _initiatePayment() async {
     Navigator.pop(this.context);
-    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+    this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
 
     final VoucherPaymentManager paymentManager = this.widget._paymentManager;
     final VoucherPaymentRequest request = VoucherPaymentRequest(
@@ -181,16 +177,16 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
     try {
       final http.Client client = http.Client();
       final response = await paymentManager.payWithVoucher(request, client);
-      this.closeDialog();
+      this._closeDialog();
       
       if (FlutterwaveConstants.SUCCESS == response.status &&
           FlutterwaveConstants.CHARGE_INITIATED == response.message) {
         this._verifyPayment(response.data.flwRef);
       } else {
-        this.showSnackBar(response.message);
+        this._showSnackBar(response.message);
       }
     } catch (error) {
-      this.closeDialog();
+      this._closeDialog();
     }
   }
 
@@ -201,7 +197,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
     final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 
-    this.showLoading(FlutterwaveConstants.VERIFYING);
+    this._showLoading(FlutterwaveConstants.VERIFYING);
     Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
       if (intialCount == numberOfTries) {
         timer.cancel();
@@ -219,13 +215,13 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
             response.data.flwRef == flwRef) {
           timer.cancel();
         } else {
-          this.showSnackBar(response.message);
+          this._showSnackBar(response.message);
         }
         this._onComplete(response);
       } catch (error) {
         timer.cancel();
-        this.closeDialog();
-        this.showSnackBar(error.toString());
+        this._closeDialog();
+        this._showSnackBar(error.toString());
       } finally {
         intialCount = intialCount + 1;
       }
@@ -233,7 +229,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
   }
 
   void _onComplete(final ChargeResponse chargeResponse) {
-    this.closeDialog();
+    this._closeDialog();
     Navigator.pop(this.context, chargeResponse);
   }
 }

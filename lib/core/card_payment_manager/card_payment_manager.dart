@@ -32,6 +32,7 @@ class CardPaymentManager {
   ChargeCardRequest chargeCardRequest;
   CardPaymentListener cardPaymentListener;
 
+  /// CardPaymentManager constructor
   CardPaymentManager({
     @required this.publicKey,
     @required this.encryptionKey,
@@ -49,19 +50,23 @@ class CardPaymentManager {
     this.narration,
   });
 
+  /// This method is required to add a payment listener to card transactions
   CardPaymentManager setCardPaymentListener(
       final CardPaymentListener cardPaymentListener) {
     this.cardPaymentListener = cardPaymentListener;
     return this;
   }
 
+  /// Responsible for encrypting charge requests using 3DES encryption
+  /// it returns a map
   Map<String, String> _prepareRequest(
       final ChargeCardRequest chargeCardRequest) {
     final String encryptedChargeRequest = FlutterwaveUtils.tripleDESEncrypt(
         jsonEncode(chargeCardRequest.toJson()), encryptionKey);
-    return FlutterwaveUtils.encryptRequest(encryptedChargeRequest);
+    return FlutterwaveUtils.createCardRequest(encryptedChargeRequest);
   }
 
+  /// Initiates Card Request
   Future<dynamic> payWithCard(final http.Client client,
       final ChargeCardRequest chargeCardRequest) async {
 
@@ -83,6 +88,10 @@ class CardPaymentManager {
     this._handleResponse(response);
   }
 
+  /// Responsible for vhandling card payment responses depending on
+  /// the card's authorization mode.
+  /// It calls the Callback methods when it required additional information
+  /// for authorisation
   void _handleResponse(final http.Response response) {
     try {
       final responseBody = ChargeResponse.fromJson(jsonDecode(response.body));
@@ -147,6 +156,7 @@ class CardPaymentManager {
     return;
   }
 
+  /// This method is responsible for updating a card request with the card's pin
   Future<dynamic> addPin(String pin) async {
     Authorization auth = Authorization();
     auth.mode = Authorization.PIN;
@@ -155,6 +165,8 @@ class CardPaymentManager {
     this.payWithCard(http.Client(), this.chargeCardRequest);
   }
 
+  /// This method is responsible for updating a card request with the card's
+  /// address information
   Future<dynamic> addAddress(ChargeRequestAddress chargeAddress) async {
     Authorization auth = Authorization();
     auth.mode = Authorization.AVS;
@@ -168,6 +180,7 @@ class CardPaymentManager {
     this.payWithCard(http.Client(), this.chargeCardRequest);
   }
 
+  /// This method is responsible for updating a card request with the card's OTP
   Future<ChargeResponse> addOTP(String otp, String flwRef) async {
     return FlutterwaveAPIUtils.validatePayment(
         otp, flwRef, http.Client(), this.isDebugMode, this.publicKey, false);

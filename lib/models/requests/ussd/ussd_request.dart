@@ -17,16 +17,7 @@ class USSDRequest {
     this.phoneNumber
   });
 
-  USSDRequest.fromJson(Map<String, dynamic> json) {
-    this.amount = json['amount'];
-    this.currency = json['currency'];
-    this.email = json['email'];
-    this.txRef = json['tx_ref'];
-    this.fullName = json['fullname'];
-    this.accountBank = json['account_bank'];
-    this.phoneNumber = json["phone_number"];
-  }
-
+  /// Converts instance of USSDRequest to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

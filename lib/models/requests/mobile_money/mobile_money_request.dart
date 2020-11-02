@@ -25,19 +25,8 @@ class MobileMoneyRequest {
       this.country = "",
       this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL});
 
-  MobileMoneyRequest.fromJson(Map<String, dynamic> json) {
-    this.amount = json['amount'];
-    this.currency = json['currency'];
-    this.network = json['network'];
-    this.txRef = json['tx_ref'];
-    this.fullName = json['fullname'];
-    this.email = json['email'];
-    this.phoneNumber = json["phone_number"];
-    this.redirectUrl = json["redirect_url"];
-    this.voucher = json["voucher"];
-    this.country = json["country"];
-  }
 
+  /// Converts MobileMoneyRequest instance to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

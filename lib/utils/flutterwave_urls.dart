@@ -23,10 +23,12 @@ class FlutterwaveURLS {
   static const String VERIFY_TRANSACTION = "mpesa-verify";
   static const String DEFAULT_REDIRECT_URL = "https://flutterwave.com/ng/";
 
+  /// Returns base url depending on debug mode
   static String getBaseUrl(final bool isDebugMode) {
     return isDebugMode ? _DEBUG_BASE_URL : _PROD_BASE_URL;
   }
 
+  /// Retturns Mobile Money Urls depending on currency
   static String getMobileMoneyUrl(final String currency) {
     switch (currency) {
       case FlutterwaveCurrency.UGX:

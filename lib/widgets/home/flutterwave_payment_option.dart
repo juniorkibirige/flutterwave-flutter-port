@@ -11,7 +11,7 @@ class FlutterwavePaymentOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton(
       onPressed: this.handleClick,
-      color: Hexcolor("#fff1d0"),
+      color: HexColor("#fff1d0"),
       child: Container(
         width: double.infinity,
         child: RichText(

@@ -23,6 +23,8 @@ class BankTransferPaymentManager {
   bool isPermanent;
   String narration;
 
+  /// Bank Transfer Payment Manager Constructor
+  /// This is responsible for creating instances of BankTransferPaymentManager
   BankTransferPaymentManager({
     @required this.publicKey,
     @required this.currency,
@@ -37,6 +39,8 @@ class BankTransferPaymentManager {
     this.isPermanent,
   });
 
+  /// Resposnsible for making payments with bank transfer
+  /// it returns a bank transfer response or throws an error
   Future<BankTransferResponse> payWithBankTransfer(
       BankTransferRequest bankTransferRequest, http.Client client) async {
     final requestBody = bankTransferRequest.toJson();
@@ -55,6 +59,8 @@ class BankTransferPaymentManager {
     }
   }
 
+  /// Responsible for verifying payments made with bank transfers
+  /// it returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> verifyPayment(final String flwRef, final http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.VERIFY_TRANSACTION;
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);

@@ -5,6 +5,7 @@ class ChargeRequestAddress {
   String zipCode;
   String country;
 
+  /// ChargeRequestAddress constructor
   ChargeRequestAddress({
     this.address,
     this.city,
@@ -13,6 +14,7 @@ class ChargeRequestAddress {
     this.country,
   });
 
+  /// Initialized ChargeRequestAddress from a json object
   ChargeRequestAddress.fromJson(Map<String, dynamic> json) {
     this.address = json["address"];
     this.city = json["city"];
@@ -21,13 +23,4 @@ class ChargeRequestAddress {
     this.country = json["country"];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["address"] = this.address;
-    data["city"] = this.city;
-    data["state"] = this.state;
-    data["zipcode"] = this.zipCode;
-    data["country"] = this.country;
-    return data;
-  }
 }

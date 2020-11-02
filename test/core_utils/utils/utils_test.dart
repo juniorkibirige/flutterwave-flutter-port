@@ -26,7 +26,7 @@ main() {
 
     test("encryptRequest should return a map with key `client`", (){
       final String body = "some random body";
-      final Map result = FlutterwaveUtils.encryptRequest(body);
+      final Map result = FlutterwaveUtils.createCardRequest(body);
       expect(true, result != null);
       expect(true, result["client"] != null);
       expect(result["client"], body);

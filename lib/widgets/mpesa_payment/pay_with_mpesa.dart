@@ -37,7 +37,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Hexcolor("#fff1d0"),
+          backgroundColor: HexColor("#fff1d0"),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(
@@ -110,7 +110,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     }
   }
 
-  Future<void> showLoading(String message) {
+  Future<void> _showLoading(String message) {
     return showDialog(
       context: this.context,
       barrierDismissible: false,
@@ -137,7 +137,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     );
   }
 
-  void closeDialog() {
+  void _closeDialog() {
     if (this.loadingDialogContext != null) {
       Navigator.of(this.loadingDialogContext).pop();
       this.loadingDialogContext = null;
@@ -148,7 +148,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     FocusScope.of(this.context).requestFocus(FocusNode());
   }
 
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
         message,
@@ -161,7 +161,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   void _handlePayment() async {
     Navigator.pop(this.context);
 
-    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+    this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
     final MpesaPaymentManager mpesaPaymentManager = this.widget._paymentManager;
 
     final MpesaRequest request = MpesaRequest(
@@ -175,16 +175,16 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
     final http.Client client = http.Client();
     try {
       final response = await mpesaPaymentManager.payWithMpesa(request, client);
-      this.closeDialog();
+      this._closeDialog();
       if (FlutterwaveConstants.SUCCESS == response.status &&
           FlutterwaveConstants.CHARGE_INITIATED == response.message) {
         this._verifyPayment(response.data.flwRef);
       } else {
-        this.showSnackBar(response.message);
+        this._showSnackBar(response.message);
       }
     } catch (error) {
-      this.closeDialog();
-      this.showSnackBar(error.toString());
+      this._closeDialog();
+      this._showSnackBar(error.toString());
     }
   }
 
@@ -197,7 +197,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
 
     ChargeResponse response;
 
-    this.showLoading(FlutterwaveConstants.VERIFYING);
+    this._showLoading(FlutterwaveConstants.VERIFYING);
     final client = http.Client();
     Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
       try {
@@ -220,12 +220,12 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
           timer.cancel();
           this._onComplete(response);
         } else {
-          this.showSnackBar(response.message);
+          this._showSnackBar(response.message);
         }
       } catch (error) {
         timer.cancel();
-        this.closeDialog();
-        this.showSnackBar(error.toString());
+        this._closeDialog();
+        this._showSnackBar(error.toString());
       } finally {
         intialCount = intialCount + 1;
       }
@@ -233,7 +233,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   }
 
   void _onComplete(final ChargeResponse chargeResponse) {
-    this.closeDialog();
+    this._closeDialog();
     Navigator.pop(this.context, chargeResponse);
   }
 }

@@ -38,7 +38,9 @@ class Flutterwave {
   // bool acceptSouthAfricaBankPayment;
   // bool acceptBankTransferPayment;
 
-  Flutterwave.UiPayment({
+
+  /// Flutterwave Constructor
+  Flutterwave.forUIPayment({
     @required this.context,
     @required this.publicKey,
     @required this.encryptionKey,
@@ -200,6 +202,10 @@ class Flutterwave {
     }
   }
 
+
+  /// Launches payment screen
+  /// Returns a future ChargeResponse intance
+  /// Nullable
   Future<ChargeResponse> initializeForUiPayments() async {
     FlutterwavePaymentManager paymentManager = FlutterwavePaymentManager(
         publicKey: this.publicKey,

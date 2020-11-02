@@ -15,15 +15,7 @@ class MpesaRequest {
     this.phoneNumber
   });
 
-  MpesaRequest.fromJson(Map<String, dynamic> json) {
-    this.amount = json['amount'];
-    this.currency = json['currency'];
-    this.email = json['email'];
-    this.txRef = json['tx_ref'];
-    this.fullName = json['fullname'];
-    this.phoneNumber = json["phone_number"];
-  }
-
+/// Converts instance of MpesaRequest to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

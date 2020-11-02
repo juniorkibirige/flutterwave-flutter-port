@@ -16,6 +16,7 @@ class ChargeCardRequest {
   String country;
   Authorization authorization;
 
+  /// ChargeCardRequest constructor
   ChargeCardRequest({
     @required this.cardNumber,
     @required this.cvv,
@@ -31,6 +32,7 @@ class ChargeCardRequest {
     this.authorization
   });
 
+  /// Converts ChargeCardRequest instance to a map
   Map<String, dynamic> toJson() {
     return {
       "card_number": this.cardNumber,

@@ -19,16 +19,7 @@ class VoucherPaymentRequest {
     @required this.pin,
   });
 
-  VoucherPaymentRequest.fromJson(Map<String, dynamic> json) {
-    this.amount = json['amount'];
-    this.currency = json['currency'];
-    this.email = json['email'];
-    this.txRef = json['tx_ref'];
-    this.fullName = json['fullname'];
-    this.phoneNumber = json["phone_number"];
-    this.pin = json["pin"];
-  }
-
+ /// Converts instance of VoucherPaymentRequest to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

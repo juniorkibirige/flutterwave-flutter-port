@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
 import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:flutterwave/core/flutterwave_payment_manager.dart';
 import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
@@ -9,7 +8,6 @@ import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
 import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
-import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
 import 'package:flutterwave/widgets/card_payment/card_payment.dart';
 import 'package:flutterwave/widgets/mobile_money/pay_with_mobile_money.dart';
 import 'package:flutterwave/widgets/mpesa_payment/pay_with_mpesa.dart';
@@ -144,25 +142,6 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                         ],
                       ),
                     ),
-                    //todo enable when v3 is confirmed to work well
-                    // Visibility(
-                    //   visible: paymentManager.acceptBankTransferPayment,
-                    //   child: Column(
-                    //     children: [
-                    //       SizedBox(
-                    //         height: 50.0,
-                    //         child: FlutterwavePaymentOption(
-                    //           handleClick:
-                    //               this._launchBankTransferPaymentWidget,
-                    //           buttonText: "Bank Transfer",
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         height: 0.5,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     Visibility(
                       visible: paymentManager.acceptUSSDPayment,
                       child: Column(
@@ -334,17 +313,6 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
     Navigator.pop(this.context, chargeResponse);
   }
 
-  void _launchBankTransferPaymentWidget() async {
-    final BankTransferPaymentManager bankTransferPaymentManager =
-        this.widget._flutterwavePaymentManager.getBankTransferPaymentManager();
-    final response = await Navigator.push(
-      this.context,
-      MaterialPageRoute(
-          builder: (context) => PayWithBankTransfer(bankTransferPaymentManager)),
-    );
-    Navigator.pop(this.context, response);
-  }
-
   void _launchPayWithAccountWidget() async {
     final BankAccountPaymentManager bankAccountPaymentManager =
         this.widget._flutterwavePaymentManager.getBankAccountPaymentManager();
@@ -390,28 +358,6 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
     Navigator.pop(this.context, response);
   }
 
-  void _launchBarterPaymentWidget() async {
-    final MobileMoneyPaymentManager mobileMoneyPaymentManager =
-        this.widget._flutterwavePaymentManager.getMobileMoneyPaymentManager();
-    final response = await Navigator.push(
-      this.context,
-      MaterialPageRoute(
-          builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
-    );
-    Navigator.pop(this.context, response);
-  }
-
-  void _launchUKAccountPaymentWidget() async {
-    final MobileMoneyPaymentManager mobileMoneyPaymentManager =
-        this.widget._flutterwavePaymentManager.getMobileMoneyPaymentManager();
-    final response = await Navigator.push(
-      this.context,
-      MaterialPageRoute(
-          builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
-    );
-    Navigator.pop(this.context, response);
-  }
-
   void _launchVoucherPaymentWidget() async {
     final VoucherPaymentManager voucherPaymentManager =
     this.widget._flutterwavePaymentManager.getVoucherPaymentManager();
@@ -422,6 +368,42 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
     );
     Navigator.pop(this.context, response);
   }
+
+  // Todo: include when Barter Payment is ready from on v3
+  // void _launchBarterPaymentWidget() async {
+  //   final MobileMoneyPaymentManager mobileMoneyPaymentManager =
+  //       this.widget._flutterwavePaymentManager.getMobileMoneyPaymentManager();
+  //   final response = await Navigator.push(
+  //     this.context,
+  //     MaterialPageRoute(
+  //         builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
+  //   );
+  //   Navigator.pop(this.context, response);
+  // }
+
+  // Todo: include when UK bank codes is ready on v3
+  // void _launchUKAccountPaymentWidget() async {
+  //   final MobileMoneyPaymentManager mobileMoneyPaymentManager =
+  //       this.widget._flutterwavePaymentManager.getMobileMoneyPaymentManager();
+  //   final response = await Navigator.push(
+  //     this.context,
+  //     MaterialPageRoute(
+  //         builder: (context) => PayWithMobileMoney(mobileMoneyPaymentManager)),
+  //   );
+  //   Navigator.pop(this.context, response);
+  // }
+
+  // Todo include when Bank Transfer Payment is optimized.
+  // void _launchBankTransferPaymentWidget() async {
+  //   final BankTransferPaymentManager bankTransferPaymentManager =
+  //       this.widget._flutterwavePaymentManager.getBankTransferPaymentManager();
+  //   final response = await Navigator.push(
+  //     this.context,
+  //     MaterialPageRoute(
+  //         builder: (context) => PayWithBankTransfer(bankTransferPaymentManager)),
+  //   );
+  //   Navigator.pop(this.context, response);
+  // }
 
   void showSnackBar(String message) {
     SnackBar snackBar = SnackBar(

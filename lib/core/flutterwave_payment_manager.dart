@@ -38,6 +38,8 @@ class FlutterwavePaymentManager {
   bool acceptVoucherPayment;
   String country;
 
+
+  /// FlutterwavePaymentManager Constructor
   FlutterwavePaymentManager(
       {@required this.publicKey,
       @required this.encryptionKey,
@@ -69,6 +71,7 @@ class FlutterwavePaymentManager {
       this.narration,
       this.network = ""});
 
+  /// Returns an instance of CardPaymentManager
   CardPaymentManager getCardPaymentManager() {
     return CardPaymentManager(
         publicKey: this.publicKey,
@@ -87,6 +90,7 @@ class FlutterwavePaymentManager {
         duration: this.duration);
   }
 
+  /// Returns an instance of BankTransferPaymentManager
   BankTransferPaymentManager getBankTransferPaymentManager() {
     return BankTransferPaymentManager(
         publicKey: this.publicKey,
@@ -102,6 +106,7 @@ class FlutterwavePaymentManager {
         duration: this.duration);
   }
 
+  /// Returns an instance of BankAccountPaymentManager
   BankAccountPaymentManager getBankAccountPaymentManager() {
     return BankAccountPaymentManager(
         publicKey: this.publicKey,
@@ -114,6 +119,7 @@ class FlutterwavePaymentManager {
         fullName: this.fullName);
   }
 
+  /// Returns an instance of USSDPaymentManager
   USSDPaymentManager getUSSDPaymentManager() {
     return USSDPaymentManager(
         publicKey: this.publicKey,
@@ -126,6 +132,7 @@ class FlutterwavePaymentManager {
         fullName: this.fullName);
   }
 
+  /// Returns an instance of MobileMoneyPaymentManager
   MobileMoneyPaymentManager getMobileMoneyPaymentManager() {
     return MobileMoneyPaymentManager(
         publicKey: this.publicKey,
@@ -139,6 +146,7 @@ class FlutterwavePaymentManager {
         email: this.email);
   }
 
+  /// Returns an instance of MpesaPaymentManager
   MpesaPaymentManager getMpesaPaymentManager() {
     return MpesaPaymentManager(
         publicKey: this.publicKey,
@@ -151,6 +159,7 @@ class FlutterwavePaymentManager {
         email: this.email);
   }
 
+  /// Returns an instance of VoucherPaymentManager
   VoucherPaymentManager getVoucherPaymentManager() {
     return VoucherPaymentManager(
         publicKey: this.publicKey,

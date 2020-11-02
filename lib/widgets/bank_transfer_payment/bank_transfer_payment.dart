@@ -38,7 +38,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
       home: Scaffold(
           key: this._scaffoldKey,
           appBar: AppBar(
-            backgroundColor: Hexcolor("#fff1d0"),
+            backgroundColor: HexColor("#fff1d0"),
             title: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
@@ -80,7 +80,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
   void _initiateBankTransfer() async {
     Navigator.pop(this.context);
 
-    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+    this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
     final http.Client client = http.Client();
     final BankTransferRequest request = BankTransferRequest(
         amount: this.widget._paymentManager.amount,
@@ -101,13 +101,13 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
       if (FlutterwaveConstants.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
       } else {
-        this.closeDialog();
-        this.showSnackBar(response.message);
+        this._closeDialog();
+        this._showSnackBar(response.message);
       }
     } catch (error) {
-      this.showSnackBar(error.toString());
+      this._showSnackBar(error.toString());
     } finally {
-      this.closeDialog();
+      this._closeDialog();
     }
   }
 
@@ -121,15 +121,15 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
 
       final BankTransferPaymentManager pm = this.widget._paymentManager;
 
-      this.showLoading(FlutterwaveConstants.VERIFYING);
+      this._showLoading(FlutterwaveConstants.VERIFYING);
       ChargeResponse response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds),
           (timer) async {
         final client = http.Client();
         if ((intialCount >= numberOfTries) && response != null) {
           timer.cancel();
-          this.closeDialog();
-          this.onPaymentComplete(response);
+          this._closeDialog();
+          this._onPaymentComplete(response);
         }
         try {
           response = await FlutterwaveAPIUtils.verifyPayment(
@@ -148,23 +148,23 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
                       .authorization
                       .transferReference
                       .toString()) {
-            this.closeDialog();
-            this.showSnackBar("Payment received");
+            this._closeDialog();
+            this._showSnackBar("Payment received");
             timer.cancel();
-            this.onPaymentComplete(response);
+            this._onPaymentComplete(response);
           } else {
             print("inside else, response is ${response.toJson()}");
           }
         } catch (error) {
           timer.cancel();
-          this.closeDialog();
-          this.showSnackBar(error.toString());
+          this._closeDialog();
+          this._showSnackBar(error.toString());
         } finally {
           intialCount = intialCount + 1;
         }
       });
     } else {
-      this.showSnackBar("An unexpected error ocurred.");
+      this._showSnackBar("An unexpected error ocurred.");
     }
   }
 
@@ -175,7 +175,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
     });
   }
 
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
         message,
@@ -185,12 +185,12 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
     this._scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  void onPaymentComplete(final ChargeResponse chargeResponse) {
-    this.showSnackBar("Transaction completed.");
+  void _onPaymentComplete(final ChargeResponse chargeResponse) {
+    this._showSnackBar("Transaction completed.");
     Navigator.pop(this.context, chargeResponse);
   }
 
-  Future<void> showLoading(String message) {
+  Future<void> _showLoading(String message) {
     return showDialog(
       context: this.context,
       barrierDismissible: false,
@@ -215,7 +215,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
     );
   }
 
-  void closeDialog() {
+  void _closeDialog() {
     if (this.loadingDialogContext != null) {
       Navigator.of(this.loadingDialogContext).pop();
       this.loadingDialogContext = null;

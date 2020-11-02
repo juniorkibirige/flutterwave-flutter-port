@@ -9,6 +9,8 @@ class BankTransferRequest {
   String txRef;
   String phoneNumber;
 
+
+  /// BankTransferRequest constructor
   BankTransferRequest({
     this.amount,
     this.currency,
@@ -21,6 +23,7 @@ class BankTransferRequest {
     this.phoneNumber
   });
 
+  /// Constructor to initialize BankTransferRequest from json
   BankTransferRequest.fromJson(Map<String, dynamic> json) {
     this.amount = json['amount'];
     this.currency = json['currency'];
@@ -33,6 +36,7 @@ class BankTransferRequest {
     this.phoneNumber = json["phone_number"];
   }
 
+  /// Converts BankTransferRequest instance to a map
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

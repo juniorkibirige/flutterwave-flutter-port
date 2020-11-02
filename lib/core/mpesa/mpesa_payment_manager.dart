@@ -8,7 +8,6 @@ import 'package:flutterwave/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class MpesaPaymentManager {
-
   String publicKey;
   String currency;
   String amount;
@@ -18,6 +17,7 @@ class MpesaPaymentManager {
   String fullName;
   String email;
 
+  /// MpesaPaymentManager constructor.
   MpesaPaymentManager({
     @required this.publicKey,
     @required this.isDebugMode,
@@ -29,6 +29,7 @@ class MpesaPaymentManager {
     @required this.phoneNumber,
   });
 
+  /// Returns an instance of MpesaPaymentManager from a map
   MpesaPaymentManager.fromJson(Map<String, dynamic> json) {
     this.amount = json['amount'];
     this.currency = json['currency'];
@@ -38,6 +39,8 @@ class MpesaPaymentManager {
     this.phoneNumber = json["phone_number"];
   }
 
+
+  /// Converts instance of MpesaPaymentManager to a map
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,
@@ -49,6 +52,10 @@ class MpesaPaymentManager {
     };
   }
 
+
+  /// Initiates payments via Mpesa
+  /// Available for only payments with KES currency
+  /// returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> payWithMpesa(MpesaRequest payload,
       http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +

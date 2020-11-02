@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FlutterwaveViewUtils {
+
+  /// Displays a modal to confirm payment
   static Future<void> showConfirmPaymentModal(final BuildContext context,
       final String currency, final String amount, final Function onContinuePressed) async {
     return showDialog(

@@ -49,7 +49,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Hexcolor("#fff1d0"),
+          backgroundColor: HexColor("#fff1d0"),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(
@@ -165,7 +165,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     }
   }
 
-  Future<void> showLoading(String message) {
+  Future<void> _showLoading(String message) {
     return showDialog(
       context: this.context,
       barrierDismissible: false,
@@ -192,7 +192,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     );
   }
 
-  void closeDialog() {
+  void _closeDialog() {
     if (this.loadingDialogContext != null) {
       Navigator.of(this.loadingDialogContext).pop();
       this.loadingDialogContext = null;
@@ -277,7 +277,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     Navigator.pop(this.context);
   }
 
-  _handleFrancophoneCountrySelected(final FrancoPhoneCountry country) {
+  void _handleFrancophoneCountrySelected(final FrancoPhoneCountry country) {
     this._removeFocusFromView();
     this.setState(() {
       this.selectedFrancophoneCountry = country;
@@ -308,7 +308,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     return "";
   }
 
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
         message,
@@ -321,7 +321,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   void _handlePayment() async {
     Navigator.pop(this.context);
 
-    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+    this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
 
     final MobileMoneyPaymentManager mobileMoneyPaymentManager =
         this.widget._paymentManager;
@@ -348,30 +348,30 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     try {
       final response =
           await mobileMoneyPaymentManager.payWithMobileMoney(request, client);
-      this.closeDialog();
+      this._closeDialog();
 
       if (FlutterwaveConstants.SUCCESS == response.status &&
           FlutterwaveConstants.CHARGE_INITIATED == response.message) {
         if (response.meta.authorization.mode == Authorization.REDIRECT &&
             response.meta.authorization.redirect != null) {
-          this.openOtpScreen(response.meta.authorization.redirect);
+          this._openOtpScreen(response.meta.authorization.redirect);
           return;
         }
         if (response.meta.authorization.mode == Authorization.CALLBACK) {
           this._verifyPayment(response.data.flwRef);
           return;
         }
-        this.showSnackBar(response.message);
+        this._showSnackBar(response.message);
       } else {
-        this.showSnackBar(response.message);
+        this._showSnackBar(response.message);
       }
     } catch (error) {
-      this.closeDialog();
-      this.showSnackBar(error.toString());
+      this._closeDialog();
+      this._showSnackBar(error.toString());
     }
   }
 
-  Future<dynamic> openOtpScreen(String url) async {
+  Future<dynamic> _openOtpScreen(String url) async {
     final result = await Navigator.push(
       this.context,
       MaterialPageRoute(
@@ -381,10 +381,10 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
       if (result.runtimeType == " ".runtimeType) {
         this._verifyPayment(result);
       } else {
-        this.showSnackBar(result["message"]);
+        this._showSnackBar(result["message"]);
       }
     } else {
-      this.showSnackBar("Transaction not completed.");
+      this._showSnackBar("Transaction not completed.");
     }
   }
 
@@ -397,7 +397,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
 
     ChargeResponse response;
 
-    this.showLoading(FlutterwaveConstants.VERIFYING);
+    this._showLoading(FlutterwaveConstants.VERIFYING);
 
     Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
       if (intialCount >= numberOfTries && response != null) {
@@ -420,8 +420,8 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
         }
       } catch (error) {
         timer.cancel();
-        this.closeDialog();
-        this.showSnackBar(error.toString());
+        this._closeDialog();
+        this._showSnackBar(error.toString());
       } finally {
         intialCount = intialCount + 1;
       }
@@ -429,7 +429,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
   }
 
   void _onComplete(final ChargeResponse chargeResponse) {
-    this.closeDialog();
+    this._closeDialog();
     Navigator.pop(this.context, chargeResponse);
   }
 }

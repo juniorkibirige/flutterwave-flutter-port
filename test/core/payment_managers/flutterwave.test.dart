@@ -21,7 +21,7 @@ main() {
       final String txref = "tx_r_ef";
       final bool isDebugMode = true;
       final String phoneNumber = "123456";
-      final flutterwave = Flutterwave.UiPayment(context: mockContext,
+      final flutterwave = Flutterwave.forUIPayment(context: mockContext,
           publicKey: pbKey,
           encryptionKey: enKey,
           currency: currency,

@@ -43,7 +43,7 @@ Flutterwave version 3 API keys
 
 In your `pubspec.yaml` file add:
 
-1. `flutterwave: 0.0.1`
+1. `flutterwave: 0.0.2`
 2. run `flutter pub get`
 
 <a id="usage"></a>
@@ -51,11 +51,11 @@ In your `pubspec.yaml` file add:
 
 ### 1. Create a `Flutterwave` instance
 
-Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPayment()` The constructor accepts a mandatory instance of the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
+Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPayment()` The constructor accepts a mandatory instance of the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
 
      beginPayment async () { 
        try { 
-		     Flutterwave flutterwave = Flutterwave.UiPayment(
+		     Flutterwave flutterwave = Flutterwave.forUIPayment(
                          context: this.context,
                          encryptionKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
                          publicKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
@@ -108,7 +108,7 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.UiPaymen
       }
     
       beginPayment() async {
-        final Flutterwave flutterwave = Flutterwave.UiPayment(
+        final Flutterwave flutterwave = Flutterwave.forUIPayment(
             context: this.context,
             encryptionKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
             publicKey: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",

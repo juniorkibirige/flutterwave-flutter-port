@@ -12,6 +12,7 @@ class FlutterwaveCurrency {
 // static const String GBP = "GBP";
 // static const String ZAR = "ZAR";
 
+  /// Returns a list of Mobile Money Networks available in a country
   static List<String> getAllowedMobileMoneyNetworksByCurrency(
       final String currency) {
     switch (currency) {
@@ -24,5 +25,6 @@ class FlutterwaveCurrency {
       case ZMW:
         return [];
     }
+    return [];
   }
 }

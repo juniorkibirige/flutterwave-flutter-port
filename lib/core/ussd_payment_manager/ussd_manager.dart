@@ -17,6 +17,9 @@ class USSDPaymentManager {
   String phoneNumber;
   String fullName;
 
+  /// USSDPaymentManager constructor
+  /// Available for only payments with NGN currency
+  /// returns an instance of USSDPaymentManager
   USSDPaymentManager({
     @required this.publicKey,
     @required this.currency,
@@ -28,6 +31,9 @@ class USSDPaymentManager {
     @required this.fullName,
   });
 
+  /// Initiates payments via USSD
+  /// Available for only payments with NGN currency
+  /// returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> payWithUSSD(
       USSDRequest ussdRequest, http.Client client) async {
     final requestBody = ussdRequest.toJson();

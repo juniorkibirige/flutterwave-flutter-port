@@ -17,6 +17,8 @@ class VoucherPaymentManager {
   String fullName;
   String email;
 
+  /// VoucherPaymentManager constructor
+  /// returns an instance of VoucherPaymentManager
   VoucherPaymentManager({
     @required this.publicKey,
     @required this.isDebugMode,
@@ -28,6 +30,8 @@ class VoucherPaymentManager {
     @required this.phoneNumber,
   });
 
+  /// VoucherPaymentManager constructor
+  /// returns an instance of VoucherPaymentManager from a json object
   VoucherPaymentManager.fromJson(Map<String, dynamic> json) {
     this.amount = json['amount'];
     this.currency = json['currency'];
@@ -37,6 +41,7 @@ class VoucherPaymentManager {
     this.phoneNumber = json["phone_number"];
   }
 
+  /// Converts this instance of VoucherPaymentManager to a Map
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,
@@ -48,8 +53,10 @@ class VoucherPaymentManager {
     };
   }
 
-  Future<ChargeResponse> payWithVoucher(VoucherPaymentRequest payload,
-      http.Client client) async {
+  /// Initiates voucher payments
+  /// Returns an inatance of ChargeResponse or throws an error
+  Future<ChargeResponse> payWithVoucher(
+      VoucherPaymentRequest payload, http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.VOUCHER_PAYMENT;
     try {
@@ -58,10 +65,10 @@ class VoucherPaymentManager {
           body: payload.toJson());
 
       ChargeResponse chargeResponse =
-      ChargeResponse.fromJson(json.decode(response.body));
+          ChargeResponse.fromJson(json.decode(response.body));
       return chargeResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));
-    } 
+    }
   }
-} 
+}

@@ -18,6 +18,7 @@ class MobileMoneyPaymentManager {
   String fullName;
   String email;
 
+  /// MobileMoneyPaymentManager constructor
   MobileMoneyPaymentManager({
     @required this.publicKey,
     @required this.currency,
@@ -30,6 +31,9 @@ class MobileMoneyPaymentManager {
     this.network,
   });
 
+
+  /// Initiates payments via Mobile Money
+  /// returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> payWithMobileMoney(
       MobileMoneyRequest mobileMoneyRequest, http.Client client) async {
     final requestBody = mobileMoneyRequest.toJson();

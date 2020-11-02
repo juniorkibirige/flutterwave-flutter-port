@@ -47,7 +47,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Hexcolor("#fff1d0"),
+          backgroundColor: HexColor("#fff1d0"),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(
@@ -140,14 +140,14 @@ class _PayWithUssdState extends State<PayWithUssd> {
       final USSDPaymentManager pm = this.widget._paymentManager;
      FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._payWithUSSD);
     } else {
-      this.showSnackBar("Please select a bank");
+      this._showSnackBar("Please select a bank");
     }
   }
 
   void _payWithUSSD() async {
     Navigator.pop(this.context);
 
-    this.showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+    this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
     final USSDPaymentManager ussdPaymentManager = this.widget._paymentManager;
     final request = USSDRequest(
         amount: ussdPaymentManager.amount,
@@ -166,12 +166,12 @@ class _PayWithUssdState extends State<PayWithUssd> {
       if (FlutterwaveConstants.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
       } else {
-        this.showSnackBar(response.message);
+        this._showSnackBar(response.message);
       }
     } catch (error) {
-      this.showSnackBar(error.toString());
+      this._showSnackBar(error.toString());
     } finally {
-      this.closeDialog();
+      this._closeDialog();
     }
   }
 
@@ -183,15 +183,15 @@ class _PayWithUssdState extends State<PayWithUssd> {
     int intialCount = 0;
 
     if (this._chargeResponse != null) {
-      this.showLoading(FlutterwaveConstants.VERIFYING);
+      this._showLoading(FlutterwaveConstants.VERIFYING);
       final client = http.Client();
       ChargeResponse response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
         try {
           if ((intialCount >= numberOfTries) && response != null) {
             timer.cancel();
-            this.closeDialog();
-            this.onComplete(response);
+            this._closeDialog();
+            this._onComplete(response);
           }
           response = await FlutterwaveAPIUtils.verifyPayment(
               this._chargeResponse.data.flwRef,
@@ -204,15 +204,15 @@ class _PayWithUssdState extends State<PayWithUssd> {
               response.data.amount ==
                   this._chargeResponse.data.amount.toString()) {
             timer.cancel();
-            this.closeDialog();
-            this.onComplete(response);
+            this._closeDialog();
+            this._onComplete(response);
           } else {
-            this.showSnackBar(response.message);
+            this._showSnackBar(response.message);
           }
         } catch (error) {
           timer.cancel();
-          this.closeDialog();
-          this.showSnackBar(error.toString());
+          this._closeDialog();
+          this._showSnackBar(error.toString());
         } finally {
           intialCount = intialCount + 1;
         }
@@ -220,8 +220,8 @@ class _PayWithUssdState extends State<PayWithUssd> {
     }
   }
 
-  void onComplete(final ChargeResponse chargeResponse) {
-    this.showSnackBar("Payment Completed");
+  void _onComplete(final ChargeResponse chargeResponse) {
+    this._showSnackBar("Payment Completed");
     Navigator.pop(this.context, chargeResponse);
   }
 
@@ -232,7 +232,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
     });
   }
 
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     SnackBar snackBar = SnackBar(
       content: Text(
         message,
@@ -242,7 +242,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
     this._scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  Future<void> showLoading(String message) {
+  Future<void> _showLoading(String message) {
     return showDialog(
       context: this.context,
       barrierDismissible: false,
@@ -269,7 +269,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
     );
   }
 
-  void closeDialog() {
+  void _closeDialog() {
     if (this.loadingDialogContext != null) {
       Navigator.of(this.loadingDialogContext).pop();
       this.loadingDialogContext = null;
