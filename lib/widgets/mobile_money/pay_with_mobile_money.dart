@@ -12,7 +12,6 @@ import 'package:flutterwave/utils/flutterwave_currency.dart';
 import 'package:flutterwave/utils/flutterwave_utils.dart';
 import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 class PayWithMobileMoney extends StatefulWidget {
@@ -46,10 +45,11 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
 
     final String currency = this.widget._paymentManager.currency;
     return MaterialApp(
+      debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: HexColor("#fff1d0"),
+          backgroundColor: Color(0xFFfff1d0),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(
@@ -277,7 +277,7 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
     Navigator.pop(this.context);
   }
 
-  void _handleFrancophoneCountrySelected(final FrancoPhoneCountry country) {
+  _handleFrancophoneCountrySelected(final FrancoPhoneCountry country) {
     this._removeFocusFromView();
     this.setState(() {
       this.selectedFrancophoneCountry = country;

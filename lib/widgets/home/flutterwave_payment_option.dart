@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class FlutterwavePaymentOption extends StatelessWidget {
   final Function handleClick;
@@ -11,7 +10,7 @@ class FlutterwavePaymentOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton(
       onPressed: this.handleClick,
-      color: HexColor("#fff1d0"),
+      color: Color(0xFFfff1d0),
       child: Container(
         width: double.infinity,
         child: RichText(

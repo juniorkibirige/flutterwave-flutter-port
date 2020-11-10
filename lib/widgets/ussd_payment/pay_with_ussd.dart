@@ -10,7 +10,6 @@ import 'package:flutterwave/utils/flutterwave_constants.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
 import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd_button.dart';
 import 'package:flutterwave/widgets/ussd_payment/ussd_details.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 class PayWithUssd extends StatefulWidget {
@@ -44,10 +43,11 @@ class _PayWithUssdState extends State<PayWithUssd> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
-          backgroundColor: HexColor("#fff1d0"),
+          backgroundColor: Color(0xFFfff1d0),
           title: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(

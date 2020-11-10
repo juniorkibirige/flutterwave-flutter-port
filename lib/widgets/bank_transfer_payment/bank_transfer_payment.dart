@@ -8,7 +8,6 @@ import 'package:flutterwave/models/responses/bank_transfer_response/bank_transfe
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_constants.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 import 'pay_with_account_button.dart';
@@ -35,10 +34,11 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
           key: this._scaffoldKey,
           appBar: AppBar(
-            backgroundColor: HexColor("#fff1d0"),
+            backgroundColor: Color(0xFFfff1d0),
             title: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(

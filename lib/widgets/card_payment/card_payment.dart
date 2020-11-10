@@ -50,6 +50,7 @@ class _CardPaymentState extends State<CardPayment>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         body: Form(
