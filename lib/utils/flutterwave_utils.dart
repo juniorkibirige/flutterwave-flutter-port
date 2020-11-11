@@ -1,3 +1,4 @@
+import 'package:flutterwave/core/flutterwave_error.dart';
 import 'package:flutterwave/models/francophone_country.dart';
 import 'package:flutterwave/utils/flutterwave_currency.dart';
 import 'package:tripledes/tripledes.dart';
@@ -7,8 +8,14 @@ class FlutterwaveUtils {
   /// Encrypts data using 3DES technology.
   /// Returns a String
   static String tripleDESEncrypt(dynamic data, String encryptionKey) {
-    final blockCipher = BlockCipher(TripleDESEngine(), encryptionKey);
-    return blockCipher.encodeB64(data);
+    print("encryptionKey is $encryptionKey");
+    print("data to encrypt is ${data}");
+    try {
+      final blockCipher = BlockCipher(TripleDESEngine(), encryptionKey);
+      return blockCipher.encodeB64(data);
+    } catch (error) {
+      throw(FlutterWaveError(error));
+    }
   }
 
   /// Creates a card request with encrypted details

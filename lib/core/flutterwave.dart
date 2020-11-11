@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/flutterwave_error.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_currency.dart';
 import 'package:flutterwave/widgets/home/flutterwave_payment.dart';
@@ -72,6 +73,7 @@ class Flutterwave {
     // this.acceptSouthAfricaBankPayment = false,
     // this.acceptBarterPayment = false,
   }) {
+    _validateKeys();
     this.currency = this.currency.toUpperCase();
 
     if (this.currency == FlutterwaveCurrency.NGN) {
@@ -242,5 +244,16 @@ class Flutterwave {
       this.context,
       MaterialPageRoute(builder: (context) => FlutterwaveUI(paymentManager)),
     );
+  }
+
+  void _validateKeys() {
+    if(this.encryptionKey.trim().isEmpty) throw FlutterWaveError("Encrytion key is required");
+    if(this.publicKey.trim().isEmpty) throw FlutterWaveError("Public key is required");
+    if(this.currency.trim().isEmpty) throw FlutterWaveError("Currency is required");
+    if(this.amount.trim().isEmpty) throw FlutterWaveError("Amount is required");
+    if(this.email.trim().isEmpty) throw FlutterWaveError("Email is required");
+    if(this.fullName.trim().isEmpty) throw FlutterWaveError("Full Name is required");
+    if(this.txRef.trim().isEmpty) throw FlutterWaveError("txRef is required");
+    if(this.phoneNumber.trim().isEmpty) throw FlutterWaveError("Phone Number is required");
   }
 }

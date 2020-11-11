@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutterwave/core/flutterwave_error.dart';
+import 'package:flutterwave/core/metrics/metric_manager.dart';
 import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
 import 'package:flutterwave/models/requests/verify_charge_request.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
@@ -41,7 +42,14 @@ class FlutterwaveAPIUtils {
   /// Validates payments with OTP
   /// returns an instance of ChargeResponse or throws an error
   static Future<ChargeResponse> validatePayment(
-      String otp, String flwRef, http.Client client, final bool isDebugMode, final String publicKey, final isBankAccount) async {
+      String otp, String flwRef,
+      http.Client client,
+      final bool isDebugMode,
+      final String publicKey,
+      final isBankAccount,
+      [String feature = ""]) async {
+    final stopWatch = Stopwatch();
+
     final url = FlutterwaveURLS.getBaseUrl(isDebugMode) + FlutterwaveURLS.VALIDATE_CHARGE;
     final ValidateChargeRequest chargeRequest =
     ValidateChargeRequest(otp, flwRef, isBankAccount);
@@ -51,10 +59,23 @@ class FlutterwaveAPIUtils {
           headers: {HttpHeaders.authorizationHeader: publicKey},
           body: payload);
 
+      if (feature.isNotEmpty) {
+        MetricManager.
+        logMetric(client,
+            publicKey,
+            feature,
+            "${stopWatch.elapsedMilliseconds}ms");
+      }
       final ChargeResponse cardResponse =
       ChargeResponse.fromJson(jsonDecode(response.body));
       return cardResponse;
     } catch (error) {
+      if (feature.isNotEmpty) {
+        MetricManager
+            .logMetric(client,
+            publicKey, "{$feature}_ERROR",
+            "${stopWatch.elapsedMilliseconds}ms");
+      }
       throw (FlutterWaveError(error.toString()));
     }
   }
@@ -66,20 +87,32 @@ class FlutterwaveAPIUtils {
       final String flwRef,
       final http.Client client,
       final String publicKey,
-      final bool isDebugMode) async {
+      final bool isDebugMode,
+      [String feature = ""]) async {
+    final stopWatch = Stopwatch();
+
     final url = FlutterwaveURLS.getBaseUrl(isDebugMode) +
         FlutterwaveURLS.VERIFY_TRANSACTION;
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
     try {
+      stopWatch.start();
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: publicKey}, body: payload);
-
+      stopWatch.stop();
       final ChargeResponse cardResponse =
           ChargeResponse.fromJson(jsonDecode(response.body));
+      if (feature.isNotEmpty) {
+        MetricManager.logMetric(client, publicKey, feature, "${stopWatch.elapsedMilliseconds}ms");
+      }
       return cardResponse;
-    } catch (error, stacktrace) {
-      print(stacktrace);
+    } catch (error) {
+      if (feature.isNotEmpty) {
+        MetricManager
+            .logMetric(client,
+            publicKey, "{$feature}_ERROR",
+            "${stopWatch.elapsedMilliseconds}ms");
+      }
       throw (FlutterWaveError(error.toString()));
     } 
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwave/flutterwave.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/utils/flutterwave_urls.dart';
 
@@ -27,7 +28,7 @@ class ChargeCardRequest {
     @required this.email,
     @required this.fullName,
     @required this.txRef,
-    this.country,
+    this.country = FlutterwaveCurrency.NGN,
     this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL,
     this.authorization
   });

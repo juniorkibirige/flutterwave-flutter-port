@@ -43,7 +43,7 @@ Flutterwave version 3 API keys
 
 In your `pubspec.yaml` file add:
 
-1. `flutterwave: 0.0.2`
+1. `flutterwave: 0.0.3`
 2. run `flutter pub get`
 
 <a id="usage"></a>
@@ -186,7 +186,6 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPay
 - [dart](https://dart.dev/)
 - [http](https://pub.dev/packages/http)
 - [tripledes](https://pub.dev/packages/tripledes)
-- [hexcolor](https://pub.dev/packages/hexcolor)  
 - [webview_flutter](https://pub.dev/packages/webview_flutter)
 
 <a id="references"></a>

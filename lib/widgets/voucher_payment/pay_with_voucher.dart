@@ -197,7 +197,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
   void _verifyPayment(final String flwRef) async {
     final timeoutInMinutes = 2;
     final timeOutInSeconds = timeoutInMinutes * 60;
-    final requestIntervalInSeconds = 15;
+    final requestIntervalInSeconds = 7;
     final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 

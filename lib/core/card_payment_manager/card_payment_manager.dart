@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave/core/metrics/metric_manager.dart';
 import 'package:flutterwave/interfaces/card_payment_listener.dart';
 import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
@@ -31,6 +32,7 @@ class CardPaymentManager {
 
   ChargeCardRequest chargeCardRequest;
   CardPaymentListener cardPaymentListener;
+  Stopwatch _stopwatch = Stopwatch();
 
   /// CardPaymentManager constructor
   CardPaymentManager({
@@ -61,30 +63,42 @@ class CardPaymentManager {
   /// it returns a map
   Map<String, String> _prepareRequest(
       final ChargeCardRequest chargeCardRequest) {
+
     final String encryptedChargeRequest = FlutterwaveUtils.tripleDESEncrypt(
         jsonEncode(chargeCardRequest.toJson()), encryptionKey);
     return FlutterwaveUtils.createCardRequest(encryptedChargeRequest);
   }
 
   /// Initiates Card Request
-  Future<dynamic> payWithCard(final http.Client client,
+  Future<dynamic> payWithCard(
+      final http.Client client,
       final ChargeCardRequest chargeCardRequest) async {
 
+    Map<String, String> encryptedPayload;
     this.chargeCardRequest = chargeCardRequest;
+
     if (this.cardPaymentListener == null) {
       this.cardPaymentListener.onError("No CardPaymentListener Attached!");
       return;
     }
 
-    final Map<String, String> encryptedPayload =
-        this._prepareRequest(chargeCardRequest);
+     try {
+        encryptedPayload = this._prepareRequest(chargeCardRequest);
+     } catch(error){
+       this.cardPaymentListener.onError("Unable to initiate card transaction. Please try again");
+       return;
+     }
 
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.CHARGE_CARD_URL;
+
+    _stopwatch.start();
+
     final http.Response response = await client.post(url,
         headers: {HttpHeaders.authorizationHeader: this.publicKey},
         body: encryptedPayload);
 
+    _stopwatch.stop();
     this._handleResponse(response);
   }
 
@@ -97,6 +111,13 @@ class CardPaymentManager {
       final responseBody = ChargeResponse.fromJson(jsonDecode(response.body));
 
       if (response.statusCode == 200) {
+        MetricManager.
+        logMetric(http.Client(),
+            this.publicKey,
+            MetricManager.INITIATE_CARD_CHARGE,
+            "${_stopwatch.elapsedMilliseconds}ms");
+        _stopwatch.reset();
+
         final bool requiresExtraAuth =
             (responseBody.message == FlutterwaveConstants.REQUIRES_AUTH) &&
                 (responseBody.meta.authorization.mode != null);
@@ -124,6 +145,12 @@ class CardPaymentManager {
         }
         return;
       }
+      MetricManager.logMetric(http.Client(),
+          this.publicKey,
+          MetricManager.INITIATE_CARD_CHARGE_ERROR,
+          "${_stopwatch.elapsedMilliseconds}ms");
+      _stopwatch.reset();
+
       if (response.statusCode.toString().substring(0, 1) == "4") {
         return this.cardPaymentListener.onError(responseBody.message);
       }
@@ -183,6 +210,12 @@ class CardPaymentManager {
   /// This method is responsible for updating a card request with the card's OTP
   Future<ChargeResponse> addOTP(String otp, String flwRef) async {
     return FlutterwaveAPIUtils.validatePayment(
-        otp, flwRef, http.Client(), this.isDebugMode, this.publicKey, false);
+        otp,
+        flwRef,
+        http.Client(),
+        this.isDebugMode,
+        this.publicKey,
+        false,
+        MetricManager.VALIDATE_CARD_CHARGE);
   }
 }

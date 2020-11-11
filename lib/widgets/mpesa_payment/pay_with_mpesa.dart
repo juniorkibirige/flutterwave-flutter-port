@@ -191,7 +191,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
   void _verifyPayment(final String flwRef) async {
     final timeoutInMinutes = 5;
     final timeOutInSeconds = timeoutInMinutes * 60;
-    final requestIntervalInSeconds = 15;
+    final requestIntervalInSeconds = 7;
     final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 
