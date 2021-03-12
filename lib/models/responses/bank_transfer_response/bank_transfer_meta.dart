@@ -2,7 +2,7 @@
 import 'bank_transfer_authorization.dart';
 
 class BankTransferMeta {
-  BankTransferAuthorization authorization;
+  BankTransferAuthorization? authorization;
 
   BankTransferMeta({this.authorization});
 
@@ -15,7 +15,7 @@ class BankTransferMeta {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.authorization != null) {
-      data['authorization'] = this.authorization.toJson();
+      data['authorization'] = this.authorization!.toJson();
     }
     return data;
   }

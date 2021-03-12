@@ -1,27 +1,25 @@
 class BankTransferRequest {
-  String amount;
-  String currency;
-  String duration;
-  String email;
-  String frequency;
-  String isPermanent;
-  String narration;
-  String txRef;
-  String phoneNumber;
-
+  String? amount = "";
+  String? currency = "";
+  String? duration = "";
+  String? email = "";
+  String? frequency = "";
+  String? isPermanent = "";
+  String? narration = "";
+  String? txRef = "";
+  String? phoneNumber = "";
 
   /// BankTransferRequest constructor
-  BankTransferRequest({
-    this.amount,
-    this.currency,
-    this.duration,
-    this.email,
-    this.frequency,
-    this.isPermanent,
-    this.narration,
-    this.txRef,
-    this.phoneNumber
-  });
+  BankTransferRequest(
+      {this.amount,
+      this.currency,
+      this.duration,
+      this.email,
+      this.frequency,
+      this.isPermanent,
+      this.narration,
+      this.txRef,
+      this.phoneNumber});
 
   /// Constructor to initialize BankTransferRequest from json
   BankTransferRequest.fromJson(Map<String, dynamic> json) {

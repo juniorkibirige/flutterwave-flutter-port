@@ -1,20 +1,20 @@
 class BankTransferAuthorization {
-  String transferReference;
-  String transferAccount;
-  String transferBank;
-  String accountExpiration;
-  String transferNote;
-  int transferAmount;
-  String mode;
+  String transferReference = "";
+  String transferAccount = "";
+  String transferBank = "";
+  String accountExpiration = "";
+  String transferNote = "";
+  int transferAmount = 0;
+  String mode = "";
 
   BankTransferAuthorization(
-      {this.transferReference,
-        this.transferAccount,
-        this.transferBank,
-        this.accountExpiration,
-        this.transferNote,
-        this.transferAmount,
-        this.mode});
+      {required this.transferReference,
+        required this.transferAccount,
+        required this.transferBank,
+        required this.accountExpiration,
+        required this.transferNote,
+        required this.transferAmount,
+        required this.mode});
 
   BankTransferAuthorization.fromJson(Map<String, dynamic> json) {
     transferReference = json['transfer_reference'];

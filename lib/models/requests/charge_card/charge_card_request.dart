@@ -13,25 +13,24 @@ class ChargeCardRequest {
   String email;
   String fullName;
   String txRef;
-  String redirectUrl;
-  String country;
-  Authorization authorization;
+  String? country;
+  String? redirectUrl;
+  Authorization? authorization;
 
   /// ChargeCardRequest constructor
-  ChargeCardRequest({
-    @required this.cardNumber,
-    @required this.cvv,
-    @required this.expiryMonth,
-    @required this.expiryYear,
-    @required this.currency,
-    @required this.amount,
-    @required this.email,
-    @required this.fullName,
-    @required this.txRef,
-    this.country = FlutterwaveCurrency.NGN,
-    this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL,
-    this.authorization
-  });
+  ChargeCardRequest(
+      {required this.cardNumber,
+      required this.cvv,
+      required this.expiryMonth,
+      required this.expiryYear,
+      required this.currency,
+      required this.amount,
+      required this.email,
+      required this.fullName,
+      required this.txRef,
+      this.country = FlutterwaveCurrency.NGN,
+      this.redirectUrl,
+      this.authorization});
 
   /// Converts ChargeCardRequest instance to a map
   Map<String, dynamic> toJson() {
@@ -46,10 +45,12 @@ class ChargeCardRequest {
       "fullname": this.fullName,
       "country": this.country,
       "tx_ref": this.txRef,
-      "redirect_url": this.redirectUrl,
+      "redirect_url": (this.redirectUrl == null || this.redirectUrl!.isEmpty)
+          ? FlutterwaveURLS.DEFAULT_REDIRECT_URL
+          : this.redirectUrl,
       "authorization": this.authorization == null
           ? Authorization().toJson()
-          : this.authorization.toJson()
+          : this.authorization?.toJson()
     };
   }
 }

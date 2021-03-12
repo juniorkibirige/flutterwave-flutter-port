@@ -1,7 +1,7 @@
 class ValidateChargeRequest {
-  String otp;
-  String flwRef;
-  bool isBankAccount;
+  String otp = "";
+  String flwRef = "";
+  bool isBankAccount = false;
 
 
   ValidateChargeRequest(this.otp, this.flwRef, [this.isBankAccount = false]);

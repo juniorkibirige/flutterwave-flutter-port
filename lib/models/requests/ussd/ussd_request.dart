@@ -8,13 +8,13 @@ class USSDRequest {
   String phoneNumber;
 
   USSDRequest({
-    this.amount,
-    this.currency,
-    this.email,
-    this.txRef,
-    this.fullName,
-    this.accountBank,
-    this.phoneNumber
+    required this.amount,
+    required this.currency,
+    required this.email,
+    required this.txRef,
+    required this.fullName,
+    required this.accountBank,
+    required this.phoneNumber
   });
 
   /// Converts instance of USSDRequest to json

@@ -9,14 +9,14 @@ class BankAccountPaymentRequest {
   String accountNumber;
 
   BankAccountPaymentRequest(
-      {this.amount,
-      this.currency,
-      this.email,
-      this.fullName,
-      this.txRef,
-      this.phoneNumber,
-      this.accountNumber,
-      this.accountBank});
+      {required this.amount,
+      required this.currency,
+      required this.email,
+      required this.fullName,
+      required this.txRef,
+      required this.phoneNumber,
+      required this.accountNumber,
+      required this.accountBank});
 
 /// Converts instance of BankAccountPaymentRequest to json
   Map<String, dynamic> toJson() {

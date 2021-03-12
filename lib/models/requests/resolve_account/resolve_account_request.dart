@@ -1,9 +1,9 @@
 class ResolveAccountRequest {
-  String accountNumber;
-  String acountBankCode;
-  ResolveAccountRequest data;
+  String? accountNumber;
+  String? acountBankCode;
+  ResolveAccountRequest? data;
 
-  ResolveAccountRequest({this.accountNumber, this.acountBankCode});
+  ResolveAccountRequest({required this.accountNumber, required this.acountBankCode});
 
 
   /// Initializes a new ResolveAccountRequest object from json
@@ -22,7 +22,7 @@ class ResolveAccountRequest {
     data['account_number'] = this.accountNumber;
     data['account_bank'] = this.acountBankCode;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }

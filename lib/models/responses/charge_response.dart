@@ -3,10 +3,10 @@ import 'package:flutterwave/models/requests/authorization.dart';
 import 'charge_card_response/charge_card_response_data.dart';
 
 class ChargeResponse {
-  String status;
-  String message;
-  ChargeResponseData data;
-  Meta meta;
+  String? status;
+  String? message;
+  ChargeResponseData? data;
+  Meta? meta;
 
   ChargeResponse({this.status, this.message, this.data, this.meta});
 
@@ -22,10 +22,10 @@ class ChargeResponse {
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data?.toJson();
     }
     if (this.meta != null) {
-      data['meta'] = this.meta.toJson();
+      data['meta'] = this.meta?.toJson();
     }
     return data;
   }
@@ -33,7 +33,7 @@ class ChargeResponse {
 
 
 class Meta {
-  Authorization authorization;
+  Authorization? authorization;
 
   Meta({this.authorization});
 
@@ -44,7 +44,7 @@ class Meta {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.authorization != null) {
-      data['authorization'] = this.authorization.toJson();
+      data['authorization'] = this.authorization?.toJson();
     }
     return data;
   }

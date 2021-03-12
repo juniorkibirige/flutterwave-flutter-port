@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/responses/bank_transfer_response/bank_transfer_authorization.dart';
 import 'package:flutterwave/models/responses/bank_transfer_response/bank_transfer_response.dart';
 
 class AccountDetails extends StatelessWidget {
@@ -10,9 +9,8 @@ class AccountDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BankTransferAuthorization authorization =
-        this._bankTransferResponse.meta.authorization;
-    final String note = authorization.transferNote;
+    final authorization = this._bankTransferResponse.meta!.authorization;
+    final String note = authorization!.transferNote;
 
     return Container(
       width: double.infinity,
@@ -108,7 +106,7 @@ class AccountDetails extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.fromLTRB(5, 10, 20, 5),
                 child: RaisedButton(
-                  onPressed: this._onTransferMade,
+                  onPressed: _handleTransferMade,
                   color: Colors.orange,
                   child: Text(
                     "I have made the transfer",
@@ -121,6 +119,10 @@ class AccountDetails extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handleTransferMade() {
+    this._onTransferMade();
   }
 
   String _extractNameFromNote(final String note) {

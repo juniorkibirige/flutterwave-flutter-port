@@ -24,7 +24,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  BuildContext loadingDialogContext;
+  BuildContext? loadingDialogContext;
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +36,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Color(0xFFfff1d0),
-          title: RichText(
-            textAlign: TextAlign.left,
-            text: TextSpan(
-              text: "Pay with ",
-              style: TextStyle(fontSize: 20, color: Colors.black),
-              children: [
-                TextSpan(
-                  text: "Voucher",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.black),
-                )
-              ],
-            ),
-          ),
-        ),
+        appBar: FlutterwaveViewUtils.appBar(context, "voucher"),
         body: Padding(
           padding: EdgeInsets.all(10),
           child: Container(
@@ -71,7 +53,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
                     ),
                     controller: this._phoneNumberController,
                     validator: (value) =>
-                    value.isEmpty ? "phone number is required" : null,
+                    value != null && value.isEmpty ? "phone number is required" : null,
                   ),
                   SizedBox(
                     height: 25,
@@ -83,7 +65,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
                     ),
                     controller: this._voucherPinController,
                     validator: (value) =>
-                    value.isEmpty ? "voucher pin is required" : null,
+                    value != null && value.isEmpty ? "voucher pin is required" : null,
                   ),
                   Container(
                     width: double.infinity,
@@ -137,13 +119,9 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
 
   void _closeDialog() {
     if (this.loadingDialogContext != null) {
-      Navigator.of(this.loadingDialogContext).pop();
+      Navigator.of(this.loadingDialogContext!).pop();
       this.loadingDialogContext = null;
     }
-  }
-
-  void _removeFocusFromView() {
-    FocusScope.of(this.context).requestFocus(FocusNode());
   }
 
   void _showSnackBar(String message) {
@@ -153,11 +131,11 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState.showSnackBar(snackBar);
+    this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   void _onPayPressed() {
-    if (this._formKey.currentState.validate()) {
+    if (this._formKey.currentState!.validate()) {
       final VoucherPaymentManager paymentManager = this.widget._paymentManager;
       FlutterwaveViewUtils.showConfirmPaymentModal(
           this.context, paymentManager.currency, paymentManager.amount,
@@ -185,16 +163,16 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
       
       if (FlutterwaveConstants.SUCCESS == response.status &&
           FlutterwaveConstants.CHARGE_INITIATED == response.message) {
-        this._verifyPayment(response.data.flwRef);
+        this._verifyPayment(response);
       } else {
-        this._showSnackBar(response.message);
+        this._showSnackBar(response.message!);
       }
     } catch (error) {
       this._closeDialog();
     }
   }
 
-  void _verifyPayment(final String flwRef) async {
+  void _verifyPayment(final ChargeResponse chargeResponse) async {
     final timeoutInMinutes = 2;
     final timeOutInSeconds = timeoutInMinutes * 60;
     final requestIntervalInSeconds = 7;
@@ -209,19 +187,23 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
       final client = http.Client();
       try {
         final response = await FlutterwaveAPIUtils.verifyPayment(
-            flwRef,
+            chargeResponse.data!.flwRef!,
             client,
             this.widget._paymentManager.publicKey,
             this.widget._paymentManager.isDebugMode);
-        if ((response.data.status == FlutterwaveConstants.SUCCESSFUL ||
-            response.data.status == FlutterwaveConstants.SUCCESS) &&
-            response.data.amount == this.widget._paymentManager.amount &&
-            response.data.flwRef == flwRef) {
+        this._closeDialog();
+        if ((response.data!.status == FlutterwaveConstants.SUCCESSFUL ||
+            response.data!.status == FlutterwaveConstants.SUCCESS) &&
+            response.data!.amount == this.widget._paymentManager.amount &&
+            response.data!.flwRef == chargeResponse.data!.flwRef) {
           timer.cancel();
+          this._onComplete(response);
         } else {
-          this._showSnackBar(response.message);
+          if (!timer.isActive) {
+            this._closeDialog();
+            this._showSnackBar(response.message!);
+          }
         }
-        this._onComplete(response);
       } catch (error) {
         timer.cancel();
         this._closeDialog();

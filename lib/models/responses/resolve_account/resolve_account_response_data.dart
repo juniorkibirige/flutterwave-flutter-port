@@ -1,6 +1,6 @@
 class ResolveAccountResponseData {
-  String accountNumber;
-  String accountName;
+  String? accountNumber;
+  String? accountName;
 
   ResolveAccountResponseData({this.accountNumber, this.accountName});
 

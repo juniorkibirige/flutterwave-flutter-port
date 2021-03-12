@@ -29,7 +29,7 @@ class _CardPaymentState extends State<CardPayment>
   final _cardFormKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  BuildContext loadingDialogContext;
+  BuildContext? loadingDialogContext;
 
   final TextEditingController _cardNumberFieldController =
       TextEditingController();
@@ -54,15 +54,16 @@ class _CardPaymentState extends State<CardPayment>
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
+        appBar: FlutterwaveViewUtils.appBar(context, "Card"),
         body: Form(
           key: this._cardFormKey,
           child: Container(
-            margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
+            margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
             width: double.infinity,
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(10),
                   alignment: Alignment.topCenter,
                   width: double.infinity,
                   child: Text(
@@ -150,7 +151,7 @@ class _CardPaymentState extends State<CardPayment>
                         ),
                         controller: this._cardCvvFieldController,
                         validator: (value) =>
-                            value.isEmpty ? "cvv is required" : null,
+                            value != null && value.isEmpty ? "cvv is required" : null,
                       ),
                     ),
                   ],
@@ -168,12 +169,6 @@ class _CardPaymentState extends State<CardPayment>
                     ),
                   ),
                 ),
-                Container(
-                  height: 1.0,
-                  width: double.infinity,
-                  color: Colors.black26,
-                  margin: EdgeInsets.fromLTRB(25, 1, 25, 10),
-                ),
               ],
             ),
           ),
@@ -184,7 +179,7 @@ class _CardPaymentState extends State<CardPayment>
 
   void _onCardFormClick() {
     this._hideKeyboard();
-    if (this._cardFormKey.currentState.validate()) {
+    if (this._cardFormKey.currentState!.validate()) {
       final CardPaymentManager pm = this.widget._paymentManager;
       FlutterwaveViewUtils.showConfirmPaymentModal(
           this.context, pm.currency, pm.amount, this._makeCardPayment);
@@ -193,7 +188,9 @@ class _CardPaymentState extends State<CardPayment>
 
   void _makeCardPayment() {
     Navigator.of(this.context).pop();
+
     this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
+
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
         cardNumber: this._cardNumberFieldController.value.text.trim(),
         cvv: this._cardCvvFieldController.value.text.trim(),
@@ -204,8 +201,11 @@ class _CardPaymentState extends State<CardPayment>
         email: this.widget._paymentManager.email.trim(),
         fullName: this.widget._paymentManager.fullName.trim(),
         txRef: this.widget._paymentManager.txRef.trim(),
+        redirectUrl: this.widget._paymentManager.redirectUrl,
         country: this.widget._paymentManager.country);
+
     final client = http.Client();
+
     this
         .widget
         ._paymentManager
@@ -213,8 +213,8 @@ class _CardPaymentState extends State<CardPayment>
         .payWithCard(client, chargeCardRequest);
   }
 
-  String _validateCardField(String value) {
-    return value.trim().isEmpty ? "Please fill this" : null;
+  String? _validateCardField(String? value) {
+    return  value != null && value.trim().isEmpty ? "Please fill this" : null;
   }
 
   void _hideKeyboard() {
@@ -225,7 +225,8 @@ class _CardPaymentState extends State<CardPayment>
   void onRedirect(ChargeResponse chargeResponse, String url) async {
     this._closeDialog();
     final result = await Navigator.of(this.context).push(MaterialPageRoute(
-        builder: (context) => AuthorizationWebview(Uri.encodeFull(url))));
+        builder: (context) => AuthorizationWebview(
+            Uri.encodeFull(url), this.widget._paymentManager.redirectUrl!)));
     if (result != null) {
       final bool hasError = result.runtimeType != " ".runtimeType;
       this._closeDialog();
@@ -242,7 +243,8 @@ class _CardPaymentState extends State<CardPayment>
           this.widget._paymentManager.isDebugMode,
           MetricManager.VERIFY_CARD_CHARGE);
       this._closeDialog();
-      if (response.data.status == FlutterwaveConstants.SUCCESSFUL) {
+      if (response.data!.status == FlutterwaveConstants.SUCCESSFUL ||
+          response.data!.status == FlutterwaveConstants.SUCCESS) {
         this.onComplete(response);
       }
     } else {
@@ -281,33 +283,34 @@ class _CardPaymentState extends State<CardPayment>
     if (otp == null) return;
     this._showLoading(FlutterwaveConstants.VERIFYING);
     final ChargeResponse chargeResponse =
-        await this.widget._paymentManager.addOTP(otp, response.data.flwRef);
+        await this.widget._paymentManager.addOTP(otp, response.data!.flwRef!);
     this._closeDialog();
     if (chargeResponse.message == FlutterwaveConstants.CHARGE_VALIDATED) {
       this._showLoading(FlutterwaveConstants.VERIFYING);
       this._handleTransactionVerification(chargeResponse);
     } else {
       this._closeDialog();
-      this._showSnackBar(chargeResponse.message);
+      this._showSnackBar(chargeResponse.message!);
     }
   }
 
   void _handleTransactionVerification(
       final ChargeResponse chargeResponse) async {
     final verifyResponse = await FlutterwaveAPIUtils.verifyPayment(
-        chargeResponse.data.flwRef,
+        chargeResponse.data!.flwRef!,
         http.Client(),
         this.widget._paymentManager.publicKey,
         this.widget._paymentManager.isDebugMode,
         MetricManager.VERIFY_CARD_CHARGE);
     this._closeDialog();
 
-    if (verifyResponse.status == FlutterwaveConstants.SUCCESS &&
-        verifyResponse.data.txRef == this.widget._paymentManager.txRef &&
-        verifyResponse.data.amount == this.widget._paymentManager.amount) {
+    if ((verifyResponse.data!.status == FlutterwaveConstants.SUCCESS ||
+            verifyResponse.data!.status == FlutterwaveConstants.SUCCESSFUL) &&
+        verifyResponse.data!.txRef == this.widget._paymentManager.txRef &&
+        verifyResponse.data!.amount == this.widget._paymentManager.amount) {
       this.onComplete(verifyResponse);
     } else {
-      this._showSnackBar(verifyResponse.message);
+      this._showSnackBar(verifyResponse.message!);
     }
   }
 
@@ -322,6 +325,12 @@ class _CardPaymentState extends State<CardPayment>
   }
 
   @override
+  void onNoAuthRequired(ChargeResponse chargeResponse) {
+    this._closeDialog();
+    this._handleTransactionVerification(chargeResponse);
+  }
+
+  @override
   void onComplete(ChargeResponse chargeResponse) {
     Navigator.pop(this.context, chargeResponse);
   }
@@ -333,7 +342,7 @@ class _CardPaymentState extends State<CardPayment>
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState.showSnackBar(snackBar);
+    this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   Future<void> _showLoading(String message) {
@@ -363,7 +372,7 @@ class _CardPaymentState extends State<CardPayment>
 
   void _closeDialog() {
     if (this.loadingDialogContext != null) {
-      Navigator.of(this.loadingDialogContext).pop();
+      Navigator.of(this.loadingDialogContext!).pop();
       this.loadingDialogContext = null;
     }
   }

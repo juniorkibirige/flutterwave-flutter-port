@@ -5,21 +5,21 @@ class Authorization {
   static const String PIN = "pin";
   static const String CALLBACK = "callback";
 
-  String mode;
-  String pin;
-  String endpoint;
-  String redirect;
-  String otp;
-  String address;
-  String city;
-  String state;
-  String zipcode;
-  String country;
-  String note;
-  List<dynamic> fields;
-  String validateInstructions;
+  String mode = "";
+  String? pin;
+  String? endpoint;
+  String? redirect;
+  String? otp;
+  String? address;
+  String? city;
+  String? state;
+  String? zipcode;
+  String? country;
+  String? note;
+  List<dynamic>? fields;
+  String? validateInstructions;
 
-  Authorization({this.mode, this.endpoint});
+  Authorization({this.mode = "", this.endpoint});
   
   Authorization.fromJson(Map<String, dynamic> json) {
     this.mode = json['mode'];

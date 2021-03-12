@@ -77,12 +77,12 @@ class _RequestOTPState extends State<RequestOTP> {
     );
   }
 
-  String _pinValidator(String value) {
-    return value.trim().isEmpty ? "Otp is required" : null;
+  String? _pinValidator(String? value) {
+    return value != null && value.trim().isEmpty ? "Otp is required" : null;
   }
 
   void _continuePayment() {
-    if (this._formKey.currentState.validate()) {
+    if (this._formKey.currentState!.validate()) {
       Navigator.of(this.context).pop(this._otpController.value.text);
     }
   }

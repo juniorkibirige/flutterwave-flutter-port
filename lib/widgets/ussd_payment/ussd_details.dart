@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/requests/authorization.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 
 class USSDDetails extends StatelessWidget {
@@ -10,7 +9,7 @@ class USSDDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Authorization authorization = this._chargeResponse.meta.authorization;
+    final authorization = this._chargeResponse.meta!.authorization!;
 
     return Container(
       width: double.infinity,
@@ -24,7 +23,7 @@ class USSDDetails extends StatelessWidget {
           ),
           SizedBox(height: 60),
           Text(
-            authorization.note,
+            authorization.note!,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
@@ -40,7 +39,7 @@ class USSDDetails extends StatelessWidget {
               style: TextStyle(fontSize: 17, color: Colors.black),
               children: [
                 TextSpan(
-                  text: this._chargeResponse.data.paymentCode,
+                  text: this._chargeResponse.data!.paymentCode!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -55,7 +54,7 @@ class USSDDetails extends StatelessWidget {
             width: double.infinity,
             margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: RaisedButton(
-              onPressed: this._onPaymentMade,
+              onPressed: this._handlePaymentMade,
               color: Colors.orange,
               child: Text(
                 "I have made the transfer",
@@ -66,5 +65,9 @@ class USSDDetails extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handlePaymentMade() {
+    this._onPaymentMade();
   }
 }

@@ -24,16 +24,16 @@ class PayWithUssd extends StatefulWidget {
 class _PayWithUssdState extends State<PayWithUssd> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  BuildContext loadingDialogContext;
+  BuildContext? loadingDialogContext;
   TextEditingController controller = TextEditingController();
 
-  ChargeResponse _chargeResponse;
+  ChargeResponse? _chargeResponse;
   bool hasInitiatedPay = false;
   bool hasVerifiedPay = false;
   bool isBottomSheetOpen = false;
 
   final FocusNode focusNode = FocusNode();
-  BanksWithUssd selectedBank;
+  BanksWithUssd? selectedBank;
 
   @override
   void initState() {
@@ -46,25 +46,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Color(0xFFfff1d0),
-          title: RichText(
-            textAlign: TextAlign.left,
-            text: TextSpan(
-              text: "Pay with ",
-              style: TextStyle(fontSize: 17, color: Colors.black),
-              children: [
-                TextSpan(
-                  text: "USSD",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.black),
-                )
-              ],
-            ),
-          ),
-        ),
+        appBar: FlutterwaveViewUtils.appBar(context, "USSD"),
         body: Padding(
           padding: EdgeInsets.all(10),
           child: Container(
@@ -79,7 +61,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
 
   Widget _getHomeView() {
     return this.hasInitiatedPay
-        ? USSDDetails(this._chargeResponse, this._verifyTransfer)
+        ? USSDDetails(this._chargeResponse!, this._verifyTransfer)
         : PayWithUssdButton(
             this._initiateUSSDPayment, this.controller, this._showBottomSheet);
   }
@@ -138,7 +120,8 @@ class _PayWithUssdState extends State<PayWithUssd> {
   void _initiateUSSDPayment() async {
     if (this.selectedBank != null) {
       final USSDPaymentManager pm = this.widget._paymentManager;
-     FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._payWithUSSD);
+     FlutterwaveViewUtils.showConfirmPaymentModal(this.context,
+         pm.currency, pm.amount, this._payWithUSSD);
     } else {
       this._showSnackBar("Please select a bank");
     }
@@ -155,7 +138,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
         email: ussdPaymentManager.email,
         txRef: ussdPaymentManager.txRef,
         fullName: ussdPaymentManager.fullName,
-        accountBank: this.selectedBank.bankCode,
+        accountBank: this.selectedBank!.bankCode,
         phoneNumber: ussdPaymentManager.phoneNumber);
 
     try {
@@ -166,7 +149,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
       if (FlutterwaveConstants.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
       } else {
-        this._showSnackBar(response.message);
+        this._showSnackBar(response.message!);
       }
     } catch (error) {
       this._showSnackBar(error.toString());
@@ -185,29 +168,32 @@ class _PayWithUssdState extends State<PayWithUssd> {
     if (this._chargeResponse != null) {
       this._showLoading(FlutterwaveConstants.VERIFYING);
       final client = http.Client();
-      ChargeResponse response;
+      ChargeResponse? response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
         try {
           if ((intialCount >= numberOfTries) && response != null) {
             timer.cancel();
             this._closeDialog();
-            this._onComplete(response);
+            this._onComplete(response!);
           }
           response = await FlutterwaveAPIUtils.verifyPayment(
-              this._chargeResponse.data.flwRef,
+              this._chargeResponse!.data!.flwRef!,
               client,
               this.widget._paymentManager.publicKey,
               this.widget._paymentManager.isDebugMode);
 
-          if (response.data.status == FlutterwaveConstants.SUCCESSFUL &&
-              this._chargeResponse.data.flwRef == response.data.flwRef &&
-              response.data.amount ==
-                  this._chargeResponse.data.amount.toString()) {
+          if (response!.data!.status == FlutterwaveConstants.SUCCESSFUL &&
+              this._chargeResponse!.data!.flwRef == response!.data!.flwRef &&
+              response!.data!.amount ==
+                  this._chargeResponse!.data!.amount.toString()) {
             timer.cancel();
             this._closeDialog();
-            this._onComplete(response);
+            this._onComplete(response!);
           } else {
-            this._showSnackBar(response.message);
+            if (!timer.isActive) {
+              this._closeDialog();
+              this._showSnackBar(response!.message!);
+            }
           }
         } catch (error) {
           timer.cancel();
@@ -239,7 +225,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState.showSnackBar(snackBar);
+    this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   Future<void> _showLoading(String message) {
@@ -271,7 +257,7 @@ class _PayWithUssdState extends State<PayWithUssd> {
 
   void _closeDialog() {
     if (this.loadingDialogContext != null) {
-      Navigator.of(this.loadingDialogContext).pop();
+      Navigator.of(this.loadingDialogContext!).pop();
       this.loadingDialogContext = null;
     }
   }

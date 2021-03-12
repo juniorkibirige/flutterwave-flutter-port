@@ -12,4 +12,6 @@ abstract class CardPaymentListener {
   void onError(String error) {}
 
   void onComplete (ChargeResponse chargeResponse) {}
+
+  void onNoAuthRequired(ChargeResponse chargeResponse) {}
 }

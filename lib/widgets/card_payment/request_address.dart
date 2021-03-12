@@ -53,7 +53,7 @@ class _RequestAddressState extends State<RequestAddress> {
                       ),
                       controller: this._addressFieldController,
                       validator: (value) =>
-                          value.isNotEmpty ? null : "Address is required",
+                      value != null && value.isNotEmpty ? null : "Address is required",
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       autocorrect: false,
@@ -65,7 +65,7 @@ class _RequestAddressState extends State<RequestAddress> {
                       ),
                       controller: this._cityFieldController,
                       validator: (value) =>
-                          value.isNotEmpty ? null : "City is required",
+                      value != null && value.isNotEmpty ? null : "City is required",
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       autocorrect: false,
@@ -77,7 +77,7 @@ class _RequestAddressState extends State<RequestAddress> {
                       ),
                       controller: this._stateFieldController,
                       validator: (value) =>
-                          value.isNotEmpty ? null : "State is required",
+                      value != null && value.isNotEmpty ? null : "State is required",
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       autocorrect: false,
@@ -89,7 +89,7 @@ class _RequestAddressState extends State<RequestAddress> {
                       ),
                       controller: this._zipCodeFieldController,
                       validator: (value) =>
-                          value.isNotEmpty ? null : "Zipcode is required",
+                      value != null && value.isNotEmpty ? null : "Zipcode is required",
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       autocorrect: false,
@@ -101,7 +101,7 @@ class _RequestAddressState extends State<RequestAddress> {
                       ),
                       controller: this._countryFieldController,
                       validator: (value) =>
-                          value.isNotEmpty ? null : "Country is required",
+                          value != null && value.isNotEmpty ? null : "Country is required",
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       autocorrect: false,
@@ -129,8 +129,8 @@ class _RequestAddressState extends State<RequestAddress> {
   }
 
   void _onAddressFilled() {
-    if (this._addressFormKey.currentState.validate()) {
-      Map addressValue = Map<String, String>();
+    if (this._addressFormKey.currentState!.validate()) {
+      Map<String, String> addressValue = Map<String, String>();
       addressValue["address"] = this._addressFieldController.text;
       addressValue["city"] = this._cityFieldController.text;
       addressValue["state"] = this._stateFieldController.text;

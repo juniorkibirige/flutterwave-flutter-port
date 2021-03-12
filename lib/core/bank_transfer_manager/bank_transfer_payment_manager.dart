@@ -18,25 +18,27 @@ class BankTransferPaymentManager {
   String txRef;
   bool isDebugMode;
   String phoneNumber;
-  int frequency;
-  int duration;
-  bool isPermanent;
-  String narration;
+  int? frequency;
+  int? duration;
+  String? narration;
+  bool? isPermanent;
+  String? redirectUrl;
 
   /// Bank Transfer Payment Manager Constructor
   /// This is responsible for creating instances of BankTransferPaymentManager
   BankTransferPaymentManager({
-    @required this.publicKey,
-    @required this.currency,
-    @required this.amount,
-    @required this.email,
-    @required this.txRef,
-    @required this.isDebugMode,
-    @required this.phoneNumber,
-    @required this.frequency,
-    @required this.narration,
+    required this.publicKey,
+    required this.currency,
+    required this.amount,
+    required this.email,
+    required this.txRef,
+    required this.isDebugMode,
+    required this.phoneNumber,
+    required this.frequency,
+    required this.narration,
     this.duration,
     this.isPermanent,
+    this.redirectUrl
   });
 
   /// Resposnsible for making payments with bank transfer
@@ -45,8 +47,9 @@ class BankTransferPaymentManager {
       BankTransferRequest bankTransferRequest, http.Client client) async {
     final requestBody = bankTransferRequest.toJson();
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.BANK_TRANSFER;
+    final uri = Uri.parse(url);
     try {
-      final http.Response response = await client.post(url,
+      final http.Response response = await client.post(uri,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
           body: requestBody);
 
@@ -63,11 +66,15 @@ class BankTransferPaymentManager {
   /// it returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> verifyPayment(final String flwRef, final http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) + FlutterwaveURLS.VERIFY_TRANSACTION;
+    final uri = Uri.parse(url);
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
     try {
-      final http.Response response = await client.post(url,
-          headers: {HttpHeaders.authorizationHeader: this.publicKey},
+      final http.Response response = await client.post(uri,
+          headers: {
+            HttpHeaders.authorizationHeader: this.publicKey,
+            HttpHeaders.contentTypeHeader: "application/json"
+          },
           body: payload);
 
       final ChargeResponse cardResponse =

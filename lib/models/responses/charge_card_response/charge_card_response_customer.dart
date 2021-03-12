@@ -1,9 +1,9 @@
 class ChargeCardResponseCustomer {
-  String id;
-  String phoneNumber;
-  String name;
-  String email;
-  String createdAt;
+  String? id;
+  String? phoneNumber;
+  String? name;
+  String? email;
+  String? createdAt;
 
   ChargeCardResponseCustomer({this.id, this.phoneNumber, this.name, this.email, this.createdAt});
 

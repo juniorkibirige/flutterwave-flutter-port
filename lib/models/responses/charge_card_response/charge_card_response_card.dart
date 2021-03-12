@@ -1,10 +1,10 @@
 class ChargeCardResponseCard {
-  String first6digits;
-  String last4digits;
-  String issuer;
-  String country;
-  String type;
-  String expiry;
+  String? first6digits;
+  String? last4digits;
+  String? issuer;
+  String? country;
+  String? type;
+  String? expiry;
 
   ChargeCardResponseCard(
       {this.first6digits,

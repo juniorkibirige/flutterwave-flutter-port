@@ -16,20 +16,21 @@ class USSDPaymentManager {
   bool isDebugMode;
   String phoneNumber;
   String fullName;
+  String? redirectUrl;
 
   /// USSDPaymentManager constructor
   /// Available for only payments with NGN currency
   /// returns an instance of USSDPaymentManager
-  USSDPaymentManager({
-    @required this.publicKey,
-    @required this.currency,
-    @required this.amount,
-    @required this.email,
-    @required this.txRef,
-    @required this.isDebugMode,
-    @required this.phoneNumber,
-    @required this.fullName,
-  });
+  USSDPaymentManager(
+      {required this.publicKey,
+      required this.currency,
+      required this.amount,
+      required this.email,
+      required this.txRef,
+      required this.isDebugMode,
+      required this.phoneNumber,
+      required this.fullName,
+      this.redirectUrl});
 
   /// Initiates payments via USSD
   /// Available for only payments with NGN currency
@@ -37,16 +38,18 @@ class USSDPaymentManager {
   Future<ChargeResponse> payWithUSSD(
       USSDRequest ussdRequest, http.Client client) async {
     final requestBody = ussdRequest.toJson();
-
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.PAY_WITH_USSD;
+    final url =
+        FlutterwaveURLS.getBaseUrl(isDebugMode) + FlutterwaveURLS.PAY_WITH_USSD;
     try {
-      final http.Response response = await client.post(url,
-          headers: {HttpHeaders.authorizationHeader: this.publicKey},
-          body: requestBody);
+      final http.Response response = await client.post(Uri.parse(url),
+          headers: {
+            HttpHeaders.authorizationHeader: this.publicKey,
+            HttpHeaders.contentTypeHeader: "application/json"
+          },
+          body: jsonEncode(requestBody));
 
       ChargeResponse chargeResponse =
-      ChargeResponse.fromJson(json.decode(response.body));
+          ChargeResponse.fromJson(json.decode(response.body));
       return chargeResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));

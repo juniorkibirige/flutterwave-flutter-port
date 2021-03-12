@@ -43,7 +43,7 @@ Flutterwave version 3 API keys
 
 In your `pubspec.yaml` file add:
 
-1. `flutterwave: 0.0.3`
+1. `flutterwave: 0.0.3-dev.2`
 2. run `flutter pub get`
 
 <a id="usage"></a>
@@ -51,7 +51,8 @@ In your `pubspec.yaml` file add:
 
 ### 1. Create a `Flutterwave` instance
 
-Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPayment()` The constructor accepts a mandatory instance of the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
+Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPayment()` The constructor accepts a mandatory instance of the following:
+ the calling `Context` , `publicKey`, `encryptionKey`, `amount`, `currency`, `email`, `fullName`, `txRef`, `isDebugMode` and `phoneNumber` . It returns an instance of `Flutterwave`  which we then call the `async` method `.initializeForUiPayments()` on.
 
      beginPayment async () { 
        try { 
@@ -132,7 +133,7 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPay
         try {
           final ChargeResponse response = await flutterwave.initializeForUiPayments();
           if (response == null) {
-            // user didn't complete the transaction. Payment wasn't successful.
+            // user didn't complete the transaction.
           } else {
             final isSuccessful = checkPaymentIsSuccessful(response);
             if (isSuccessful) {
@@ -150,7 +151,6 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPay
           }
         } catch (error, stacktrace) {
           // handleError(error);
-          // print(stacktrace);
         }
       }
     

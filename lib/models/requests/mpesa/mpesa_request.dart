@@ -7,12 +7,12 @@ class MpesaRequest {
   String phoneNumber;
 
   MpesaRequest({
-    this.amount,
-    this.currency,
-    this.email,
-    this.txRef,
-    this.fullName,
-    this.phoneNumber
+    required this.amount,
+    required this.currency,
+    required this.email,
+    required this.txRef,
+    required this.fullName,
+    required this.phoneNumber
   });
 
 /// Converts instance of MpesaRequest to json

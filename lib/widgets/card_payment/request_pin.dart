@@ -73,12 +73,12 @@ class _RequestPinState extends State<RequestPin> {
     );
   }
 
-  String _pinValidator(String value) {
-    return value.trim().isEmpty ? "Pin is required" : null;
+  String? _pinValidator(String? value) {
+    return value != null && value.trim().isEmpty ? "Pin is required" : null;
   }
 
   void _continuePayment() {
-    if (this._formKey.currentState.validate()) {
+    if (this._formKey.currentState!.validate()) {
       Navigator.of(this.context).pop(this._pinController.value.text);
     }
   }

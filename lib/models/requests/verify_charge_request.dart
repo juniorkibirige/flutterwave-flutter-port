@@ -1,5 +1,5 @@
 class VerifyChargeRequest {
-  String flwRef;
+  String flwRef = "";
 
   VerifyChargeRequest(this.flwRef);
 

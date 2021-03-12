@@ -1,9 +1,9 @@
 import 'resolve_account_response_data.dart';
 
 class ResolveAccountResponse {
-  String status;
-  String message;
-  ResolveAccountResponseData data;
+  String? status;
+  String? message;
+  ResolveAccountResponseData? data;
 
   ResolveAccountResponse({this.status, this.message, this.data});
 
@@ -20,7 +20,7 @@ class ResolveAccountResponse {
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data?.toJson();
     }
     return data;
   }

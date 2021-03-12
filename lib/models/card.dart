@@ -1,14 +1,14 @@
 class Card {
-  String cardNumber;
-  String nameOnCard;
-  String expiryDate;
-  String cvv;
-  String city;
-  String state;
-  String address_1;
-  String address_2;
-  String expiryMonth;
-  String expiryYear;
+  String? cardNumber;
+  String? nameOnCard;
+  String? expiryDate;
+  String? cvv;
+  String? city;
+  String? state;
+  String? address_1;
+  String? address_2;
+  String? expiryMonth;
+  String? expiryYear;
 
   Card({
     this.cardNumber,

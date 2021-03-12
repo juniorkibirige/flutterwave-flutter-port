@@ -10,13 +10,13 @@ class VoucherPaymentRequest {
   String pin;
 
   VoucherPaymentRequest({
-    @required this.amount,
-    @required this.currency,
-    @required this.email,
-    @required this.txRef,
-    @required this.fullName,
-    @required this.phoneNumber,
-    @required this.pin,
+    required this.amount,
+    required this.currency,
+    required this.email,
+    required this.txRef,
+    required this.fullName,
+    required this.phoneNumber,
+    required this.pin,
   });
 
  /// Converts instance of VoucherPaymentRequest to json

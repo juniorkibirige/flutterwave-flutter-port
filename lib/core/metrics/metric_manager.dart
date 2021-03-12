@@ -30,9 +30,7 @@ class MetricManager {
     "message": responseTime
     };
     try {
-      client.post(_METRIC_URL, body: jsonEncode(request));
+      client.post(Uri.parse(_METRIC_URL), body: jsonEncode(request));
     } catch (ignored) { }
   }
-  
-
 }

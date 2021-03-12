@@ -16,30 +16,22 @@ class VoucherPaymentManager {
   String phoneNumber;
   String fullName;
   String email;
+  String? redirectUrl;
 
   /// VoucherPaymentManager constructor
   /// returns an instance of VoucherPaymentManager
   VoucherPaymentManager({
-    @required this.publicKey,
-    @required this.isDebugMode,
-    @required this.amount,
-    @required this.currency,
-    @required this.email,
-    @required this.txRef,
-    @required this.fullName,
-    @required this.phoneNumber,
+    required this.publicKey,
+    required this.isDebugMode,
+    required this.amount,
+    required this.currency,
+    required this.email,
+    required this.txRef,
+    required this.fullName,
+    required this.phoneNumber,
+    this.redirectUrl
   });
 
-  /// VoucherPaymentManager constructor
-  /// returns an instance of VoucherPaymentManager from a json object
-  VoucherPaymentManager.fromJson(Map<String, dynamic> json) {
-    this.amount = json['amount'];
-    this.currency = json['currency'];
-    this.email = json['email'];
-    this.txRef = json['tx_ref'];
-    this.fullName = json['fullname'];
-    this.phoneNumber = json["phone_number"];
-  }
 
   /// Converts this instance of VoucherPaymentManager to a Map
   Map<String, dynamic> toJson() {
@@ -59,8 +51,9 @@ class VoucherPaymentManager {
       VoucherPaymentRequest payload, http.Client client) async {
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.VOUCHER_PAYMENT;
+    final uri = Uri.parse(url);
     try {
-      final http.Response response = await client.post(url,
+      final http.Response response = await client.post(uri,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
           body: payload.toJson());
 

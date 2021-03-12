@@ -25,9 +25,9 @@ class PayWithBankTransfer extends StatefulWidget {
 class _PayWithBankTransferState extends State<PayWithBankTransfer> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  BuildContext loadingDialogContext;
+  BuildContext? loadingDialogContext;
 
-  BankTransferResponse _bankTransferResponse;
+  BankTransferResponse? _bankTransferResponse;
   bool hasInitiatedPay = false;
   bool hasVerifiedPay = false;
 
@@ -37,29 +37,11 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
           key: this._scaffoldKey,
-          appBar: AppBar(
-            backgroundColor: Color(0xFFfff1d0),
-            title: RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
-                text: "Pay with ",
-                style: TextStyle(fontSize: 17, color: Colors.black),
-                children: [
-                  TextSpan(
-                    text: "Bank Transfer",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.black),
-                  )
-                ],
-              ),
-            ),
-          ),
+          appBar: FlutterwaveViewUtils.appBar(context, "Bank Transfer"),
           body: Padding(
               padding: EdgeInsets.all(10),
               child: Container(
-                  margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
                   width: double.infinity,
                   child: this._getHomeView()))),
     );
@@ -67,7 +49,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
 
   Widget _getHomeView() {
     return this.hasInitiatedPay
-        ? AccountDetails(this._bankTransferResponse, this._verifyTransfer)
+        ? AccountDetails(this._bankTransferResponse!, this._verifyTransfer)
         : PayWithTransferButton(this._onPayClicked);
   }
 
@@ -102,7 +84,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
         this._afterChargeInitiated(response);
       } else {
         this._closeDialog();
-        this._showSnackBar(response.message);
+        this._showSnackBar(response.message!);
       }
     } catch (error) {
       this._showSnackBar(error.toString());
@@ -115,45 +97,49 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
     if (this._bankTransferResponse != null) {
       final timeoutInMinutes = 2;
       final timeOutInSeconds = timeoutInMinutes * 60;
-      final requestIntervalInSeconds = 15;
+      final requestIntervalInSeconds = 7;
       final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
       int intialCount = 0;
 
       final BankTransferPaymentManager pm = this.widget._paymentManager;
 
       this._showLoading(FlutterwaveConstants.VERIFYING);
-      ChargeResponse response;
+      ChargeResponse? response;
       Timer.periodic(Duration(seconds: requestIntervalInSeconds),
           (timer) async {
         final client = http.Client();
         if ((intialCount >= numberOfTries) && response != null) {
           timer.cancel();
           this._closeDialog();
-          this._onPaymentComplete(response);
+          this._onPaymentComplete(response!);
         }
         try {
           response = await FlutterwaveAPIUtils.verifyPayment(
-              this._bankTransferResponse.meta.authorization.transferReference,
+              this._bankTransferResponse!.meta!.authorization!.transferReference,
               client,
               this.widget._paymentManager.publicKey,
               this.widget._paymentManager.isDebugMode);
 
-          if (response.data.status == FlutterwaveConstants.SUCCESS &&
-              response.data.amount == pm.amount &&
-              response.data.currency == pm.currency &&
-              response.data.flwRef ==
+
+          if (response!.data!.status == FlutterwaveConstants.SUCCESSFUL &&
+              response!.data!.amount == pm.amount &&
+              response!.data!.currency == pm.currency &&
+              response!.data!.flwRef ==
                   this
                       ._bankTransferResponse
-                      .meta
-                      .authorization
-                      .transferReference
+                      !.meta
+                      !.authorization
+                      !.transferReference
                       .toString()) {
             this._closeDialog();
             this._showSnackBar("Payment received");
             timer.cancel();
-            this._onPaymentComplete(response);
+            this._onPaymentComplete(response!);
           } else {
-            print("inside else, response is ${response.toJson()}");
+            if (!timer.isActive) {
+              this._closeDialog();
+              this._showSnackBar(response!.message!);
+            }
           }
         } catch (error) {
           timer.cancel();
@@ -182,11 +168,10 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState.showSnackBar(snackBar);
+    this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   void _onPaymentComplete(final ChargeResponse chargeResponse) {
-    this._showSnackBar("Transaction completed.");
     Navigator.pop(this.context, chargeResponse);
   }
 
@@ -217,7 +202,7 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
 
   void _closeDialog() {
     if (this.loadingDialogContext != null) {
-      Navigator.of(this.loadingDialogContext).pop();
+      Navigator.of(this.loadingDialogContext!).pop();
       this.loadingDialogContext = null;
     }
   }

@@ -11,39 +11,46 @@ class MobileMoneyPaymentManager {
   String publicKey;
   String currency;
   String amount;
-  String network;
+  String? network;
   String txRef;
   bool isDebugMode;
   String phoneNumber;
   String fullName;
   String email;
+  String? redirectUrl;
 
   /// MobileMoneyPaymentManager constructor
-  MobileMoneyPaymentManager({
-    @required this.publicKey,
-    @required this.currency,
-    @required this.amount,
-    @required this.txRef,
-    @required this.isDebugMode,
-    @required this.phoneNumber,
-    @required this.fullName,
-    @required this.email,
-    this.network,
-  });
-
+  MobileMoneyPaymentManager(
+      {required this.publicKey,
+      required this.currency,
+      required this.amount,
+      required this.txRef,
+      required this.isDebugMode,
+      required this.phoneNumber,
+      required this.fullName,
+      required this.email,
+      this.network,
+      this.redirectUrl});
 
   /// Initiates payments via Mobile Money
   /// returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> payWithMobileMoney(
       MobileMoneyRequest mobileMoneyRequest, http.Client client) async {
     final requestBody = mobileMoneyRequest.toJson();
+
     final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
         FlutterwaveURLS.getMobileMoneyUrl(this.currency);
+    final uri = Uri.parse(url);
     try {
-      final http.Response response = await client.post(url,
-          headers: {HttpHeaders.authorizationHeader: this.publicKey},
-          body: requestBody);
-      ChargeResponse chargeResponse = ChargeResponse.fromJson(json.decode(response.body));
+      final http.Response response = await client.post(uri,
+          headers: {
+            HttpHeaders.authorizationHeader: this.publicKey,
+            HttpHeaders.contentTypeHeader: "application/json"
+          },
+          body: jsonEncode(requestBody));
+      ChargeResponse chargeResponse =
+          ChargeResponse.fromJson(json.decode(response.body));
+
       return chargeResponse;
     } catch (error) {
       throw (FlutterError(error.toString()));

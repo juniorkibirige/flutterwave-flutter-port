@@ -2,9 +2,9 @@
 import 'bank_transfer_meta.dart';
 
 class BankTransferResponse {
-  String status;
-  String message;
-  BankTransferMeta meta;
+  String? status;
+  String? message;
+  BankTransferMeta? meta;
 
   BankTransferResponse({this.status, this.message, this.meta});
 
@@ -19,7 +19,7 @@ class BankTransferResponse {
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.meta != null) {
-      data['meta'] = this.meta.toJson();
+      data['meta'] = this.meta!.toJson();
     }
     return data;
   }

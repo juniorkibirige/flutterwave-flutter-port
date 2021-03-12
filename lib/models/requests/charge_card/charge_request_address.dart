@@ -1,9 +1,9 @@
 class ChargeRequestAddress {
-  String address;
-  String city;
-  String state;
-  String zipCode;
-  String country;
+  String? address = "";
+  String? city = "";
+  String? state = "";
+  String? zipCode = "";
+  String? country = "";
 
   /// ChargeRequestAddress constructor
   ChargeRequestAddress({

@@ -2,29 +2,29 @@ import 'package:flutterwave/models/responses/charge_card_response/charge_card_re
 import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_customer.dart';
 
 class ChargeResponseData {
-  String id;
-  String txRef;
-  String flwRef;
-  String deviceFingerprint;
-  String amount;
-  String chargedAmount;
-  String appFee;
-  String merchantFee;
-  String processorResponse;
-  String authModel;
-  String currency;
-  String ip;
-  String narration;
-  String status;
-  String authUrl;
-  String paymentType;
-  String fraudStatus;
-  String chargeType;
-  String createdAt;
-  String accountId;
-  String paymentCode;
-  ChargeCardResponseCustomer customer;
-  ChargeCardResponseCard card;
+  String? id;
+  String? txRef;
+  String? flwRef;
+  String? deviceFingerprint;
+  String? amount;
+  String? chargedAmount;
+  String? appFee;
+  String? merchantFee;
+  String? processorResponse;
+  String? authModel;
+  String? currency;
+  String? ip;
+  String? narration;
+  String? status;
+  String? authUrl;
+  String? paymentType;
+  String? fraudStatus;
+  String? chargeType;
+  String? createdAt;
+  String? accountId;
+  String? paymentCode;
+  ChargeCardResponseCustomer? customer;
+  ChargeCardResponseCard? card;
 
   ChargeResponseData(
       {this.id,
@@ -104,10 +104,10 @@ class ChargeResponseData {
     data['created_at'] = this.createdAt;
     data['account_id'] = this.accountId;
     if (this.customer != null) {
-      data['customer'] = this.customer.toJson();
+      data['customer'] = this.customer?.toJson();
     }
     if (this.card != null) {
-      data['card'] = this.card.toJson();
+      data['card'] = this.card?.toJson();
     }
     return data;
   }

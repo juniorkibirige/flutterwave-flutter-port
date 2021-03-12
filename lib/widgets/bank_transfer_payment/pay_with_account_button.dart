@@ -12,7 +12,7 @@ class PayWithTransferButton extends StatelessWidget {
       width: double.infinity,
       margin: EdgeInsets.fromLTRB(20, 100, 20, 20),
       child: RaisedButton(
-        onPressed: this._payWithTransfer,
+        onPressed: this._hanldePayWithTransfer,
         color: Colors.orange,
         child: Text(
           "PAY",
@@ -20,5 +20,9 @@ class PayWithTransferButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _hanldePayWithTransfer() {
+    this._payWithTransfer();
   }
 }

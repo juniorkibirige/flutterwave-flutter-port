@@ -45,7 +45,7 @@ main() {
       when(mockResponse.statusCode).thenReturn(200);
       when(mockResponse.body).thenReturn(response);
 
-      when(client.get(FlutterwaveURLS.GET_BANKS_URL))
+      when(client.get(Uri.https(FlutterwaveURLS.GET_BANKS_URL, "")))
           .thenAnswer((_) async => mockResponse);
 
       expect(200, mockResponse.statusCode);
@@ -67,6 +67,7 @@ main() {
       final otp = "123445";
       final String publicKey = "publicKey";
       final url = FlutterwaveURLS.getBaseUrl(isDebugMode) + FlutterwaveURLS.VALIDATE_CHARGE;
+      final uri = Uri.https(url, "");
       final mockHeaders = {HttpHeaders.authorizationHeader: publicKey};
       final payload = ValidateChargeRequest(otp, flwRef, false).toJson();
 
@@ -116,7 +117,7 @@ main() {
       when(mockChargeResponse.data).thenReturn(mockChargeResponseData);
       when(mockResponse.statusCode).thenReturn(200);
       when(mockResponse.body).thenReturn(response);
-      when(client.post(url, body: payload, headers: mockHeaders)).thenAnswer((_) async => mockResponse);
+      when(client.post(uri, body: payload, headers: mockHeaders)).thenAnswer((_) async => mockResponse);
 
       expect(200, mockResponse.statusCode);
       expect(await FlutterwaveAPIUtils
