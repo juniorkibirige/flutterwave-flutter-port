@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class FlutterwaveViewUtils {
-
   /// Displays a modal to confirm payment
-  static Future<void> showConfirmPaymentModal(final BuildContext context,
-      final String currency, final String amount, final Function onContinuePressed) async {
+  static Future<void> showConfirmPaymentModal(
+      final BuildContext context,
+      final String currency,
+      final String amount,
+      final Function onContinuePressed) async {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -24,22 +26,36 @@ class FlutterwaveViewUtils {
             ),
           ),
           actions: [
-            //Changed Continue to the right as confirmation buttons tend to be on the right for better UX.
-            FlatButton(
+            // Changed Continue to the right as confirmation buttons tend to be on the right for better UX.
+            // Changed FlatButton to TextButton for deprecation
+            TextButton(
               onPressed: () => {Navigator.of(context).pop()},
               child: Text(
                 "CANCEL",
                 style: TextStyle(fontSize: 16, letterSpacing: 1),
               ),
             ),
-            FlatButton(
+            // FlatButton(
+            //   onPressed: () => {Navigator.of(context).pop()},
+            //   child: Text(
+            //     "CANCEL",
+            //     style: TextStyle(fontSize: 16, letterSpacing: 1),
+            //   ),
+            // ),
+            TextButton(
               onPressed: () => onContinuePressed(),
               child: Text(
                 "CONTINUE",
                 style: TextStyle(fontSize: 16, letterSpacing: 1),
               ),
             ),
-
+            // FlatButton(
+            //   onPressed: () => onContinuePressed(),
+            //   child: Text(
+            //     "CONTINUE",
+            //     style: TextStyle(fontSize: 16, letterSpacing: 1),
+            //   ),
+            // ),
           ],
         );
       },
