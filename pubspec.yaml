@@ -1,6 +1,6 @@
 name: "flutterwave_port"
 description: "Port Flutterwave official flutter library to accept payment via card, USSD, Mobile Money etc."
-version: 1.0.0-dev-null-safety
+version: 1.0.0-dev.1-null-safety
 homepage: "https://github.com/juniorkibirige/flutterwave-flutter"
 
 environment:
