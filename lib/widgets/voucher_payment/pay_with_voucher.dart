@@ -28,7 +28,7 @@ class _PayWithVoucherState extends State<PayWithVoucher> {
 
   @override
   Widget build(BuildContext context) {
-    final String initialPhoneNumber = this.widget._paymentManager.phoneNumber;
+    final String? initialPhoneNumber = this.widget._paymentManager.phoneNumber;
     this._phoneNumberController.text =
         initialPhoneNumber != null ? initialPhoneNumber : "";
 

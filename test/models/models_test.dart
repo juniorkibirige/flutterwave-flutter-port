@@ -25,10 +25,10 @@ main() {
     });
 
     test("toJson() should work correctly", () {
-      final json = bankTransferRequest.toJson();
+      final Map<String, dynamic>? json = bankTransferRequest.toJson();
 
       expect(true, json != null);
-      expect("some narration", json["narration"]);
+      expect("some narration", json!["narration"]);
       expect("12345", json["phone_number"]);
       expect("email.com", json["email"]);
     });
@@ -61,14 +61,15 @@ main() {
       expect("GHS", chargeCardRequest.currency);
       expect("12", chargeCardRequest.expiryMonth);
       expect(true, chargeCardRequest.authorization == null);
-      expect(FlutterwaveURLS.DEFAULT_REDIRECT_URL, chargeCardRequest.redirectUrl);
+      expect(
+          FlutterwaveURLS.DEFAULT_REDIRECT_URL, chargeCardRequest.redirectUrl);
     });
 
     test("toJson() should work correctly", () {
-      final json = chargeCardRequest.toJson();
+      final Map<String, dynamic>? json = chargeCardRequest.toJson();
 
       expect(true, json != null);
-      expect("419", json["cvv"]);
+      expect("419", json!["cvv"]);
       expect("100", json["amount"]);
       expect("email.com", json["email"]);
       expect(true, json["authorization"] != null);
@@ -85,22 +86,20 @@ main() {
     });
 
     test("toJson() should work correctly", () {
-      final json = validateChargeRequest.toJson();
+      final Map<String, dynamic>? json = validateChargeRequest.toJson();
 
       expect(true, json != null);
-      expect("419", json["cvv"]);
+      expect("419", json!["cvv"]);
       expect("100", json["amount"]);
       expect("email.com", json["email"]);
       expect(true, json["authorization"] != null);
     });
 
     test("fromJson() should work correctly", () {
-      final json = validateChargeRequest.toJson();
-      final vcr = ValidateChargeRequest.fromJson(json);
-      expect(true, json != null);
+      final Map<String, dynamic>? json = validateChargeRequest.toJson();
+      final vcr = ValidateChargeRequest.fromJson(json!);
       expect(vcr.otp, json["otp"]);
       expect(vcr.flwRef, json["flw_ref"]);
     });
-
   });
 }
