@@ -161,13 +161,22 @@ class _CardPaymentState extends State<CardPayment>
                   width: double.infinity,
                   height: 45,
                   margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: this._onCardFormClick,
-                    color: Colors.orangeAccent,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.orangeAccent,
+                    ),
                     child: Text(
                       "PAY",
                       style: TextStyle(color: Colors.white),
                     ),
+                    // child: RaisedButton(
+                    //   onPressed: this._onCardFormClick,
+                    //   color: Colors.orangeAccent,
+                    //   child: Text(
+                    //     "PAY",
+                    //     style: TextStyle(color: Colors.white),
+                    // ),
                   ),
                 ),
               ],
@@ -253,10 +262,11 @@ class _CardPaymentState extends State<CardPayment>
     }
   }
 
+  // Address Details can be null
   @override
   void onRequireAddress(ChargeResponse response) async {
     this._closeDialog();
-    final ChargeRequestAddress addressDetails = await Navigator.of(context)
+    final ChargeRequestAddress? addressDetails = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestAddress()));
     if (addressDetails != null) {
       this._showLoading(FlutterwaveConstants.VERIFYING_ADDRESS);
