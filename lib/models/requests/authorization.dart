@@ -20,7 +20,7 @@ class Authorization {
   String? validateInstructions;
 
   Authorization({this.mode = "", this.endpoint});
-  
+
   Authorization.fromJson(Map<String, dynamic> json) {
     this.mode = json['mode'];
     this.endpoint = json['endpoint'];
@@ -54,5 +54,4 @@ class Authorization {
     data["validate_instructions"] = this.validateInstructions;
     return data;
   }
-
 }

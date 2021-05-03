@@ -1,4 +1,3 @@
-
 import 'bank_transfer_authorization.dart';
 
 class BankTransferMeta {

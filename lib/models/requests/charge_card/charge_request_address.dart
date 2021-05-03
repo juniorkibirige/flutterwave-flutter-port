@@ -22,5 +22,4 @@ class ChargeRequestAddress {
     this.zipCode = json["zipcode"];
     this.country = json["country"];
   }
-
 }

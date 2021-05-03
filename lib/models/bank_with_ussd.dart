@@ -1,7 +1,6 @@
 class BanksWithUssd {
-  
   BanksWithUssd(this.bankName, this.bankCode);
-  
+
   String bankName;
   String bankCode;
 
@@ -13,6 +12,6 @@ class BanksWithUssd {
     final BanksWithUssd uba = BanksWithUssd("United Bank For Bank", "033");
     final BanksWithUssd unity = BanksWithUssd("Unity Bank", "215");
     final BanksWithUssd zenith = BanksWithUssd("Zenith Bank", "057");
-    return[fidelity, gtb, keystone, sterling, uba, unity, zenith];
+    return [fidelity, gtb, keystone, sterling, uba, unity, zenith];
   }
 }

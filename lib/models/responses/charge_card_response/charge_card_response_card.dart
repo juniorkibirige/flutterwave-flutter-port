@@ -8,11 +8,11 @@ class ChargeCardResponseCard {
 
   ChargeCardResponseCard(
       {this.first6digits,
-        this.last4digits,
-        this.issuer,
-        this.country,
-        this.type,
-        this.expiry});
+      this.last4digits,
+      this.issuer,
+      this.country,
+      this.type,
+      this.expiry});
 
   ChargeCardResponseCard.fromJson(Map<String, dynamic> json) {
     first6digits = json['first_6digits'];

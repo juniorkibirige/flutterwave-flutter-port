@@ -9,12 +9,12 @@ class BankTransferAuthorization {
 
   BankTransferAuthorization(
       {required this.transferReference,
-        required this.transferAccount,
-        required this.transferBank,
-        required this.accountExpiration,
-        required this.transferNote,
-        required this.transferAmount,
-        required this.mode});
+      required this.transferAccount,
+      required this.transferBank,
+      required this.accountExpiration,
+      required this.transferNote,
+      required this.transferAmount,
+      required this.mode});
 
   BankTransferAuthorization.fromJson(Map<String, dynamic> json) {
     transferReference = json['transfer_reference'];

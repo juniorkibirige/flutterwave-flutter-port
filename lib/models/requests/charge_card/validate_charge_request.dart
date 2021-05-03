@@ -3,14 +3,13 @@ class ValidateChargeRequest {
   String flwRef = "";
   bool isBankAccount = false;
 
-
   ValidateChargeRequest(this.otp, this.flwRef, [this.isBankAccount = false]);
 
   /// Initializes ValidateChargeRequest from json
   ValidateChargeRequest.fromJson(Map<String, dynamic> json) {
     this.otp = json["otp"];
     this.flwRef = json["flw_ref"];
-    if(json["type"] != null) {
+    if (json["type"] != null) {
       this.isBankAccount = json["type"];
     } else {
       this.isBankAccount = false;

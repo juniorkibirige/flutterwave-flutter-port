@@ -6,16 +6,15 @@ class MpesaRequest {
   String fullName;
   String phoneNumber;
 
-  MpesaRequest({
-    required this.amount,
-    required this.currency,
-    required this.email,
-    required this.txRef,
-    required this.fullName,
-    required this.phoneNumber
-  });
+  MpesaRequest(
+      {required this.amount,
+      required this.currency,
+      required this.email,
+      required this.txRef,
+      required this.fullName,
+      required this.phoneNumber});
 
-/// Converts instance of MpesaRequest to json
+  /// Converts instance of MpesaRequest to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,
@@ -27,4 +26,3 @@ class MpesaRequest {
     };
   }
 }
-

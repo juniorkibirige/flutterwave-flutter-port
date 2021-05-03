@@ -3,8 +3,8 @@ class ResolveAccountRequest {
   String? acountBankCode;
   ResolveAccountRequest? data;
 
-  ResolveAccountRequest({required this.accountNumber, required this.acountBankCode});
-
+  ResolveAccountRequest(
+      {required this.accountNumber, required this.acountBankCode});
 
   /// Initializes a new ResolveAccountRequest object from json
   ResolveAccountRequest.fromJson(Map<String, dynamic> json) {
@@ -14,7 +14,6 @@ class ResolveAccountRequest {
         ? new ResolveAccountRequest.fromJson(json['data'])
         : null;
   }
-
 
   /// Converts instance of ResolveAccountRequest to json
   Map<String, dynamic> toJson() {

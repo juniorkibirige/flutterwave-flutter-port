@@ -5,7 +5,8 @@ class ChargeCardResponseCustomer {
   String? email;
   String? createdAt;
 
-  ChargeCardResponseCustomer({this.id, this.phoneNumber, this.name, this.email, this.createdAt});
+  ChargeCardResponseCustomer(
+      {this.id, this.phoneNumber, this.name, this.email, this.createdAt});
 
   ChargeCardResponseCustomer.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();

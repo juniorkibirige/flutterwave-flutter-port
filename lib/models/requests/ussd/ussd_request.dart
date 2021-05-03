@@ -7,15 +7,14 @@ class USSDRequest {
   String accountBank;
   String phoneNumber;
 
-  USSDRequest({
-    required this.amount,
-    required this.currency,
-    required this.email,
-    required this.txRef,
-    required this.fullName,
-    required this.accountBank,
-    required this.phoneNumber
-  });
+  USSDRequest(
+      {required this.amount,
+      required this.currency,
+      required this.email,
+      required this.txRef,
+      required this.fullName,
+      required this.accountBank,
+      required this.phoneNumber});
 
   /// Converts instance of USSDRequest to json
   Map<String, dynamic> toJson() {

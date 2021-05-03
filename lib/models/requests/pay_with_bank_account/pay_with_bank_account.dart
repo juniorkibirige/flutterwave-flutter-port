@@ -18,7 +18,7 @@ class BankAccountPaymentRequest {
       required this.accountNumber,
       required this.accountBank});
 
-/// Converts instance of BankAccountPaymentRequest to json
+  /// Converts instance of BankAccountPaymentRequest to json
   Map<String, dynamic> toJson() {
     return {
       'amount': this.amount,

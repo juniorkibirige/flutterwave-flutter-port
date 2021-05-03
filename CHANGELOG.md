@@ -1,3 +1,6 @@
+## [1.0.0-dev.2-null-safety] - May 3, 2021 21:33 EAT
+* Dart format used
+
 ## [1.0.0-dev.1-null-safety] - May 3, 2021 21:33 EAT
 * Awaiting tripledes null safety
 
