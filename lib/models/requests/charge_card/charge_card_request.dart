@@ -28,7 +28,7 @@ class ChargeCardRequest {
       required this.fullName,
       required this.txRef,
       this.country = FlutterwaveCurrency.NGN,
-      this.redirectUrl,
+      this.redirectUrl = FlutterwaveURLS.DEFAULT_REDIRECT_URL,
       this.authorization});
 
   /// Converts ChargeCardRequest instance to a map
@@ -44,9 +44,7 @@ class ChargeCardRequest {
       "fullname": this.fullName,
       "country": this.country,
       "tx_ref": this.txRef,
-      "redirect_url": (this.redirectUrl == null || this.redirectUrl!.isEmpty)
-          ? FlutterwaveURLS.DEFAULT_REDIRECT_URL
-          : this.redirectUrl,
+      "redirect_url": this.redirectUrl,
       "authorization": this.authorization == null
           ? Authorization().toJson()
           : this.authorization?.toJson()

@@ -16,7 +16,7 @@ class FlutterwaveAPIUtils {
   /// it returns an instance of GetBanksResponse or throws an error
   static Future<List<Bank>> getBanks(final http.Client client) async {
     try {
-      final response = await client.get(
+      final http.Response? response = await client.get(
         Uri.parse("https://api.flutterwave.com/v3/banks/NG"),
         headers: {
           HttpHeaders.authorizationHeader:
@@ -24,8 +24,8 @@ class FlutterwaveAPIUtils {
           HttpHeaders.contentTypeHeader: 'application/json'
         },
       );
-      if (response.statusCode == 200) {
-        final List<dynamic> banks = jsonDecode(response.body)["data"];
+      if (response?.statusCode == 200) {
+        final List<dynamic> banks = jsonDecode(response!.body)["data"];
         final result = banks.map((e) => Bank.fromJson(e)).toList();
         return result;
       } else {
