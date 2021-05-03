@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave/flutterwave.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 
 void main() {
   runApp(MyApp());
@@ -192,7 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
         acceptAccountPayment: true,
         acceptCardPayment: true,
         acceptUSSDPayment: true);
-    final response = await flutterwave.initializeForUiPayments();
+    final ChargeResponse? response =
+        await flutterwave.initializeForUiPayments();
     if (response != null) {
       this.showLoading(response.data!.status);
     } else {

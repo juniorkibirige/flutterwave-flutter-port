@@ -87,11 +87,10 @@ main() {
 
 // Corrected Test to run smoothly
     test("toJson() should work correctly", () {
-      final Map<String, dynamic> json = validateChargeRequest.toJson();
-      print(json);
+      final Map<String, dynamic>? json = validateChargeRequest.toJson();
 
-      // expect(json != null, true);
-      expect(json["otp"], "123");
+      expect(json != null, true);
+      expect(json!["otp"], "123");
       expect(json["flw_ref"], "GHS");
       expect(json["type"], null);
     });

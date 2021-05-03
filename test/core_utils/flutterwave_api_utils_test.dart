@@ -55,11 +55,19 @@ main() {
       ];
 
       final response = jsonEncode(bankResult);
-      final client = MockClient();
+      final MockClient client = MockClient();
       final MockResponse mockResponse = MockResponse();
       when(mockResponse.statusCode).thenReturn(200);
       when(mockResponse.body).thenReturn(response);
-      Uri uri = Uri.parse(FlutterwaveURLS.GET_BANKS_URL);
+      List url = FlutterwaveURLS.GET_BANKS_URL.trim().split('//')[1].split('/');
+      String auth = url[0];
+      url.removeAt(0);
+      String path = url.join('/').split('?')[0];
+      Map<String, dynamic> params = {};
+      params[url.join('/').split('?')[1].split('=')[0]] =
+          url.join('/').split('?')[1].split('=')[1];
+      Uri uri = Uri.https(auth, path, params);
+      print(uri);
       when(client.get(uri)).thenAnswer((_) async => mockResponse);
 
       expect(200, mockResponse.statusCode);
