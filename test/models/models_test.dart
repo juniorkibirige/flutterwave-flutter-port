@@ -19,16 +19,16 @@ main() {
         phoneNumber: "12345");
 
     test("objects should initialize correctly", () {
-      expect("100", bankTransferRequest.amount);
-      expect("NGN", bankTransferRequest.currency);
-      expect("3", bankTransferRequest.frequency);
+      expect(bankTransferRequest.amount, "100");
+      expect(bankTransferRequest.currency, "NGN");
+      expect(bankTransferRequest.frequency, "3");
     });
 
     test("toJson() should work correctly", () {
       final Map<String, dynamic>? json = bankTransferRequest.toJson();
 
-      expect(true, json != null);
-      expect("some narration", json!["narration"]);
+      expect(json != null, true);
+      expect(json!["narration"], "some narration");
       expect("12345", json["phone_number"]);
       expect("email.com", json["email"]);
     });
@@ -62,7 +62,7 @@ main() {
       expect("12", chargeCardRequest.expiryMonth);
       expect(true, chargeCardRequest.authorization == null);
       expect(
-          FlutterwaveURLS.DEFAULT_REDIRECT_URL, chargeCardRequest.redirectUrl);
+          chargeCardRequest.redirectUrl, FlutterwaveURLS.DEFAULT_REDIRECT_URL);
     });
 
     test("toJson() should work correctly", () {
@@ -77,7 +77,7 @@ main() {
   });
 
   group("Validate Card Request", () {
-    final validateChargeRequest = ValidateChargeRequest("123", "ref");
+    final validateChargeRequest = ValidateChargeRequest("123", "GHS");
 
     test("objects should initialize correctly", () {
       expect("123", validateChargeRequest.otp);
@@ -85,14 +85,15 @@ main() {
       expect(false, validateChargeRequest.isBankAccount);
     });
 
+// Corrected Test to run smoothly
     test("toJson() should work correctly", () {
-      final Map<String, dynamic>? json = validateChargeRequest.toJson();
+      final Map<String, dynamic> json = validateChargeRequest.toJson();
+      print(json);
 
-      expect(true, json != null);
-      expect("419", json!["cvv"]);
-      expect("100", json["amount"]);
-      expect("email.com", json["email"]);
-      expect(true, json["authorization"] != null);
+      // expect(json != null, true);
+      expect(json["otp"], "123");
+      expect(json["flw_ref"], "GHS");
+      expect(json["type"], null);
     });
 
     test("fromJson() should work correctly", () {
