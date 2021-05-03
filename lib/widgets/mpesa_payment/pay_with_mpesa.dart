@@ -52,8 +52,9 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
                       hintText: "Phone Number",
                     ),
                     controller: this._phoneNumberController,
-                    validator: (value) =>
-                        value != null && value.isEmpty ? "Phone number is required" : null,
+                    validator: (value) => value != null && value.isEmpty
+                        ? "Phone number is required"
+                        : null,
                   ),
                   Container(
                     width: double.infinity,
@@ -136,7 +137,8 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState!.showSnackBar(snackBar);
+    ScaffoldMessenger.of(this.context).showSnackBar(snackBar);
+    // this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   void _handlePayment() async {

@@ -150,8 +150,9 @@ class _CardPaymentState extends State<CardPayment>
                           fontSize: 20.0,
                         ),
                         controller: this._cardCvvFieldController,
-                        validator: (value) =>
-                            value != null && value.isEmpty ? "cvv is required" : null,
+                        validator: (value) => value != null && value.isEmpty
+                            ? "cvv is required"
+                            : null,
                       ),
                     ),
                   ],
@@ -214,7 +215,7 @@ class _CardPaymentState extends State<CardPayment>
   }
 
   String? _validateCardField(String? value) {
-    return  value != null && value.trim().isEmpty ? "Please fill this" : null;
+    return value != null && value.trim().isEmpty ? "Please fill this" : null;
   }
 
   void _hideKeyboard() {
@@ -342,7 +343,8 @@ class _CardPaymentState extends State<CardPayment>
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState?.showSnackBar(snackBar);
+    ScaffoldMessenger.of(this.context).showSnackBar(snackBar);
+    // this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   Future<void> _showLoading(String message) {

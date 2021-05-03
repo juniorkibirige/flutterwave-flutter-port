@@ -310,7 +310,8 @@ class _PayWithMobileMoneyState extends State<PayWithMobileMoney> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState!.showSnackBar(snackBar);
+    ScaffoldMessenger.of(this.context).showSnackBar(snackBar);
+    // this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   void _handlePayment() async {
