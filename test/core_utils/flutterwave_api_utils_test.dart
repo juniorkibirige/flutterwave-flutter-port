@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
-import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_data.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/models/responses/get_bank/get_bank_response.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/models/requests/charge_card/validate_charge_request.dart';
+import 'package:flutterwave_port/models/responses/charge_card_response/charge_card_response_data.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/models/responses/get_bank/get_bank_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 

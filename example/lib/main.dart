@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/flutterwave.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave_port/flutterwave.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
 
 void main() {
   runApp(MyApp());

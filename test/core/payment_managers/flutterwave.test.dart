@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterwave/core/flutterwave.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/core/flutterwave.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
 import 'package:mockito/mockito.dart';
 
 class MockContext extends Mock implements BuildContext {}
+
 class MockChargeResponse extends Mock implements ChargeResponse {}
+
 class MockFlutterWave extends Mock implements Flutterwave {}
+
 main() {
   group("Flutterwave core", () {
     test("should initialize correctly", () {
@@ -21,7 +24,8 @@ main() {
       final String txref = "tx_r_ef";
       final bool isDebugMode = true;
       final String phoneNumber = "123456";
-      final flutterwave = Flutterwave.forUIPayment(context: mockContext,
+      final flutterwave = Flutterwave.forUIPayment(
+          context: mockContext,
           publicKey: pbKey,
           encryptionKey: enKey,
           currency: currency,
@@ -48,7 +52,7 @@ main() {
       final flutterwave = MockFlutterWave();
       when(mockResponse.status).thenReturn("success");
       when(flutterwave.initializeForUiPayments())
-      .thenAnswer((_) => Future.value(mockResponse));
+          .thenAnswer((_) => Future.value(mockResponse));
       final result = await flutterwave.initializeForUiPayments();
       print(result.runtimeType);
       expect("success", result.status);

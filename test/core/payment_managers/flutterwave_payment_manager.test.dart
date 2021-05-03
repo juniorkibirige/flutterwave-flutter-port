@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
-import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
-import 'package:flutterwave/core/flutterwave_payment_manager.dart';
-import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
-import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
-import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
-import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
-import 'package:flutterwave/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
+import 'package:flutterwave_port/core/card_payment_manager/card_payment_manager.dart';
+import 'package:flutterwave_port/core/flutterwave_payment_manager.dart';
+import 'package:flutterwave_port/core/mobile_money/mobile_money_payment_manager.dart';
+import 'package:flutterwave_port/core/mpesa/mpesa_payment_manager.dart';
+import 'package:flutterwave_port/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave_port/core/voucher_payment/voucher_payment_manager.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
 
 main() {
   group("Flutterwave Payment Manager", () {
@@ -38,7 +38,6 @@ main() {
       expect(paymentManager.txRef, txRef);
       expect(paymentManager.isDebugMode, isDebugMode);
       expect(paymentManager.publicKey, pbKey);
-
     });
 
     test("should return CardPaymentManager", () {
@@ -49,7 +48,6 @@ main() {
       expect(cardPaymentManager.txRef, paymentManager.txRef);
       expect(cardPaymentManager.isDebugMode, paymentManager.isDebugMode);
       expect(cardPaymentManager.publicKey, paymentManager.publicKey);
-
     });
 
     test("should return BankTransferPaymentManager", () {
@@ -60,7 +58,6 @@ main() {
       expect(bankTransferPM.txRef, paymentManager.txRef);
       expect(bankTransferPM.isDebugMode, paymentManager.isDebugMode);
       expect(bankTransferPM.publicKey, paymentManager.publicKey);
-
     });
 
     test("should return USSDPaymentManager", () {
@@ -81,7 +78,6 @@ main() {
       expect(paymentManager.txRef, mobileMoneyPM.txRef);
       expect(paymentManager.isDebugMode, mobileMoneyPM.isDebugMode);
       expect(paymentManager.publicKey, mobileMoneyPM.publicKey);
-
     });
 
     test("should return MpesaPaymentManager", () {
@@ -92,7 +88,6 @@ main() {
       expect(paymentManager.txRef, mpesaPM.txRef);
       expect(paymentManager.isDebugMode, mpesaPM.isDebugMode);
       expect(paymentManager.publicKey, mpesaPM.publicKey);
-
     });
 
     test("should return VoucherPaymentManager", () {

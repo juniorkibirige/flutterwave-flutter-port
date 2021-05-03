@@ -1,4 +1,4 @@
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 
 class MobileMoneyRequest {
   String amount;

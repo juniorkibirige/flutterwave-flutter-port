@@ -1,4 +1,4 @@
-import 'package:flutterwave/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
 
 class FlutterwaveURLS {
   static const String _DEBUG_BASE_URL =

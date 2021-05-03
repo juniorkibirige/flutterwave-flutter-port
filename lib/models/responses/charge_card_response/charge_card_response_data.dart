@@ -1,5 +1,5 @@
-import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_card.dart';
-import 'package:flutterwave/models/responses/charge_card_response/charge_card_response_customer.dart';
+import 'package:flutterwave_port/models/responses/charge_card_response/charge_card_response_card.dart';
+import 'package:flutterwave_port/models/responses/charge_card_response/charge_card_response_customer.dart';
 
 class ChargeResponseData {
   String? id;

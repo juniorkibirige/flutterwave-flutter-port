@@ -2,7 +2,7 @@
    <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" width="50%"/>
 </p>
 
-# Flutterwave Flutter SDK
+# Flutterwave Flutter SDK Port
 
 ## Table of Contents
 
@@ -197,5 +197,4 @@ Create a `Flutterwave` instance by calling the constructor `Flutterwave.forUIPay
 
 <a id="support"></a>
 ## Support
-* Have issues integrating? Reach out via [our Developer forum](https://developer.flutterwave.com/discuss) for support
-
+* Have issues? Reach out via [our Issues Page](https://github.com/juniorkibirige/flutterwave-flutter-port/issues) for any bugs

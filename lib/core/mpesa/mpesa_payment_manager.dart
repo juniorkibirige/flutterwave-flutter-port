@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/requests/mpesa/mpesa_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/models/requests/mpesa/mpesa_request.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class MpesaPaymentManager {
@@ -51,11 +51,10 @@ class MpesaPaymentManager {
         FlutterwaveURLS.PAY_WITH_MPESA;
     final uri = Uri.parse(url);
     try {
-
       final http.Response response = await client.post(uri,
           headers: {
             HttpHeaders.authorizationHeader: this.publicKey,
-            HttpHeaders.contentTypeHeader:'application/json'
+            HttpHeaders.contentTypeHeader: 'application/json'
           },
           body: json.encode(payload.toJson()));
 

@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
-import 'package:flutterwave/models/bank_with_ussd.dart';
-import 'package:flutterwave/models/requests/ussd/ussd_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_constants.dart';
-import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
-import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd_button.dart';
-import 'package:flutterwave/widgets/ussd_payment/ussd_details.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave_port/models/bank_with_ussd.dart';
+import 'package:flutterwave_port/models/requests/ussd/ussd_request.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_constants.dart';
+import 'package:flutterwave_port/widgets/flutterwave_view_utils.dart';
+import 'package:flutterwave_port/widgets/ussd_payment/pay_with_ussd_button.dart';
+import 'package:flutterwave_port/widgets/ussd_payment/ussd_details.dart';
 import 'package:http/http.dart' as http;
 
 class PayWithUssd extends StatefulWidget {

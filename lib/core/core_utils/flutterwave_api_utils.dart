@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutterwave/core/flutterwave_error.dart';
-import 'package:flutterwave/core/metrics/metric_manager.dart';
-import 'package:flutterwave/models/bank.dart';
-import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
-import 'package:flutterwave/models/requests/verify_charge_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/core/flutterwave_error.dart';
+import 'package:flutterwave_port/core/metrics/metric_manager.dart';
+import 'package:flutterwave_port/models/bank.dart';
+import 'package:flutterwave_port/models/requests/charge_card/validate_charge_request.dart';
+import 'package:flutterwave_port/models/requests/verify_charge_request.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 /// Flutterwave Utility class

@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutterwave:
+  flutterwave_port:
     path: "../"
   cupertino_icons: 1.0.0
 

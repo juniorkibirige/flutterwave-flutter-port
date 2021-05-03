@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
-import 'package:flutterwave/models/francophone_country.dart';
-import 'package:flutterwave/models/requests/authorization.dart';
-import 'package:flutterwave/models/requests/mobile_money/mobile_money_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_constants.dart';
-import 'package:flutterwave/utils/flutterwave_currency.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
-import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
-import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/core/mobile_money/mobile_money_payment_manager.dart';
+import 'package:flutterwave_port/models/francophone_country.dart';
+import 'package:flutterwave_port/models/requests/authorization.dart';
+import 'package:flutterwave_port/models/requests/mobile_money/mobile_money_request.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_constants.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/utils/flutterwave_utils.dart';
+import 'package:flutterwave_port/widgets/card_payment/authorization_webview.dart';
+import 'package:flutterwave_port/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 
 class PayWithMobileMoney extends StatefulWidget {

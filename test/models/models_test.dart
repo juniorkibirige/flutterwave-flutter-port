@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterwave/models/requests/bank_transfer/bank_transfer_request.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
-import 'package:flutterwave/models/requests/charge_card/validate_charge_request.dart';
-import 'package:flutterwave/utils/flutterwave_currency.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/models/requests/bank_transfer/bank_transfer_request.dart';
+import 'package:flutterwave_port/models/requests/charge_card/charge_card_request.dart';
+import 'package:flutterwave_port/models/requests/charge_card/validate_charge_request.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 
 main() {
   group("Bank Transfer Request", () {

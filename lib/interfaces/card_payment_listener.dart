@@ -1,4 +1,4 @@
-import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
 
 abstract class CardPaymentListener {
   void onRequirePin(ChargeResponse response) {}
@@ -11,7 +11,7 @@ abstract class CardPaymentListener {
 
   void onError(String error) {}
 
-  void onComplete (ChargeResponse chargeResponse) {}
+  void onComplete(ChargeResponse chargeResponse) {}
 
   void onNoAuthRequired(ChargeResponse chargeResponse) {}
 }

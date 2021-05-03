@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
 
 class USSDDetails extends StatelessWidget {
   final Function _onPaymentMade;

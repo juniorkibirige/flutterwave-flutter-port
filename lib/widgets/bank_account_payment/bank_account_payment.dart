@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/core/metrics/metric_manager.dart';
-import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
-import 'package:flutterwave/models/bank.dart';
-import 'package:flutterwave/models/requests/authorization.dart';
-import 'package:flutterwave/models/requests/pay_with_bank_account/pay_with_bank_account.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_constants.dart';
-import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
-import 'package:flutterwave/widgets/card_payment/request_otp.dart';
-import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/core/metrics/metric_manager.dart';
+import 'package:flutterwave_port/core/pay_with_account_manager/bank_account_manager.dart';
+import 'package:flutterwave_port/models/bank.dart';
+import 'package:flutterwave_port/models/requests/authorization.dart';
+import 'package:flutterwave_port/models/requests/pay_with_bank_account/pay_with_bank_account.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_constants.dart';
+import 'package:flutterwave_port/widgets/card_payment/authorization_webview.dart';
+import 'package:flutterwave_port/widgets/card_payment/request_otp.dart';
+import 'package:flutterwave_port/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 
 class PayWithBankAccount extends StatefulWidget {

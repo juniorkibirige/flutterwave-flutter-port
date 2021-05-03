@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/requests/mobile_money/mobile_money_request.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/models/requests/mobile_money/mobile_money_request.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 import 'package:http/http.dart' as http;
 
 class MobileMoneyPaymentManager {

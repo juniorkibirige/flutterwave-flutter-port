@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterwave/models/francophone_country.dart';
-import 'package:flutterwave/utils/flutterwave_currency.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave_port/models/francophone_country.dart';
+import 'package:flutterwave_port/utils/flutterwave_currency.dart';
+import 'package:flutterwave_port/utils/flutterwave_utils.dart';
 
 main() {
   group("Test for utils", () {

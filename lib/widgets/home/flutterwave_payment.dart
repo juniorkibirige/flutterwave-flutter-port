@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
-import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
-import 'package:flutterwave/core/flutterwave_payment_manager.dart';
-import 'package:flutterwave/core/mobile_money/mobile_money_payment_manager.dart';
-import 'package:flutterwave/core/mpesa/mpesa_payment_manager.dart';
-import 'package:flutterwave/core/pay_with_account_manager/bank_account_manager.dart';
-import 'package:flutterwave/core/ussd_payment_manager/ussd_manager.dart';
-import 'package:flutterwave/core/voucher_payment/voucher_payment_manager.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
-import 'package:flutterwave/widgets/bank_transfer_payment/bank_transfer_payment.dart';
-import 'package:flutterwave/widgets/card_payment/card_payment.dart';
-import 'package:flutterwave/widgets/mobile_money/pay_with_mobile_money.dart';
-import 'package:flutterwave/widgets/mpesa_payment/pay_with_mpesa.dart';
-import 'package:flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
-import 'package:flutterwave/widgets/voucher_payment/pay_with_voucher.dart';
+import 'package:flutterwave_port/core/bank_transfer_manager/bank_transfer_payment_manager.dart';
+import 'package:flutterwave_port/core/card_payment_manager/card_payment_manager.dart';
+import 'package:flutterwave_port/core/flutterwave_payment_manager.dart';
+import 'package:flutterwave_port/core/mobile_money/mobile_money_payment_manager.dart';
+import 'package:flutterwave_port/core/mpesa/mpesa_payment_manager.dart';
+import 'package:flutterwave_port/core/pay_with_account_manager/bank_account_manager.dart';
+import 'package:flutterwave_port/core/ussd_payment_manager/ussd_manager.dart';
+import 'package:flutterwave_port/core/voucher_payment/voucher_payment_manager.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/widgets/bank_account_payment/bank_account_payment.dart';
+import 'package:flutterwave_port/widgets/bank_transfer_payment/bank_transfer_payment.dart';
+import 'package:flutterwave_port/widgets/card_payment/card_payment.dart';
+import 'package:flutterwave_port/widgets/mobile_money/pay_with_mobile_money.dart';
+import 'package:flutterwave_port/widgets/mpesa_payment/pay_with_mpesa.dart';
+import 'package:flutterwave_port/widgets/ussd_payment/pay_with_ussd.dart';
+import 'package:flutterwave_port/widgets/voucher_payment/pay_with_voucher.dart';
 
 import 'flutterwave_payment_option.dart';
 

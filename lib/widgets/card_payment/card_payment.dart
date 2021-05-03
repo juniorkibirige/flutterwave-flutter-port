@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/card_payment_manager/card_payment_manager.dart';
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/core/metrics/metric_manager.dart';
-import 'package:flutterwave/interfaces/card_payment_listener.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_constants.dart';
-import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
-import 'package:flutterwave/widgets/card_payment/request_address.dart';
-import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
+import 'package:flutterwave_port/core/card_payment_manager/card_payment_manager.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/core/metrics/metric_manager.dart';
+import 'package:flutterwave_port/interfaces/card_payment_listener.dart';
+import 'package:flutterwave_port/models/requests/charge_card/charge_card_request.dart';
+import 'package:flutterwave_port/models/requests/charge_card/charge_request_address.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_constants.dart';
+import 'package:flutterwave_port/widgets/card_payment/authorization_webview.dart';
+import 'package:flutterwave_port/widgets/card_payment/request_address.dart';
+import 'package:flutterwave_port/widgets/flutterwave_view_utils.dart';
 import 'package:http/http.dart' as http;
 
 import 'request_otp.dart';

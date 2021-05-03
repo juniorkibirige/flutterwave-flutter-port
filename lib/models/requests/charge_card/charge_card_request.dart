@@ -1,6 +1,6 @@
-import 'package:flutterwave/flutterwave.dart';
-import 'package:flutterwave/models/requests/authorization.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/flutterwave.dart';
+import 'package:flutterwave_port/models/requests/authorization.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 
 class ChargeCardRequest {
   String cardNumber;

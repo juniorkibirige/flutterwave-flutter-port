@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutterwave/core/core_utils/flutterwave_api_utils.dart';
-import 'package:flutterwave/core/metrics/metric_manager.dart';
-import 'package:flutterwave/interfaces/card_payment_listener.dart';
-import 'package:flutterwave/models/requests/authorization.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart';
-import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
-import 'package:flutterwave/utils/flutterwave_constants.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
-import 'package:flutterwave/utils/flutterwave_utils.dart';
+import 'package:flutterwave_port/core/core_utils/flutterwave_api_utils.dart';
+import 'package:flutterwave_port/core/metrics/metric_manager.dart';
+import 'package:flutterwave_port/interfaces/card_payment_listener.dart';
+import 'package:flutterwave_port/models/requests/authorization.dart';
+import 'package:flutterwave_port/models/requests/charge_card/charge_card_request.dart';
+import 'package:flutterwave_port/models/requests/charge_card/charge_request_address.dart';
+import 'package:flutterwave_port/models/responses/charge_response.dart';
+import 'package:flutterwave_port/utils/flutterwave_constants.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/utils/flutterwave_utils.dart';
 import 'package:http/http.dart' as http;
 
 class CardPaymentManager {
@@ -147,9 +147,8 @@ class CardPaymentManager {
               ?.onError("Unable to complete payment. Please try another card");
         }
         if (requiresOtp) {
-          return this
-              .cardPaymentListener
-              ?.onRequireOTP(responseBody, responseBody.data!.processorResponse!);
+          return this.cardPaymentListener?.onRequireOTP(
+              responseBody, responseBody.data!.processorResponse!);
         }
 
         if (responseBody.status == FlutterwaveConstants.SUCCESS &&
@@ -203,9 +202,7 @@ class CardPaymentManager {
     if (Authorization.OTP == authMode) {
       final _authMode = response.data?.processorResponse;
       if (_authMode != null) {
-        return this
-            .cardPaymentListener
-            ?.onRequireOTP(response, _authMode);
+        return this.cardPaymentListener?.onRequireOTP(response, _authMode);
       }
       return this
           .cardPaymentListener

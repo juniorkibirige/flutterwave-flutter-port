@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/models/responses/bank_transfer_response/bank_transfer_response.dart';
+import 'package:flutterwave_port/models/responses/bank_transfer_response/bank_transfer_response.dart';
 
 class AccountDetails extends StatelessWidget {
   final Function _onTransferMade;

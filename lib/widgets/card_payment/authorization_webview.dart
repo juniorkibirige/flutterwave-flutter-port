@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterwave/utils/flutterwave_urls.dart';
+import 'package:flutterwave_port/utils/flutterwave_urls.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Nullable redirectUrl
