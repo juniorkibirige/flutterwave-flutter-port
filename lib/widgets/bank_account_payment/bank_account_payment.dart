@@ -84,8 +84,9 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
                       fontSize: 20.0,
                     ),
                     controller: this._phoneNumberController,
-                    validator: (value) =>
-                    value != null && value.isEmpty ? "Phone Number is required" : null,
+                    validator: (value) => value != null && value.isEmpty
+                        ? "Phone Number is required"
+                        : null,
                   ),
                   TextFormField(
                     onTap: this._showBottomSheet,
@@ -101,8 +102,9 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
                       fontSize: 20.0,
                     ),
                     controller: this._bankController,
-                    validator: (value) =>
-                    value != null && value.isEmpty ? "Bank is required" : null,
+                    validator: (value) => value != null && value.isEmpty
+                        ? "Bank is required"
+                        : null,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
@@ -116,17 +118,19 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
                       fontSize: 20.0,
                     ),
                     controller: this._accountNumberController,
-                    validator: (value) =>
-                    value != null && value.isEmpty
-                        ? "Account Number is required" : null,
+                    validator: (value) => value != null && value.isEmpty
+                        ? "Account Number is required"
+                        : null,
                   ),
                   Container(
                     width: double.infinity,
                     height: 50,
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       onPressed: this._onPaymentClicked,
-                      color: Colors.orangeAccent,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.orangeAccent,
+                      ),
                       child: Text(
                         "PAY WITH ACCOUNT",
                         style: TextStyle(color: Colors.white, fontSize: 15),
@@ -250,11 +254,10 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
         response.data!.authUrl!.isNotEmpty) {
       this._handleWebAuthorisation(response);
     }
-
     if ((response.data!.status == FlutterwaveConstants.PENDING) &&
         (response.meta == null ||
             response.meta!.authorization == null ||
-            response.meta!.authorization!.mode == null)) {
+            response.meta!.authorization?.mode == null)) {
       this._showSnackBar(
           "Unable to complete payment with this account. Please try later.");
       return;
@@ -270,7 +273,7 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
   void _handleExtraAuthentication(ChargeResponse response) async {
     if (response.meta != null &&
         response.meta!.authorization != null &&
-        response.meta!.authorization!.mode != null) {
+        response.meta!.authorization?.mode != null) {
       final String authMode = response.meta!.authorization!.mode;
       switch (authMode) {
         case Authorization.OTP:
@@ -353,9 +356,10 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
     this._validatePayment(otp, response.data!.flwRef!);
   }
 
-  void _handleRedirect(ChargeResponse response) async {
+  // Allowing null response to be accepted as a ChargeResponse param
+  void _handleRedirect(ChargeResponse? response) async {
     this._closeDialog();
-    final url = response.meta!.authorization!.redirect;
+    final url = response?.meta!.authorization!.redirect;
     if (url == null || url.isEmpty) {
       this._showSnackBar("Unable to redirect to complete payment.");
       return;
@@ -411,7 +415,7 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
     FocusScope.of(this.context).requestFocus(FocusNode());
   }
 
-  void _showSnackBar(String message) {
+  void _showSnackBar(String? message) {
     final text = message == null
         ? "Unable to complete payment. Please contact support"
         : message;
@@ -421,7 +425,9 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState?.showSnackBar(snackBar);
+    // Update to ScaffoldMessenger
+    ScaffoldMessenger.of(this.context).showSnackBar(snackBar);
+    // this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
   Future<void> _showLoading(String message) {
@@ -461,8 +467,9 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
     Navigator.pop(this.context, chargeResponse);
   }
 
+  // Allowing of null response from Navigator.push
   void _handleWebAuthorisation(ChargeResponse response) async {
-    final String result = await Navigator.push(
+    final String? result = await Navigator.push(
         this.context,
         MaterialPageRoute(
             builder: (context) => AuthorizationWebview(
